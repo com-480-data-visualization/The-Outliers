@@ -2,7 +2,7 @@
 
 | Student's name | SCIPER |
 | -------------- | ------ |
-| | |
+| Kevin Abou Jaoude | 358300 |
 | | |
 | | |
 
