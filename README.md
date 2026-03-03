@@ -4,6 +4,7 @@
 | -------------- | ------ |
 | Kevin Abou Jaoude | 358300 |
 | Youssef Dib| 339964 |
+| Mark Nabbout| 358312 |
 | | |
 
 [Milestone 1](#milestone-1) • [Milestone 2](#milestone-2) • [Milestone 3](#milestone-3)
