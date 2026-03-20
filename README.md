@@ -46,13 +46,15 @@ LEO holds 88.4% of all satellites, making it the focal point of orbital congesti
 These findings shape our visualization around three axes: how fast orbit filled up, who controls it, and where the congestion concentrates.
 
 <p align="center">
-  <img src="img/cumulative_launches.png" alt="Cumulative Launches" width="32%">
-  <img src="img/top_countries.png" alt="Top Countries" width="32%">
-  <img src="img/leo_scatter.png" alt="LEO Orbital Structure" width="32%">
+  <img src="img/cumulative_launches.png" alt="Cumulative Launches" width="100%">
 </p>
 <p align="center">
-  <img src="img/purpose_orbit.png" alt="Purpose by Orbit" width="49%">
-  <img src="img/lorenz.png" alt="Lorenz Curve" width="49%">
+  <img src="img/top_countries.png" alt="Top Countries" width="41%">
+  <img src="img/leo_scatter.png" alt="LEO Orbital Structure" width="58%">
+</p>
+<p align="center">
+  <img src="img/purpose_orbit.png" alt="Purpose by Orbit" width="64%">
+  <img src="img/lorenz.png" alt="Lorenz Curve" width="35%">
 </p>
 
 The full notebook with all plots is available in [`eda.ipynb`](eda.ipynb).
