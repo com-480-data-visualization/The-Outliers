@@ -53,8 +53,8 @@ These findings shape our visualization around three axes: how fast orbit filled 
   <img src="img/leo_scatter.png" alt="LEO Orbital Structure" width="58%">
 </p>
 <p align="center">
-  <img src="img/purpose_orbit.png" alt="Purpose by Orbit" width="62%">
-  <img src="img/lorenz.png" alt="Lorenz Curve" width="37%">
+  <img src="img/purpose_orbit.png" alt="Purpose by Orbit" width="63%">
+  <img src="img/lorenz.png" alt="Lorenz Curve" width="36%">
 </p>
 
 The full notebook with all plots is available in [`eda.ipynb`](eda.ipynb).
