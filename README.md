@@ -73,7 +73,7 @@ Our approach is original in combining temporal storytelling with interactive exp
 
 Our design inspiration comes from outside the satellite domain. [The Pudding](https://pudding.cool/) publishes visual essays where data is revealed step by step as the reader scrolls, not all at once. This pacing informs how we want to reveal orbital crowding over time. We also draw from NYT interactive pieces on climate, which show how scroll-driven guidance makes complex data accessible.
 
-None of us have used this dataset in a previous course.
+None of us used this dataset in a previous course.
 
 ## Milestone 2 (17th April, 5pm)
 
