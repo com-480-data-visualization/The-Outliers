@@ -63,7 +63,7 @@ The full notebook with all plots is available in [`eda.ipynb`](eda.ipynb).
 
 Several notable projects have visualized satellite data, but they differ from our approach in scope and intent.
 
-The most direct use of the UCS Satellite Database is the Quartz interactive "The World Above Us" (2014), which displays every active satellite sized by launch mass in altitude bands, with filtering by user type and purpose. While visually effective, it predates the mega-constellation era and contains no temporal narrative about how orbital space filled up.
+The most direct use of the UCS Satellite Database is the [Quartz interactive].(https://blog.ucs.org/lgrego/visualizing-the-ucs-satellite-database/) "The World Above Us" (2014), which displays every active satellite sized by launch mass in altitude bands, with filtering by user type and purpose. While visually effective, it predates the mega-constellation era and contains no temporal narrative about how orbital space filled up.
 
 Real-time 3D trackers form another category. [Stuff in Space](https://stuffin-space.vader.zone/) (James Yoder) is a WebGL globe color-coding satellites, rocket bodies, and debris using [Space-Track.org](http://Space-Track.org) data. [LeoLabs](https://leolabs-space.medium.com/earths-orbital-hot-spots-b6c8d57cd366) offers a professional LEO visualization platform tracking over 14,000 objects with filtering by country and altitude. Both are impressive monitoring tools but focus on where objects are now rather than explaining how space became crowded or who controls it.
 
@@ -71,7 +71,7 @@ Real-time 3D trackers form another category. [Stuff in Space](https://stuffin-sp
 
 Our approach is original in combining temporal storytelling with interactive exploration. Rather than a dashboard or live tracker, we plan a scrollytelling experience guiding users through the transformation of orbital space from the 1970s to today, progressively revealing the roles of countries, operators, purposes, and mega-constellations, before opening into free exploration.
 
-Our design inspirations come from outside the satellite domain. The Pudding's visual essays, with their scroll-driven progressive data reveals, directly inform our pacing. The NYT's scrollytelling on climate and infrastructure shows how editorial guidance makes dense data accessible. We aim to bring this narrative quality to satellite data, where it has not yet been applied.
+Our design inspiration comes from outside the satellite domain. [The Pudding].(https://pudding.cool/) publishes visual essays where data is revealed step by step as the reader scrolls, not all at once. This pacing informs how we want to reveal orbital crowding over time. We also draw from NYT interactive pieces on climate, which show how scroll-driven guidance makes complex data accessible.
 
 None of us have used this dataset in a previous course.
 
