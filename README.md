@@ -19,10 +19,10 @@ Who is filling Earth's orbit, and how is space becoming an increasingly crowded 
 ├── milestones/             Milestone documents
 │   ├── milestone1/
 │   └── milestone2/
-└── website/                Functional prototype (HTML/CSS/D3.js)
+└── prototype/              Functional prototype (HTML/CSS/D3.js)
     ├── css/
     ├── js/
-    └── data/               Preprocessed JSON for the website
+    └── data/               Preprocessed JSON for the prototype
 ```
 
 ## Milestones
@@ -36,13 +36,9 @@ You can find the full document [here](milestones/milestone2/milestone2.md).
 **Milestone 3** (May 29): Final deliverables
 *Coming soon.*
 
-## Running the Prototype
+## Website
 
-```bash
-cd website
-python -m http.server 8080
-```
-Then open [http://localhost:8080](http://localhost:8080).
+[https://com-480-data-visualization.github.io/The-Outliers/](https://com-480-data-visualization.github.io/The-Outliers/)
 
 ## Late policy
 
