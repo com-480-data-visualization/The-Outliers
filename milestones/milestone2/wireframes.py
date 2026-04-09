@@ -6,9 +6,14 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.patches import FancyBboxPatch
 import numpy as np
+import json
 import os
 
 os.makedirs("../img/wireframes", exist_ok=True)
+
+# Load satellite data
+with open("../../website/data/satellites.json", "r") as f:
+    SAT_DATA = json.load(f)
 
 # Shared style
 DARK_BG = "#0d1117"
@@ -233,44 +238,92 @@ plt.close()
 
 
 # ============================================================
-# 4. PURPOSE BREAKDOWN
+# 4. PURPOSE × ORBIT HEATMAP
 # ============================================================
-fig, ax = plt.subplots(figsize=(10, 5.5), facecolor=DARK_BG)
-setup_ax(ax, "")
+from matplotlib.colors import LinearSegmentedColormap
 
-purposes = ["Communications", "Earth Obs.", "Tech Dev.", "Navigation",
-            "Space Science", "Other"]
-leo_vals = [4200, 1100, 360, 30, 80, 50]
-meo_vals = [0, 0, 0, 130, 5, 5]
-geo_vals = [560, 10, 5, 0, 15, 10]
+fig = plt.figure(figsize=(10, 6.5), facecolor=DARK_BG)
+ax = fig.add_axes([0.18, 0.08, 0.55, 0.72])
+ax.set_facecolor(DARK_BG)
+ax.spines["top"].set_visible(False)
+ax.spines["right"].set_visible(False)
+ax.spines["bottom"].set_visible(False)
+ax.spines["left"].set_visible(False)
 
-y_pos = np.arange(len(purposes))
-bars1 = ax.barh(y_pos, leo_vals, height=0.5, color=ACCENT, alpha=0.8, label="LEO")
-bars2 = ax.barh(y_pos, meo_vals, height=0.5, left=leo_vals, color=ACCENT2, alpha=0.8, label="MEO")
-left2 = [l + m for l, m in zip(leo_vals, meo_vals)]
-bars3 = ax.barh(y_pos, geo_vals, height=0.5, left=left2, color=GREEN, alpha=0.8, label="GEO")
+orbits = ["LEO", "MEO", "GEO", "Elliptical"]
+purpose_by_orbit = SAT_DATA["purpose_by_orbit"]
+purposes = [row["purpose"] for row in purpose_by_orbit]
+data = np.array([[row[orb] for orb in orbits] for row in purpose_by_orbit],
+                dtype=float)
 
-ax.set_yticks(y_pos)
-ax.set_yticklabels(purposes, color=TEXT, fontsize=9)
-ax.set_xlabel("Number of satellites", color=MUTED, fontsize=9)
-ax.legend(facecolor=CARD_BG, edgecolor=MUTED, labelcolor=TEXT, fontsize=8)
+# Colormap: dark empty cells → deep blue → bright cyan for high values
+CYAN = "#00e5ff"
+cyan_cmap = LinearSegmentedColormap.from_list("cyan_heat",
+    ["#080c12", "#091a2a", "#0c3350", "#0e5575", "#11859e", "#18b8c8", CYAN])
 
-# Hover tooltip mockup
-tooltip = FancyBboxPatch((0.55, 0.7), 0.25, 0.2, boxstyle="round,pad=0.02",
-                          facecolor=CARD_BG, edgecolor=ACCENT, linewidth=1,
-                          transform=ax.transAxes)
-ax.add_patch(tooltip)
-ax.text(0.56, 0.86, "Communications", color=TEXT, fontsize=9,
-        fontweight="bold", transform=ax.transAxes)
-ax.text(0.56, 0.81, "LEO: 4,200 | GEO: 560", color=ACCENT, fontsize=8,
-        transform=ax.transAxes)
-ax.text(0.56, 0.76, "71.8% of all satellites", color=MUTED, fontsize=7,
-        transform=ax.transAxes)
-ax.text(0.56, 0.72, "Driven by Starlink, OneWeb", color=MUTED, fontsize=7,
-        transform=ax.transAxes)
+# Compute log-normalized values; 0 maps to 0.0 (darkest)
+max_log = np.log10(data.max())
+def cell_intensity(val):
+    if val <= 0:
+        return 0.0
+    return np.log10(max(val, 1)) / max_log
 
-fig.suptitle("Purpose Breakdown (Stacked Bar)", color=TEXT,
-             fontsize=13, fontweight="bold", y=0.98)
+# Draw rounded cells
+cell_w, cell_h = 0.88, 0.82
+for i in range(len(purposes)):
+    for j in range(len(orbits)):
+        val = data[i, j]
+        intensity = cell_intensity(val)
+        color = cyan_cmap(intensity)
+        # Brighter border for high-value cells, dim for low
+        edge_alpha = 0.3 + 0.7 * intensity
+        edge_color = (*plt.matplotlib.colors.to_rgb(CYAN), edge_alpha)
+        cell = FancyBboxPatch((j - cell_w/2, i - cell_h/2), cell_w, cell_h,
+                               boxstyle="round,pad=0.06", facecolor=color,
+                               edgecolor=edge_color, linewidth=1.2)
+        ax.add_patch(cell)
+        # Value text — white on bright cells, dim on dark
+        if val <= 0:
+            display_val = "—"
+            txt_color = MUTED
+            txt_alpha = 0.4
+        else:
+            display_val = f"{int(val):,}"
+            txt_color = "white" if intensity > 0.4 else MUTED
+            txt_alpha = 1.0 if intensity > 0.3 else 0.7
+        ax.text(j, i, display_val, ha="center", va="center", color=txt_color,
+                fontsize=12, fontweight="bold" if val > 100 else "normal",
+                alpha=txt_alpha)
+
+ax.set_xlim(-0.6, len(orbits) - 0.4)
+ax.set_ylim(len(purposes) - 0.4, -0.6)
+ax.set_xticks(range(len(orbits)))
+ax.set_xticklabels(orbits, color=TEXT, fontsize=11, fontweight="bold")
+ax.set_yticks(range(len(purposes)))
+ax.set_yticklabels(purposes, color=TEXT, fontsize=10)
+ax.tick_params(top=True, bottom=False, labeltop=True, labelbottom=False,
+               left=False, length=0)
+
+# Continuous color bar on the right
+from matplotlib.colors import Normalize
+import matplotlib.cm as cm
+sm = cm.ScalarMappable(cmap=cyan_cmap, norm=Normalize(vmin=0, vmax=1))
+sm.set_array([])
+cbar_ax = fig.add_axes([0.78, 0.12, 0.025, 0.55])
+cbar = fig.colorbar(sm, cax=cbar_ax)
+cbar.set_ticks([cell_intensity(v) for v in [1, 10, 100, 1000, 4000]])
+cbar.set_ticklabels(["1", "10", "100", "1,000", "4,000+"])
+cbar.ax.tick_params(colors=TEXT, labelsize=8)
+cbar.outline.set_edgecolor(MUTED)
+cbar.outline.set_linewidth(0.5)
+fig.text(0.82, 0.68, "Satellites", color=MUTED, fontsize=8, ha="center")
+
+# Title and subtitle
+fig.text(0.18, 0.95, "Purpose by Orbit", color=TEXT, fontsize=14,
+         fontweight="bold")
+fig.text(0.18, 0.90, "Communications dominates LEO. Navigation clusters in MEO. Traditional broadcast sits in GEO.",
+         color=MUTED, fontsize=8)
+
 plt.savefig("../img/wireframes/04_purpose.png", bbox_inches="tight",
             facecolor=DARK_BG, dpi=150)
 plt.close()
