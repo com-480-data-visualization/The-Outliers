@@ -27,4 +27,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   drawOrbitDonut(data.orbit_distribution);
   drawPurposeChart(data.purpose_breakdown);
   drawPurposeOrbitChart(data.purpose_by_orbit);
+
+  // Initialize 3D globe (loads its own data)
+  if (typeof initGlobe === 'function') {
+    initGlobe();
+  }
 });
