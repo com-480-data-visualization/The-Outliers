@@ -216,12 +216,14 @@ ax.set_yscale("log")
 # Filter chips mockup
 for i, (label, col) in enumerate([("LEO", ACCENT), ("MEO", ACCENT2),
                                     ("GEO", GREEN), ("Elliptical", PURPLE)]):
-    chip = FancyBboxPatch((0.02 + i*0.12, 0.92), 0.10, 0.05,
+    chip = FancyBboxPatch((0.02 + i*0.12, 1.03), 0.10, 0.05,
                            boxstyle="round,pad=0.01", facecolor=col, alpha=0.3,
-                           edgecolor=col, linewidth=1, transform=ax.transAxes)
+                           edgecolor=col, linewidth=1, transform=ax.transAxes,
+                           clip_on=False)
     ax.add_patch(chip)
-    ax.text(0.07 + i*0.12, 0.945, label, color=TEXT, fontsize=7,
-            ha="center", transform=ax.transAxes, fontweight="bold")
+    ax.text(0.07 + i*0.12, 1.055, label, color=TEXT, fontsize=7,
+            ha="center", transform=ax.transAxes, fontweight="bold",
+            clip_on=False)
 
 fig.suptitle("Section 3: Orbital Structure (Interactive Scatter)", color=TEXT,
              fontsize=13, fontweight="bold", y=0.98)
