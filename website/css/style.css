@@ -165,6 +165,13 @@ body {
   border-radius: 16px;
   padding: 32px;
   border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.3), 0 0 60px rgba(26,115,232,0.03);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.viz-block:hover {
+  border-color: rgba(255,255,255,0.1);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 80px rgba(26,115,232,0.06);
 }
 
 .viz-block.full-width {
@@ -185,49 +192,68 @@ body {
 }
 
 /* ===== SCROLLYTELLING ===== */
-.scrolly {
-  display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  gap: 40px;
-  align-items: start;
-}
 
-.scrolly-text {
+/* The section itself is tall - this is what creates the scroll distance */
+#chapter-timeline .viz-container {
+  min-height: 300vh;
   position: relative;
 }
 
-.step {
-  min-height: 60vh;
-  display: flex;
+.scrolly {
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 120px);
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 30px;
   align-items: center;
-  padding: 20px 30px;
-  opacity: 0.25;
-  transition: opacity 0.5s ease;
 }
 
+.scrolly-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: calc(100vh - 180px);
+  overflow: hidden;
+}
+
+.step {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  flex-shrink: 0;
+}
+
+.step.is-passed,
 .step.is-active {
   opacity: 1;
+  transform: translateY(0);
+}
+
+.step.is-passed {
+  opacity: 0.4;
 }
 
 .step p {
-  font-size: 1.2rem;
-  line-height: 1.8;
+  font-size: 0.92rem;
+  line-height: 1.7;
   color: var(--text-secondary);
   background: var(--bg-card);
   border-radius: 12px;
-  padding: 28px 32px;
-  border-left: 4px solid var(--accent-blue);
+  padding: 14px 18px;
+  border-left: 3px solid rgba(26, 115, 232, 0.3);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.03);
+  transition: border-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
 }
 
 .step.is-active p {
   color: var(--text-primary);
   border-left-color: var(--accent-orange);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 0 16px rgba(232, 113, 10, 0.06);
 }
 
 .sticky {
-  position: sticky;
-  top: 100px;
-  height: calc(100vh - 200px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -235,7 +261,7 @@ body {
 
 #timeline-chart {
   width: 100%;
-  height: 450px;
+  height: 420px;
 }
 
 /* ===== STATS BAR ===== */
@@ -315,7 +341,7 @@ svg .grid .domain {
 
 /* ===== TOOLTIP ===== */
 .tooltip {
-  position: absolute;
+  position: fixed;
   padding: 10px 14px;
   background: rgba(22, 27, 46, 0.95);
   border: 1px solid rgba(255,255,255,0.15);
