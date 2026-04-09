@@ -71,10 +71,11 @@ body {
   font-size: clamp(3rem, 8vw, 7rem);
   font-weight: 800;
   letter-spacing: 0.15em;
-  background: linear-gradient(135deg, #ffffff 0%, #6fa8ff 50%, #e8710a 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #f0f6fc;
+  text-shadow:
+    0 0 10px rgba(26, 115, 232, 0.4),
+    0 0 40px rgba(26, 115, 232, 0.2),
+    0 0 80px rgba(26, 115, 232, 0.1);
   margin-bottom: 20px;
 }
 
