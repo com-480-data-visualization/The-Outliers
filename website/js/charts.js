@@ -707,7 +707,59 @@ function drawHeroParticles() {
   window.addEventListener('resize', () => { resize(); createStars(); });
 }
 
+/* ===========================================================
+   FULL-PAGE STAR FIELD
+   =========================================================== */
+
+function drawPageStars() {
+  const canvas = document.getElementById('page-stars');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  let w, h, stars;
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+
+  function createStars() {
+    stars = [];
+    for (let i = 0; i < 300; i++) {
+      stars.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.4 + 0.2,
+        opacity: Math.random() * 0.6 + 0.15,
+        drift: Math.random() * 0.12 + 0.01,
+        twinkleSpeed: Math.random() * 0.015 + 0.003,
+        twinklePhase: Math.random() * Math.PI * 2,
+      });
+    }
+  }
+
+  function draw(time) {
+    ctx.clearRect(0, 0, w, h);
+    for (const s of stars) {
+      s.x += s.drift;
+      if (s.x > w) s.x = 0;
+      const twinkle = Math.sin(time * s.twinkleSpeed + s.twinklePhase) * 0.25 + 0.75;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200, 215, 240, ${s.opacity * twinkle})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  createStars();
+  requestAnimationFrame(draw);
+  window.addEventListener('resize', () => { resize(); createStars(); });
+}
+
 // Export
+window.drawPageStars = drawPageStars;
 window.drawTimelineChart = drawTimelineChart;
 window.drawCountriesChart = drawCountriesChart;
 window.drawLorenzChart = drawLorenzChart;

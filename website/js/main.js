@@ -13,7 +13,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  // Hero animated background
+  // Star fields
+  drawPageStars();
   drawHeroParticles();
 
   // Initialize scrollytelling observers

@@ -3,9 +3,9 @@
    =========================== */
 
 :root {
-  --bg-dark: #0a0e1a;
-  --bg-section: #0f1320;
-  --bg-card: #161b2e;
+  --bg-dark: #000000;
+  --bg-section: #050508;
+  --bg-card: #0a0c14;
   --text-primary: #e8eaf0;
   --text-secondary: #9ba3b5;
   --accent-blue: #1a73e8;
@@ -31,7 +31,7 @@ html {
 }
 
 body {
-  background: var(--bg-dark);
+  background: #000;
   color: var(--text-primary);
   font-family: var(--font-body);
   line-height: 1.6;
@@ -43,6 +43,7 @@ body {
   min-height: 100vh;
   padding: 80px 60px;
   position: relative;
+  z-index: 1;
 }
 
 /* ===== HERO ===== */
@@ -51,7 +52,7 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  background: radial-gradient(ellipse at 50% 40%, #121830 0%, #0a0e1a 70%);
+  background: #000;
   overflow: hidden;
 }
 
@@ -59,6 +60,13 @@ body {
   position: absolute;
   inset: 0;
   z-index: 0;
+}
+
+#page-stars {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .hero-content {
@@ -272,7 +280,7 @@ body {
   justify-content: center;
   gap: 60px;
   padding: 80px 40px;
-  background: linear-gradient(135deg, #121830 0%, #1a1f35 100%);
+  background: linear-gradient(135deg, #050508 0%, #0a0c14 100%);
   flex-wrap: wrap;
 }
 
@@ -302,8 +310,10 @@ body {
 .footer {
   text-align: center;
   padding: 60px 40px;
-  background: var(--bg-dark);
+  background: transparent;
   border-top: 1px solid rgba(255,255,255,0.06);
+  position: relative;
+  z-index: 1;
 }
 
 .footer p {
