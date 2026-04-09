@@ -196,8 +196,8 @@ function drawTimelineChart(data) {
       if (d) {
         hoverLine.attr('x1', x(d.year)).attr('x2', x(d.year)).style('opacity', 1);
         tip.html(`<strong>${d.year}</strong><br>${d.cumulative.toLocaleString()} satellites<br>+${d.count} that year`)
-          .style('left', (event.pageX + 15) + 'px')
-          .style('top', (event.pageY - 40) + 'px')
+          .style('left', (event.clientX + 15) + 'px')
+          .style('top', (event.clientY - 40) + 'px')
           .style('opacity', 1);
       }
     })
@@ -257,8 +257,8 @@ function drawCountriesChart(data) {
     .on('mouseenter', function(event, d) {
       d3.select(this).attr('fill-opacity', 0.8);
       tip.html(`<strong>${d.country}</strong><br>${d.count.toLocaleString()} satellites`)
-        .style('left', (event.pageX + 10) + 'px')
-        .style('top', (event.pageY - 30) + 'px')
+        .style('left', (event.clientX + 10) + 'px')
+        .style('top', (event.clientY - 30) + 'px')
         .style('opacity', 1);
     })
     .on('mouseleave', function() {
@@ -413,8 +413,8 @@ function drawOrbitDonut(data) {
     .on('mouseenter', function(event, d) {
       d3.select(this).transition().duration(150).attr('d', arcHover);
       tip.html(`<strong>${d.data.orbit}</strong><br>${d.data.count.toLocaleString()} (${d.data.pct}%)`)
-        .style('left', (event.pageX + 10) + 'px')
-        .style('top', (event.pageY - 30) + 'px')
+        .style('left', (event.clientX + 10) + 'px')
+        .style('top', (event.clientY - 30) + 'px')
         .style('opacity', 1);
     })
     .on('mouseleave', function() {
@@ -506,8 +506,8 @@ function drawPurposeChart(data) {
     .attr('rx', 4)
     .on('mouseenter', function(event, d) {
       tip.html(`<strong>${d.purpose}</strong><br>${d.count.toLocaleString()} (${d.pct}%)`)
-        .style('left', (event.pageX + 10) + 'px')
-        .style('top', (event.pageY - 30) + 'px')
+        .style('left', (event.clientX + 10) + 'px')
+        .style('top', (event.clientY - 30) + 'px')
         .style('opacity', 1);
     })
     .on('mouseleave', function() { tip.style('opacity', 0); })
@@ -540,10 +540,12 @@ function drawPurposeOrbitChart(data) {
   const container = d3.select('#purpose-orbit-chart');
   if (container.empty()) return;
 
-  const orbits = ['LEO', 'GEO', 'MEO', 'Elliptical'];
-  const margin = { top: 30, right: 20, bottom: 50, left: 150 };
-  const width = 900 - margin.left - margin.right;
-  const height = 300 - margin.top - margin.bottom;
+  const orbits = ['LEO', 'MEO', 'GEO', 'Elliptical'];
+  const purposes = data.map(d => d.purpose);
+  const margin = { top: 40, right: 90, bottom: 20, left: 160 };
+  const cellW = 140, cellH = 52;
+  const width = orbits.length * cellW;
+  const height = purposes.length * cellH;
 
   const svg = container
     .append('svg')
@@ -551,72 +553,74 @@ function drawPurposeOrbitChart(data) {
     .append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`);
 
-  const y0 = d3.scaleBand()
-    .domain(data.map(d => d.purpose))
-    .range([0, height])
-    .paddingInner(0.2);
+  // Gather non-zero values for log color scale
+  const allVals = [];
+  data.forEach(d => orbits.forEach(o => { if (d[o] > 0) allVals.push(d[o]); }));
 
-  const y1 = d3.scaleBand()
-    .domain(orbits)
-    .range([0, y0.bandwidth()])
-    .padding(0.08);
+  const colorScale = d3.scaleSequentialLog()
+    .domain([1, d3.max(allVals)])
+    .interpolator(d3.interpolateBlues);
 
-  const maxVal = d3.max(data, d => d3.max(orbits, o => d[o]));
-  const x = d3.scaleLinear().domain([0, maxVal]).range([0, width]);
-
-  const color = d3.scaleOrdinal()
-    .domain(orbits)
-    .range([COLORS.LEO, COLORS.GEO, COLORS.MEO, COLORS.Elliptical]);
-
-  // Grid
-  svg.append('g')
-    .attr('class', 'grid')
-    .call(d3.axisBottom(x).ticks(5).tickSize(height).tickFormat(''));
+  const x = d3.scaleBand().domain(orbits).range([0, width]).padding(0.06);
+  const y = d3.scaleBand().domain(purposes).range([0, height]).padding(0.06);
 
   const tip = ensureTooltip();
 
-  const groups = svg.selectAll('.group')
-    .data(data)
-    .join('g')
-    .attr('transform', d => `translate(0,${y0(d.purpose)})`);
+  // Draw cells
+  data.forEach(d => {
+    orbits.forEach(o => {
+      const val = d[o];
+      svg.append('rect')
+        .attr('x', x(o)).attr('y', y(d.purpose))
+        .attr('width', x.bandwidth()).attr('height', y.bandwidth())
+        .attr('rx', 8)
+        .attr('fill', val > 0 ? colorScale(val) : 'rgba(255,255,255,0.02)')
+        .attr('stroke', 'rgba(255,255,255,0.05)')
+        .attr('stroke-width', 1)
+        .on('mouseenter', function(event) {
+          d3.select(this).attr('stroke', '#fff').attr('stroke-width', 2);
+          tip.html(`<strong>${d.purpose}</strong> in ${o}<br><span style="color:#e8710a;font-weight:700;">${val.toLocaleString()}</span> satellites`)
+            .style('left', (event.clientX + 12) + 'px')
+            .style('top', (event.clientY - 35) + 'px')
+            .style('opacity', 1);
+        })
+        .on('mouseleave', function() {
+          d3.select(this).attr('stroke', 'rgba(255,255,255,0.05)').attr('stroke-width', 1);
+          tip.style('opacity', 0);
+        });
 
-  groups.selectAll('rect')
-    .data(d => orbits.map(o => ({ orbit: o, value: d[o], purpose: d.purpose })))
-    .join('rect')
-    .attr('y', d => y1(d.orbit))
-    .attr('height', y1.bandwidth())
-    .attr('x', 0)
-    .attr('width', 0)
-    .attr('fill', d => color(d.orbit))
-    .attr('rx', 3)
-    .on('mouseenter', function(event, d) {
-      tip.html(`<strong>${d.purpose}</strong> in ${d.orbit}<br>${d.value.toLocaleString()} satellites`)
-        .style('left', (event.pageX + 10) + 'px')
-        .style('top', (event.pageY - 30) + 'px')
-        .style('opacity', 1);
-    })
-    .on('mouseleave', function() { tip.style('opacity', 0); })
-    .transition().duration(800).delay((d, i) => i * 50)
-    .attr('width', d => x(d.value));
+      // Number label inside cell
+      if (val > 0) {
+        svg.append('text')
+          .attr('x', x(o) + x.bandwidth() / 2)
+          .attr('y', y(d.purpose) + y.bandwidth() / 2)
+          .attr('text-anchor', 'middle').attr('dy', '0.35em')
+          .attr('fill', val > 80 ? '#fff' : '#9ba3b5')
+          .attr('font-size', val > 500 ? '14px' : '12px')
+          .attr('font-weight', val > 500 ? '700' : '400')
+          .style('pointer-events', 'none')
+          .text(val.toLocaleString());
+      }
+    });
+  });
 
-  svg.append('g')
-    .attr('class', 'axis')
-    .call(d3.axisLeft(y0).tickSize(0))
-    .select('.domain').remove();
-
-  svg.append('g')
-    .attr('class', 'axis')
-    .attr('transform', `translate(0,${height})`)
-    .call(d3.axisBottom(x).ticks(5).tickFormat(d => d.toLocaleString()));
+  // Axes
+  svg.append('g').attr('class', 'axis')
+    .call(d3.axisLeft(y).tickSize(0)).select('.domain').remove();
+  svg.append('g').attr('class', 'axis')
+    .attr('transform', 'translate(0,-6)')
+    .call(d3.axisTop(x).tickSize(0)).select('.domain').remove();
 
   // Legend
-  const legendG = svg.append('g')
-    .attr('transform', `translate(${width - 250}, -20)`);
-
-  orbits.forEach((o, i) => {
-    const g = legendG.append('g').attr('transform', `translate(${i * 65}, 0)`);
-    g.append('rect').attr('width', 12).attr('height', 12).attr('rx', 2).attr('fill', color(o));
-    g.append('text').attr('x', 16).attr('y', 10).attr('fill', '#9ba3b5').attr('font-size', '11px').text(o);
+  const items = [
+    { label: '4,000+', val: 4000 }, { label: '1,000', val: 1000 },
+    { label: '100', val: 100 }, { label: '10', val: 10 }, { label: '1', val: 1 },
+  ];
+  const lg = svg.append('g').attr('transform', `translate(${width + 20}, ${height / 2 - 70})`);
+  items.forEach((item, i) => {
+    const g = lg.append('g').attr('transform', `translate(0,${i * 26})`);
+    g.append('rect').attr('width', 14).attr('height', 14).attr('rx', 3).attr('fill', colorScale(item.val));
+    g.append('text').attr('x', 20).attr('y', 11).attr('fill', '#9ba3b5').attr('font-size', '11px').text(item.label);
   });
 }
 
