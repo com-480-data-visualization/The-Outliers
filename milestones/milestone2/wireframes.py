@@ -195,7 +195,7 @@ ax.annotate("Starlink\n~530 km", xy=(53, 530), fontsize=9, fontweight="bold",
             color=ACCENT2, xytext=(20, 1500),
             arrowprops=dict(arrowstyle="->", color=ACCENT2, lw=1), bbox=bbox)
 ax.annotate("GEO belt\n~35,786 km", xy=(7, 35786), fontsize=9, fontweight="bold",
-            color=GREEN, xytext=(25, 42000),
+            color=GREEN, xytext=(70, 42000),
             arrowprops=dict(arrowstyle="->", color=GREEN, lw=1), bbox=bbox)
 ax.annotate("GPS/Galileo\n~20,200 km", xy=(55, 20200), fontsize=9, fontweight="bold",
             color=ACCENT2, xytext=(75, 25000),
