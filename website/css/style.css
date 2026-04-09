@@ -87,6 +87,22 @@ body {
     0 0 40px rgba(26, 115, 232, 0.2),
     0 0 80px rgba(26, 115, 232, 0.1);
   margin-bottom: 20px;
+  position: relative;
+}
+
+/* Orbital canvas overlay */
+.title-orbit-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+#orbit-canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 2;
 }
 
 .hero-subtitle {

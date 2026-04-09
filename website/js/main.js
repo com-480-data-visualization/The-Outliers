@@ -13,9 +13,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  // Star fields
+  // Star fields + title orbits
   drawPageStars();
   drawHeroParticles();
+  drawTitleOrbits();
 
   // Initialize scrollytelling observers
   initScrollytelling();

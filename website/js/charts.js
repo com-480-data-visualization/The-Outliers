@@ -938,7 +938,146 @@ function drawPageStars() {
   window.addEventListener("resize", function() { resize(); createStars(); });
 }
 
+/* ===========================================================
+   TITLE ORBITAL SYSTEM - satellites orbiting the title
+   =========================================================== */
+
+function drawTitleOrbits() {
+  var canvas = document.getElementById("orbit-canvas");
+  if (!canvas) return;
+
+  var ctx = canvas.getContext("2d");
+  var cw = 1500, ch = 600;
+  canvas.width = cw;
+  canvas.height = ch;
+  canvas.style.width = cw + "px";
+  canvas.style.height = ch + "px";
+
+  var cx = cw / 2, cy = ch / 2;
+
+  // Scroll creates a "barrier" from the top - dots bounce off it
+  var barrierY = 0;
+  var heroEl = document.getElementById("hero");
+  window.addEventListener("scroll", function() {
+    if (!heroEl) return;
+    var rect = heroEl.getBoundingClientRect();
+    // rect.top goes from 0 (top of viewport) to negative as you scroll
+    // Convert to how far the hero has scrolled: 0 at top, increases as you scroll
+    var scrolled = Math.max(0, -rect.top);
+    barrierY = Math.min(scrolled * 0.8, ch * 0.85);
+  }, { passive: true });
+
+  // Orbit definitions: each ring has satellites on it
+  // tilt = rotation of the ellipse (radians), gives 3D sphere feel
+  var orbits = [
+    { rx: 630, ry: 90, tilt: 0,    color: "#1a73e8", alpha: 0.08 },  // LEO blue
+    { rx: 570, ry: 135, tilt: 0.3,  color: "#e8710a", alpha: 0.06 },  // MEO orange
+    { rx: 525, ry: 165, tilt: -0.4, color: "#34a853", alpha: 0.06 }, // GEO green
+    { rx: 600, ry: 112, tilt: 0.15, color: "#9334e6", alpha: 0.05 },  // Elliptical purple
+    { rx: 540, ry: 150, tilt: -0.2, color: "#1a73e8", alpha: 0.04 }, // extra LEO
+  ];
+
+  // Create satellites
+  var sats = [];
+  orbits.forEach(function(orb, oi) {
+    var count = oi < 2 ? 3 : 2; // more on inner orbits
+    for (var i = 0; i < count; i++) {
+      var dir = (oi % 2 === 0) ? 1 : -1;
+      sats.push({
+        orbit: oi,
+        angle: (Math.PI * 2 / count) * i + oi * 0.7,
+        speed: dir * (0.004 + Math.random() * 0.006),
+        size: 2 + Math.random() * 2.5,
+        color: orb.color
+      });
+    }
+  });
+
+  function drawEllipse(rx, ry, tilt, color, alpha) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(tilt);
+    ctx.beginPath();
+    ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = color.slice(0, 7) + Math.round(alpha * 255).toString(16).padStart(2, "0");
+    ctx.lineWidth = 0.6;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, cw, ch);
+
+    // Draw orbit rings (compressed by barrier)
+    orbits.forEach(function(orb) {
+      drawEllipse(orb.rx, orb.ry, orb.tilt, orb.color, orb.alpha);
+    });
+
+    // Faint barrier line
+    if (barrierY > 5) {
+      ctx.beginPath();
+      ctx.moveTo(0, barrierY);
+      ctx.lineTo(cw, barrierY);
+      ctx.strokeStyle = "rgba(26, 115, 232, " + Math.min(barrierY / ch * 0.15, 0.1) + ")";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // Update and draw satellites
+    sats.forEach(function(sat) {
+      sat.angle += sat.speed;
+      var orb = orbits[sat.orbit];
+
+      // Position on tilted ellipse
+      var lx = Math.cos(sat.angle) * orb.rx;
+      var ly = Math.sin(sat.angle) * orb.ry;
+      var cosT = Math.cos(orb.tilt);
+      var sinT = Math.sin(orb.tilt);
+      var x = cx + lx * cosT - ly * sinT;
+      var y = cy + lx * sinT + ly * cosT;
+
+      // Barrier: scroll pushes a wall from the top, dots bounce off it
+      if (barrierY > 0 && y < barrierY) {
+        y = barrierY + (barrierY - y) * 0.6;
+        x += Math.sin(sat.angle * 3) * 20;
+      }
+
+      // Depth: satellites behind title are dimmer
+      var depth = Math.sin(sat.angle);
+      var dimming = 0.3 + (depth + 1) * 0.35; // 0.3 to 1.0
+
+      // Glow
+      var grd = ctx.createRadialGradient(x, y, 0, x, y, sat.size * 4);
+      grd.addColorStop(0, sat.color + Math.round(dimming * 60).toString(16).padStart(2, "0"));
+      grd.addColorStop(1, sat.color + "00");
+      ctx.beginPath();
+      ctx.arc(x, y, sat.size * 4, 0, Math.PI * 2);
+      ctx.fillStyle = grd;
+      ctx.fill();
+
+      // Core dot
+      ctx.beginPath();
+      ctx.arc(x, y, sat.size * dimming, 0, Math.PI * 2);
+      ctx.fillStyle = sat.color;
+      ctx.globalAlpha = dimming;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // White highlight
+      ctx.beginPath();
+      ctx.arc(x, y, sat.size * 0.3 * dimming, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255,255,255," + (dimming * 0.7) + ")";
+      ctx.fill();
+    });
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+}
+
 // Export
+window.drawTitleOrbits = drawTitleOrbits;
 window.drawPageStars = drawPageStars;
 window.drawTimelineChart = drawTimelineChart;
 window.drawCountriesChart = drawCountriesChart;
