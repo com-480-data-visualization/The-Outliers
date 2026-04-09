@@ -25,19 +25,19 @@ The prototype is available in the [`prototype/`](../../prototype/) folder and is
 **Section 1: Scrollytelling Cumulative Timeline.**
 A scroll-driven area chart paired with a narrative column. Five annotated steps (1974 → 1998 → 2018 → 2021 → 2023) progressively reveal the chart via animated clip-path. Area chart was chosen over bars to convey cumulative weight; scroll-paced reveal lets readers feel the acceleration (L12). Left-text / right-chart layout follows The Pudding's scrollytelling convention.
 
-![Timeline wireframe](../../img/wireframes/01_timeline.png?v=3)
+![Timeline wireframe](../../img/wireframes/01_timeline.png)
 
 **Section 2: Country Ownership + Operator Inequality.**
 A horizontal bar chart shows the top 15 countries by satellite count, with the USA highlighted in orange (67.1% of all satellites). Horizontal bars were chosen over vertical to keep long country names readable (L7). Next to it, a Lorenz curve visualizes operator concentration with a Gini coefficient of 0.862, showing that the top 1% of operators own roughly half of all satellites.
 
-![World map wireframe](../../img/wireframes/02_worldmap.png?v=3)
-![Operator concentration wireframe](../../img/wireframes/05_concentration.png?v=3)
+![Countries + Lorenz wireframe](../../img/wireframes/02_countries_lorenz.png)
+
 
 **Section 3: 3D Globe + Purpose by Orbit Heatmap.**
 A 3D interactive globe (Globe.gl) renders all 6,718 satellites as color-coded points by orbit class. Users can drag to rotate, scroll to zoom, and filter by LEO/MEO/GEO/Elliptical. Hovering a satellite shows its name, altitude, purpose, and country. Below, a log-scaled heatmap cross-references purpose × orbit class, revealing that Communications dominates LEO while Navigation clusters in MEO (L6).
 
-![Orbital structure wireframe](../../img/wireframes/03_orbital.png?v=3)
-![Purpose × Orbit heatmap wireframe](../../img/wireframes/04_purpose.png?v=4)
+![Globe + Heatmap wireframe](../../img/wireframes/03_globe_heatmap.png)
+
 
 **Page flow:** Hero (particle animation + counter) → Chapter 1 (scrollytelling timeline) → Chapter 2 (countries + Lorenz) → Chapter 3 (orbit donut + purpose bars + heatmap + 3D globe) → Stats bar (animated counters) → Footer.
 
