@@ -37,8 +37,3 @@ You can find the full document [here](milestones/milestone2/milestone2.md).
 
 **Milestone 3** (May 29): Final deliverables
 *Coming soon.*
-
-## Late policy
-
-- < 24h: 80% of the grade for the milestone
-- < 48h: 70% of the grade for the milestone
