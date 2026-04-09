@@ -1,55 +1,30 @@
 /**
- * Main entry point: load data, init visualizations, setup scrollama.
+ * main.js — Entry point. Loads data and initializes all components.
  */
 
-(async function () {
-    // Init hero immediately (no data needed)
-    initHero();
-    initAnimations();
+document.addEventListener('DOMContentLoaded', async () => {
+  // Load pre-aggregated data
+  let data;
+  try {
+    const res = await fetch('data/satellites.json');
+    data = await res.json();
+  } catch (e) {
+    console.error('Failed to load satellite data:', e);
+    return;
+  }
 
-    // Load satellite data
-    const data = await d3.json("data/satellites.json");
-    console.log(`Loaded ${data.length} satellites`);
+  // Hero animated background
+  drawHeroParticles();
 
-    // Init D3 visualizations
-    initTimeline(data);
-    initCountries(data);
+  // Initialize scrollytelling observers
+  initScrollytelling();
+  initStatCounters();
 
-    // Lazy-load globe when orbital section approaches viewport
-    const globeWrapper = document.getElementById("globe-wrapper");
-    if (globeWrapper) {
-        let globeInitialized = false;
-
-        const globeObserver = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting && !globeInitialized) {
-                globeInitialized = true;
-                initGlobe(data);
-                globeObserver.disconnect();
-            }
-        }, {
-            rootMargin: "500px 0px"
-        });
-
-        globeObserver.observe(globeWrapper);
-    }
-
-    // Setup Scrollama for the timeline section
-    const scroller = scrollama();
-
-    scroller
-        .setup({
-            step: "#scrolly-text .step",
-            offset: 0.5,
-            debug: false,
-        })
-        .onStepEnter(({ index, element }) => {
-            d3.selectAll(".step").classed("is-active", false);
-            d3.select(element).classed("is-active", true);
-
-            if (window.updateTimeline) {
-                window.updateTimeline(index);
-            }
-        });
-
-    window.addEventListener("resize", scroller.resize);
-})();
+  // Draw all visualizations
+  drawTimelineChart(data.cumulative_launches);
+  drawCountriesChart(data.top_countries);
+  drawLorenzChart(data.lorenz_curve);
+  drawOrbitDonut(data.orbit_distribution);
+  drawPurposeChart(data.purpose_breakdown);
+  drawPurposeOrbitChart(data.purpose_by_orbit);
+});

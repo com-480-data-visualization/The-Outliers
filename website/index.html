@@ -1,129 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crowded Orbit</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crowded Orbit — Visualizing Earth's Satellite Infrastructure</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- D3.js v7 -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
 
-    <!-- HERO -->
-    <section id="hero" class="hero">
-        <canvas id="star-canvas"></canvas>
-        <div class="hero-content">
-            <h1 class="hero-title">Crowded Orbit</h1>
-            <p class="hero-subtitle">Who is filling Earth's orbit, and how is space becoming an increasingly crowded infrastructure?</p>
-            <div class="scroll-hint">
-                <span>Scroll to explore</span>
-                <div class="scroll-arrow"></div>
-            </div>
-        </div>
-        <div class="hero-counter">
-            <span class="counter-number" id="hero-count">6,718</span>
-            <span class="counter-label">operational satellites orbiting Earth</span>
-        </div>
-    </section>
+  <!-- ====== HERO / INTRO ====== -->
+  <section id="hero" class="section hero">
+    <div class="hero-bg" id="hero-canvas"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">CROWDED ORBIT</h1>
+      <p class="hero-subtitle">How 6,718 satellites reshaped the space around Earth</p>
+      <div class="scroll-indicator">
+        <span>Scroll to explore</span>
+        <div class="scroll-arrow"></div>
+      </div>
+    </div>
+  </section>
 
-    <!-- SECTION 1: TIMELINE (scrollytelling) -->
-    <section id="timeline-section" class="scrolly-section">
-        <div class="scrolly-container">
-            <div class="scrolly-text" id="scrolly-text">
-                <div class="step" data-step="1">
-                    <p>In <strong>1974</strong>, only a handful of satellites orbited Earth. Space was a frontier reserved for governments and a few scientific missions.</p>
-                </div>
-                <div class="step" data-step="2">
-                    <p>Through the <strong>1990s and 2000s</strong>, the count grew steadily as GPS, weather, and communication satellites multiplied. By 2010, roughly 1,000 satellites were operational.</p>
-                </div>
-                <div class="step" data-step="3">
-                    <p>Then in <strong>2019</strong>, everything changed. SpaceX began launching Starlink, a mega-constellation of thousands of small communication satellites in low Earth orbit.</p>
-                </div>
-                <div class="step" data-step="4">
-                    <p>By January 2023, <strong>6,718 satellites</strong> were operational. 75.5% of them were launched from 2019 onward. Orbit went from a scientific frontier to a crowded infrastructure in just a few years.</p>
-                </div>
-            </div>
-            <div class="scrolly-viz" id="scrolly-viz">
-                <div class="viz-container">
-                    <h3 class="viz-title">Cumulative Operational Satellites</h3>
-                    <div id="timeline-chart"></div>
-                </div>
-            </div>
+  <!-- ====== CHAPTER 1: THE EXPLOSION ====== -->
+  <section id="chapter-timeline" class="section chapter">
+    <div class="chapter-header">
+      <span class="chapter-label">Chapter 1</span>
+      <h2>The Explosion</h2>
+      <p class="chapter-intro">For decades, orbital space was a slow frontier. Then everything changed.
+        <strong>75.5% of all operational satellites were launched from 2019 onward.</strong></p>
+    </div>
+    <div class="viz-container">
+      <div class="scrolly" id="scrolly-timeline">
+        <div class="scrolly-text">
+          <div class="step" data-step="1">
+            <p>In 1974, only a handful of operational satellites circled Earth. Space was reserved for superpowers.</p>
+          </div>
+          <div class="step" data-step="2">
+            <p>Through the 1990s, growth was steady. The total crossed <strong>400 satellites</strong> by 1998 — mostly government and military.</p>
+          </div>
+          <div class="step" data-step="3">
+            <p>The 2010s brought CubeSats and commercial actors. By 2018, over <strong>2,000 satellites</strong> were in orbit.</p>
+          </div>
+          <div class="step" data-step="4">
+            <p>Then came the mega-constellations. In 2021 alone, <strong>~1,450 satellites</strong> were launched — more than in the entire 1990s.</p>
+          </div>
+          <div class="step" data-step="5">
+            <p>By January 2023, <strong>6,718 operational satellites</strong> crowd the space around Earth. The curve is not slowing down.</p>
+          </div>
         </div>
-    </section>
+        <div class="scrolly-viz sticky">
+          <div id="timeline-chart"></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- SECTION 2: WHO OWNS ORBIT -->
-    <section id="countries-section" class="content-section">
-        <div class="section-header">
-            <h2>Who Owns Orbital Space?</h2>
-            <p class="section-desc">The USA operates 67.1% of all satellites, largely driven by a single company. The top 3 countries account for the vast majority of orbital presence.</p>
+  <!-- ====== CHAPTER 2: WHO OWNS SPACE ====== -->
+  <section id="chapter-countries" class="section chapter">
+    <div class="chapter-header">
+      <span class="chapter-label">Chapter 2</span>
+      <h2>Who Owns Space?</h2>
+      <p class="chapter-intro">Orbital space is not shared equally.
+        <strong>The USA alone operates 67.1% of all satellites</strong>, driven by a handful of mega-operators.</p>
+    </div>
+    <div class="viz-container">
+      <div class="viz-row">
+        <div class="viz-block">
+          <h3>Satellites by Country</h3>
+          <div id="countries-chart"></div>
         </div>
-        <div class="viz-container">
-            <div id="countries-chart"></div>
+        <div class="viz-block">
+          <h3>Operator Concentration</h3>
+          <p class="viz-note">Gini coefficient: <strong>0.862</strong> — a single operator (SpaceX) controls ~50% of all satellites.</p>
+          <div id="lorenz-chart"></div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- SECTION 3: ORBITAL STRUCTURE -->
-    <section id="orbital-section" class="content-section">
-        <div class="section-header">
-            <h2>Where Are the Satellites?</h2>
-            <p class="section-desc">LEO holds 88.4% of all satellites. The altitude vs. inclination scatter reveals distinct orbital neighborhoods: Starlink at 530 km, sun-synchronous orbits at 97 degrees, and the GEO belt at 35,786 km.</p>
+  <!-- ====== CHAPTER 3: WHERE IS THE CONGESTION ====== -->
+  <section id="chapter-orbits" class="section chapter">
+    <div class="chapter-header">
+      <span class="chapter-label">Chapter 3</span>
+      <h2>Where Is the Congestion?</h2>
+      <p class="chapter-intro">Not all orbits are equal.
+        <strong>88.4% of satellites are in Low Earth Orbit (LEO)</strong>, the most crowded shell around Earth.</p>
+    </div>
+    <div class="viz-container">
+      <div class="viz-row">
+        <div class="viz-block">
+          <h3>Distribution by Orbit Class</h3>
+          <div id="orbit-donut"></div>
         </div>
-        <div class="viz-container" id="globe-wrapper">
-            <div class="globe-controls">
-                <button class="globe-filter active" data-filter="all">All (6,718)</button>
-                <button class="globe-filter" data-filter="LEO">LEO</button>
-                <button class="globe-filter" data-filter="MEO">MEO</button>
-                <button class="globe-filter" data-filter="GEO">GEO</button>
-                <button class="globe-filter" data-filter="Elliptical">Elliptical</button>
-            </div>
-            <div id="globe-container"></div>
-            <div class="globe-legend">
-                <span class="legend-item"><span class="legend-dot" style="background:#1a73e8;"></span>LEO (160-2,000 km)</span>
-                <span class="legend-item"><span class="legend-dot" style="background:#e8710a;"></span>MEO (2,000-35,786 km)</span>
-                <span class="legend-item"><span class="legend-dot" style="background:#34a853;"></span>GEO (~35,786 km)</span>
-                <span class="legend-item"><span class="legend-dot" style="background:#9334e6;"></span>Elliptical</span>
-            </div>
+        <div class="viz-block">
+          <h3>What Are They For?</h3>
+          <div id="purpose-chart"></div>
         </div>
-    </section>
+      </div>
+      <div class="viz-block full-width">
+        <h3>Purpose by Orbit — Who Goes Where?</h3>
+        <p class="viz-note">Communications dominates LEO. Navigation clusters in MEO. Traditional broadcast sits in GEO.</p>
+        <div id="purpose-orbit-chart"></div>
+      </div>
+    </div>
+  </section>
 
-    <!-- SECTION 4: PURPOSE -->
-    <section id="purpose-section" class="content-section">
-        <div class="section-header">
-            <h2>What Is Orbit Used For?</h2>
-            <p class="section-desc">Communications accounts for 71.8% of all satellites, driven by mega-constellations. Purpose and orbit are tightly coupled: navigation clusters in MEO, Earth observation stays in LEO.</p>
-        </div>
-        <div class="viz-container placeholder-viz">
-            <img src="../img/wireframes/04_purpose.png" alt="Purpose breakdown preview" class="placeholder-img">
-            <div class="placeholder-label">Interactive stacked bar chart (coming in Milestone 3)</div>
-        </div>
-    </section>
+  <!-- ====== KEY STATS BAR ====== -->
+  <section id="stats-bar" class="section stats-bar">
+    <div class="stat">
+      <span class="stat-number" data-target="6718">0</span>
+      <span class="stat-label">Operational Satellites</span>
+    </div>
+    <div class="stat">
+      <span class="stat-number" data-target="75">0</span>
+      <span class="stat-label">Countries Involved</span>
+    </div>
+    <div class="stat">
+      <span class="stat-number" data-target="639">0</span>
+      <span class="stat-label">Unique Operators</span>
+    </div>
+    <div class="stat">
+      <span class="stat-number special" data-target="75.5">0</span>
+      <span class="stat-label">% Launched Since 2019</span>
+    </div>
+  </section>
 
-    <!-- SECTION 5: CONCENTRATION -->
-    <section id="concentration-section" class="content-section">
-        <div class="section-header">
-            <h2>The Mega-Constellation Effect</h2>
-            <p class="section-desc">A single operator controls 49.9% of all satellites. The Gini coefficient across 639 operators is 0.862. Orbital space is dominated by a handful of actors.</p>
-        </div>
-        <div class="viz-container placeholder-viz">
-            <img src="../img/wireframes/05_concentration.png" alt="Concentration preview" class="placeholder-img">
-            <div class="placeholder-label">Interactive Lorenz curve and bar chart (coming in Milestone 3)</div>
-        </div>
-    </section>
+  <!-- ====== FOOTER ====== -->
+  <footer class="footer">
+    <p><strong>Crowded Orbit</strong> — COM-480 Data Visualization Project, EPFL 2025</p>
+    <p>Kevin Abou Jaoude &middot; Youssef Dib &middot; Mark Nabbout</p>
+    <p class="footer-note">Data: UCS Satellite Database (January 2023) &middot; Built with D3.js</p>
+  </footer>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        <p>Crowded Orbit &mdash; COM-480 Data Visualization, EPFL 2025</p>
-        <p class="footer-names">Kevin Abou Jaoude, Youssef Dib, Mark Nabbout</p>
-    </footer>
-
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://unpkg.com/scrollama@3.2.0/scrollama.min.js"></script>
-    <script src="https://unpkg.com/globe.gl@2.45.3/dist/globe.gl.min.js"></script>
-    <script src="js/hero.js"></script>
-    <script src="js/animations.js"></script>
-    <script src="js/globe.js"></script>
-    <script src="js/timeline.js"></script>
-    <script src="js/countries.js"></script>
-    <script src="js/main.js"></script>
+  <!-- Scripts -->
+  <script src="js/scrollytelling.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
