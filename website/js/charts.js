@@ -593,18 +593,17 @@ function drawPurposeOrbitChart(data) {
           tip.style('opacity', 0);
         });
 
-      // Number label inside cell - always white, bold for large values
+      // Number label - dark text on bright cyan, white text on dark cells
       if (val > 0) {
+        const textColor = val > 300 ? '#0a0e1a' : '#e8eaf0';
         svg.append('text')
           .attr('x', x(o) + x.bandwidth() / 2)
           .attr('y', y(d.purpose) + y.bandwidth() / 2)
           .attr('text-anchor', 'middle').attr('dy', '0.35em')
-          .attr('fill', '#fff')
+          .attr('fill', textColor)
           .attr('font-size', val > 500 ? '15px' : '12px')
-          .attr('font-weight', val > 500 ? '800' : '500')
-          .attr('text-shadow', '0 1px 3px rgba(0,0,0,0.5)')
+          .attr('font-weight', val > 500 ? '800' : '600')
           .style('pointer-events', 'none')
-          .style('text-shadow', '0 1px 4px rgba(0,0,0,0.6)')
           .text(val.toLocaleString());
       }
     });
