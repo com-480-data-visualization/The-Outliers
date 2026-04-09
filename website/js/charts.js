@@ -553,13 +553,14 @@ function drawPurposeOrbitChart(data) {
     .append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`);
 
-  // Gather non-zero values for log color scale
+  // Gather non-zero values for color scale
   const allVals = [];
   data.forEach(d => orbits.forEach(o => { if (d[o] > 0) allVals.push(d[o]); }));
 
+  // Custom dark-friendly palette: dark muted bg -> vibrant teal/cyan
   const colorScale = d3.scaleSequentialLog()
     .domain([1, d3.max(allVals)])
-    .interpolator(d3.interpolateBlues);
+    .interpolator(t => d3.interpolateRgb('#1a2235', '#00e5ff')(t));
 
   const x = d3.scaleBand().domain(orbits).range([0, width]).padding(0.06);
   const y = d3.scaleBand().domain(purposes).range([0, height]).padding(0.06);
@@ -574,31 +575,36 @@ function drawPurposeOrbitChart(data) {
         .attr('x', x(o)).attr('y', y(d.purpose))
         .attr('width', x.bandwidth()).attr('height', y.bandwidth())
         .attr('rx', 8)
-        .attr('fill', val > 0 ? colorScale(val) : 'rgba(255,255,255,0.02)')
-        .attr('stroke', 'rgba(255,255,255,0.05)')
+        .attr('fill', val > 0 ? colorScale(val) : 'rgba(255,255,255,0.03)')
+        .attr('stroke', val > 0 ? 'rgba(0,229,255,0.15)' : 'rgba(255,255,255,0.04)')
         .attr('stroke-width', 1)
+        .style('filter', val > 1000 ? 'drop-shadow(0 0 6px rgba(0,229,255,0.2))' : 'none')
         .on('mouseenter', function(event) {
-          d3.select(this).attr('stroke', '#fff').attr('stroke-width', 2);
-          tip.html(`<strong>${d.purpose}</strong> in ${o}<br><span style="color:#e8710a;font-weight:700;">${val.toLocaleString()}</span> satellites`)
+          d3.select(this).attr('stroke', '#00e5ff').attr('stroke-width', 2)
+            .style('filter', 'drop-shadow(0 0 10px rgba(0,229,255,0.4))');
+          tip.html(`<strong>${d.purpose}</strong> in ${o}<br><span style="color:#00e5ff;font-weight:700;">${val.toLocaleString()}</span> satellites`)
             .style('left', (event.clientX + 12) + 'px')
             .style('top', (event.clientY - 35) + 'px')
             .style('opacity', 1);
         })
         .on('mouseleave', function() {
-          d3.select(this).attr('stroke', 'rgba(255,255,255,0.05)').attr('stroke-width', 1);
+          d3.select(this).attr('stroke', val > 0 ? 'rgba(0,229,255,0.15)' : 'rgba(255,255,255,0.04)').attr('stroke-width', 1)
+            .style('filter', val > 1000 ? 'drop-shadow(0 0 6px rgba(0,229,255,0.2))' : 'none');
           tip.style('opacity', 0);
         });
 
-      // Number label inside cell
+      // Number label inside cell - always white, bold for large values
       if (val > 0) {
         svg.append('text')
           .attr('x', x(o) + x.bandwidth() / 2)
           .attr('y', y(d.purpose) + y.bandwidth() / 2)
           .attr('text-anchor', 'middle').attr('dy', '0.35em')
-          .attr('fill', val > 80 ? '#fff' : '#9ba3b5')
-          .attr('font-size', val > 500 ? '14px' : '12px')
-          .attr('font-weight', val > 500 ? '700' : '400')
+          .attr('fill', '#fff')
+          .attr('font-size', val > 500 ? '15px' : '12px')
+          .attr('font-weight', val > 500 ? '800' : '500')
+          .attr('text-shadow', '0 1px 3px rgba(0,0,0,0.5)')
           .style('pointer-events', 'none')
+          .style('text-shadow', '0 1px 4px rgba(0,0,0,0.6)')
           .text(val.toLocaleString());
       }
     });
@@ -614,7 +620,7 @@ function drawPurposeOrbitChart(data) {
   // Legend
   const items = [
     { label: '4,000+', val: 4000 }, { label: '1,000', val: 1000 },
-    { label: '100', val: 100 }, { label: '10', val: 10 }, { label: '1', val: 1 },
+    { label: '100', val: 100 }, { label: '10', val: 10 }, { label: '1-5', val: 2 },
   ];
   const lg = svg.append('g').attr('transform', `translate(${width + 20}, ${height / 2 - 70})`);
   items.forEach((item, i) => {
