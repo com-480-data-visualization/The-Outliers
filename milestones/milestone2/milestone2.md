@@ -1,6 +1,6 @@
 # Milestone 2: Crowded Orbit
 
-**COM-480 Data Visualization, EPFL 2025**
+**COM-480 Data Visualization, EPFL 2026**
 
 Kevin Abou Jaoude, Youssef Dib, Mark Nabbout
 
