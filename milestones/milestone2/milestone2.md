@@ -90,13 +90,4 @@ These features would enhance the experience but are not required for the core st
 
 ## Functional Prototype
 
-The prototype is available in the [`website/`](../../website/) folder. It includes all MVP components listed above, fully implemented with real data (not placeholders). The site loads two JSON data files: `satellites.json` (aggregated statistics for all charts) and `satellites-globe.json` (6,718 individual satellite records for the 3D globe).
-
-To run locally:
-
-```bash
-cd website
-python -m http.server 8080
-```
-
-Then open [http://localhost:8080](http://localhost:8080).
+The prototype is available in the [`prototype/`](../../prototype/) folder and is deployed at [https://com-480-data-visualization.github.io/The-Outliers/](https://com-480-data-visualization.github.io/The-Outliers/). It includes all MVP components listed above, fully implemented with real data (not placeholders). The site loads two JSON data files: `satellites.json` (aggregated statistics for all charts) and `satellites-globe.json` (6,718 individual satellite records for the 3D globe).
