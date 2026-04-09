@@ -565,7 +565,28 @@ function drawPurposeOrbitChart(data) {
   const x = d3.scaleBand().domain(orbits).range([0, width]).padding(0.06);
   const y = d3.scaleBand().domain(purposes).range([0, height]).padding(0.06);
 
-  const tip = ensureTooltip();
+  // Fixed info card in top-right of the parent .viz-block
+  const parentBlock = d3.select('#purpose-orbit-chart').node().closest('.viz-block');
+  d3.select(parentBlock).style('position', 'relative');
+
+  const heatmapInfo = d3.select(parentBlock).append('div')
+    .style('position', 'absolute')
+    .style('top', '16px')
+    .style('right', '24px')
+    .style('background', 'rgba(15, 19, 32, 0.92)')
+    .style('border', '1px solid rgba(0, 229, 255, 0.25)')
+    .style('border-radius', '8px')
+    .style('padding', '10px 14px')
+    .style('min-width', '120px')
+    .style('color', '#e8eaf0')
+    .style('font-size', '0.78rem')
+    .style('line-height', '1.5')
+    .style('pointer-events', 'none')
+    .style('opacity', 0)
+    .style('transition', 'opacity 0.2s ease')
+    .style('box-shadow', '0 4px 24px rgba(0,0,0,0.5), 0 0 30px rgba(0,229,255,0.08), 0 0 60px rgba(0,229,255,0.04)')
+    .style('backdrop-filter', 'blur(8px)')
+    .style('z-index', '10');
 
   // Draw cells
   data.forEach(d => {
@@ -579,18 +600,17 @@ function drawPurposeOrbitChart(data) {
         .attr('stroke', val > 0 ? 'rgba(0,229,255,0.15)' : 'rgba(255,255,255,0.04)')
         .attr('stroke-width', 1)
         .style('filter', val > 1000 ? 'drop-shadow(0 0 6px rgba(0,229,255,0.2))' : 'none')
-        .on('mouseenter', function(event) {
+        .on('mouseenter', function() {
           d3.select(this).attr('stroke', '#00e5ff').attr('stroke-width', 2)
             .style('filter', 'drop-shadow(0 0 10px rgba(0,229,255,0.4))');
-          tip.html(`<strong>${d.purpose}</strong> in ${o}<br><span style="color:#00e5ff;font-weight:700;">${val.toLocaleString()}</span> satellites`)
-            .style('left', (event.clientX + 16) + 'px')
-            .style('top', (event.clientY - 70) + 'px')
+          heatmapInfo
+            .html(`<strong>${d.purpose}</strong><br><span style="color:#9ba3b5;">in</span> ${o}<br><span style="color:#00e5ff;font-size:1rem;font-weight:700;">${val.toLocaleString()}</span> <span style="color:#9ba3b5;">satellites</span>`)
             .style('opacity', 1);
         })
         .on('mouseleave', function() {
           d3.select(this).attr('stroke', val > 0 ? 'rgba(0,229,255,0.15)' : 'rgba(255,255,255,0.04)').attr('stroke-width', 1)
             .style('filter', val > 1000 ? 'drop-shadow(0 0 6px rgba(0,229,255,0.2))' : 'none');
-          tip.style('opacity', 0);
+          heatmapInfo.style('opacity', 0);
         });
 
       // Number label - dark text on bright cells, white on dark
