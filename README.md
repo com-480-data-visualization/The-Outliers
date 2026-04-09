@@ -1,16 +1,11 @@
 # Crowded Orbit
 
-| | |
-|---|---|
-| **COM-480 Data Visualization Project, EPFL 2025** | [🌐 **Live Website**](https://com-480-data-visualization.github.io/The-Outliers/) |
+**COM-480 Data Visualization Project, EPFL 2026**
 
 Who is filling Earth's orbit, and how is space becoming an increasingly crowded infrastructure?
 
-| Student's name    | SCIPER |
-| ----------------- | ------ |
-| Kevin Abou Jaoude | 358300 |
-| Youssef Dib       | 339964 |
-| Mark Nabbout      | 358312 |
+[🌐 **Live Website**](https://com-480-data-visualization.github.io/The-Outliers/)
+
 
 ## Project Structure
 
@@ -38,7 +33,9 @@ You can find the full document [here](milestones/milestone2/milestone2.md).
 **Milestone 3** (May 29): Final deliverables
 *Coming soon.*
 
-## Late policy
 
-- < 24h: 80% of the grade for the milestone
-- < 48h: 70% of the grade for the milestone
+| Student's name    | SCIPER |
+| ----------------- | ------ |
+| Kevin Abou Jaoude | 358300 |
+| Youssef Dib       | 339964 |
+| Mark Nabbout      | 358312 |
