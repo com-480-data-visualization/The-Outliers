@@ -242,7 +242,7 @@ function drawCountriesChart(data) {
   // Filter out "Others" for the bar chart, show top 10
   const top10 = data.filter((d) => d.country !== "Others").slice(0, 10);
 
-  const margin = { top: 10, right: 30, bottom: 20, left: 100 };
+  const margin = { top: 10, right: 55, bottom: 20, left: 100 };
   const width = 460 - margin.left - margin.right;
   const height = 380 - margin.top - margin.bottom;
 
