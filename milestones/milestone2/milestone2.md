@@ -19,7 +19,7 @@ A scroll-driven area chart paired with a narrative column. As the user scrolls t
 
 **Design choices:** Area chart (not bar) because the cumulative nature of the data emphasizes magnitude over individual years. The scroll-driven reveal builds tension gradually — the reader *experiences* the acceleration rather than seeing it all at once (Lecture 12 — Storytelling). The left-text / right-chart layout follows The Pudding's scrollytelling convention.
 
-![Timeline wireframe](../../img/wireframes/01_timeline.png)
+![Timeline wireframe](../../img/wireframes/01_timeline.png?v=2)
 
 ### Section 2 — Country Ownership + Operator Inequality
 
@@ -27,8 +27,8 @@ Two paired visualizations. **Left:** a horizontal bar chart of the top 10 countr
 
 **Design choices:** Horizontal bars rather than vertical because country names are long categorical labels — vertical bars would require angled text, which reduces readability (Lecture 7 — Do's and Don'ts of Viz). The Lorenz curve is paired with the bar chart so the user sees both *national* and *corporate* concentration side by side, reinforcing the inequality message.
 
-![World map wireframe](../../img/wireframes/02_worldmap.png)
-![Operator concentration wireframe](../../img/wireframes/05_concentration.png)
+![World map wireframe](../../img/wireframes/02_worldmap.png?v=2)
+![Operator concentration wireframe](../../img/wireframes/05_concentration.png?v=2)
 
 ### Section 3 — Orbital Structure + Purpose Breakdown + 3D Globe
 
@@ -38,8 +38,8 @@ Below these, a **3D interactive globe** (Globe.gl / Three.js) renders all 6,718 
 
 **Design choices:** The donut chart uses an inner label instead of a separate legend — the single most important number (88.4%) is readable at a glance (Lecture 6 — Perception and Marks/Channels). The purpose × orbit heatmap uses a log-scaled sequential color encoding (`d3.scaleSequentialLog`) to handle the wide range of values (from 1 to 4,000+) across purpose × orbit combinations, making patterns immediately visible without the clutter of many small bars (Lecture 6 — Perception and Marks/Channels). The 3D globe uses logarithmic altitude scaling so LEO and GEO satellites are both visible without GEO dwarfing the scene.
 
-![Orbital structure wireframe](../../img/wireframes/03_orbital.png)
-![Purpose breakdown wireframe](../../img/wireframes/04_purpose.png)
+![Orbital structure wireframe](../../img/wireframes/03_orbital.png?v=2)
+![Purpose breakdown wireframe](../../img/wireframes/04_purpose.png?v=2)
 
 ### Page Flow
 

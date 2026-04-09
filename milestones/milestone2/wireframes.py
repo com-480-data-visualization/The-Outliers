@@ -87,7 +87,7 @@ ax_chart.annotate("", xy=(0.02, 0.15), xytext=(0.02, 0.3),
 ax_chart.text(0.02, 0.32, "scroll", transform=ax_chart.transAxes,
               color=MUTED, fontsize=7, ha="center")
 
-fig.suptitle("Section 1: Timeline (Scrollytelling)", color=TEXT, fontsize=13,
+fig.suptitle("Timeline (Scrollytelling)", color=TEXT, fontsize=13,
              fontweight="bold", y=0.98)
 plt.savefig("../img/wireframes/01_timeline.png", bbox_inches="tight",
             facecolor=DARK_BG, dpi=150)
@@ -144,7 +144,7 @@ ax.text(0.73, 0.73, "Top: SpaceX (3,349)", color=MUTED, fontsize=7,
 ax.text(0.73, 0.69, "Main: Communications", color=MUTED, fontsize=7,
         transform=ax.transAxes)
 
-fig.suptitle("Section 2: World Map (Country Satellite Ownership)", color=TEXT,
+fig.suptitle("World Map (Country Satellite Ownership)", color=TEXT,
              fontsize=13, fontweight="bold", y=0.98)
 plt.savefig("../img/wireframes/02_worldmap.png", bbox_inches="tight",
             facecolor=DARK_BG, dpi=150)
@@ -225,7 +225,7 @@ for i, (label, col) in enumerate([("LEO", ACCENT), ("MEO", ACCENT2),
             ha="center", transform=ax.transAxes, fontweight="bold",
             clip_on=False)
 
-fig.suptitle("Section 3: Orbital Structure (Interactive Scatter)", color=TEXT,
+fig.suptitle("Orbital Structure (Interactive Scatter)", color=TEXT,
              fontsize=13, fontweight="bold", y=1.05)
 plt.savefig("../img/wireframes/03_orbital.png", bbox_inches="tight",
             facecolor=DARK_BG, dpi=150)
@@ -269,7 +269,7 @@ ax.text(0.56, 0.76, "71.8% of all satellites", color=MUTED, fontsize=7,
 ax.text(0.56, 0.72, "Driven by Starlink, OneWeb", color=MUTED, fontsize=7,
         transform=ax.transAxes)
 
-fig.suptitle("Section 4: Purpose Breakdown (Stacked Bar)", color=TEXT,
+fig.suptitle("Purpose Breakdown (Stacked Bar)", color=TEXT,
              fontsize=13, fontweight="bold", y=0.98)
 plt.savefig("../img/wireframes/04_purpose.png", bbox_inches="tight",
             facecolor=DARK_BG, dpi=150)
@@ -321,7 +321,7 @@ ax2.text(0.3, 0.7, "Gini = 0.862", color=ACCENT, fontsize=11,
 ax2.text(0.3, 0.62, "Top 1% of operators\nown 50% of satellites",
          color=MUTED, fontsize=8, transform=ax2.transAxes)
 
-fig.suptitle("Section 5: Operator Concentration", color=TEXT,
+fig.suptitle("Operator Concentration", color=TEXT,
              fontsize=13, fontweight="bold", y=0.98)
 plt.savefig("../img/wireframes/05_concentration.png", bbox_inches="tight",
             facecolor=DARK_BG, dpi=150)
