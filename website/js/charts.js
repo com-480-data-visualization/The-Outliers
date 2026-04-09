@@ -568,9 +568,9 @@ function drawPurposeChart(data) {
   var container = d3.select("#purpose-chart");
   if (container.empty()) return;
 
-  var margin = { top: 20, right: 10, bottom: 90, left: 50 };
+  var margin = { top: 20, right: 10, bottom: 10, left: 50 };
   var width = 460 - margin.left - margin.right;
-  var height = 420 - margin.top - margin.bottom;
+  var height = 340 - margin.top - margin.bottom;
 
   var svg = container
     .append("svg")
@@ -669,7 +669,7 @@ function drawPurposeOrbitChart(data) {
 
   const orbits = ["LEO", "MEO", "GEO", "Elliptical"];
   const purposes = data.map((d) => d.purpose);
-  const margin = { top: 40, right: 90, bottom: 20, left: 160 };
+  const margin = { top: 40, right: 90, bottom: 5, left: 160 };
   const cellW = 140,
     cellH = 52;
   const width = orbits.length * cellW;
@@ -736,6 +736,8 @@ function drawPurposeOrbitChart(data) {
   data.forEach((d) => {
     orbits.forEach((o) => {
       const val = d[o];
+      var cellColor = val > 0 ? colorScale(val) : "rgba(255,255,255,0.03)";
+      var glowStrength = val > 1000 ? "60" : val > 100 ? "40" : "20";
       svg
         .append("rect")
         .attr("x", x(o))
@@ -743,38 +745,29 @@ function drawPurposeOrbitChart(data) {
         .attr("width", x.bandwidth())
         .attr("height", y.bandwidth())
         .attr("rx", 8)
-        .attr("fill", val > 0 ? colorScale(val) : "rgba(255,255,255,0.03)")
-        .attr(
-          "stroke",
-          val > 0 ? "rgba(0,229,255,0.15)" : "rgba(255,255,255,0.04)",
-        )
-        .attr("stroke-width", 1)
-        .style(
-          "filter",
-          val > 1000 ? "drop-shadow(0 0 6px rgba(0,229,255,0.2))" : "none",
-        )
+        .attr("fill", val > 0 ? cellColor : "transparent")
+        .attr("fill-opacity", val > 0 ? 0.12 : 0)
+        .attr("stroke", val > 0 ? cellColor : "rgba(255,255,255,0.06)")
+        .attr("stroke-width", val > 0 ? 1.5 : 1)
+        .style("filter", val > 0 ? "drop-shadow(0 0 6px " + cellColor + glowStrength + ")" : "none")
         .on("mouseenter", function () {
           d3.select(this)
             .attr("stroke", "#00e5ff")
             .attr("stroke-width", 2)
-            .style("filter", "drop-shadow(0 0 10px rgba(0,229,255,0.4))");
+            .attr("fill-opacity", 0.25)
+            .style("filter", "drop-shadow(0 0 14px rgba(0,229,255,0.5))");
           heatmapInfo
             .html(
-              `<strong>${d.purpose}</strong><br><span style="color:#9ba3b5;">in</span> ${o}<br><span style="color:#00e5ff;font-size:1rem;font-weight:700;">${val.toLocaleString()}</span> <span style="color:#9ba3b5;">satellites</span>`,
+              "<strong>" + d.purpose + "</strong><br><span style='color:#9ba3b5;'>in</span> " + o + "<br><span style='color:#00e5ff;font-size:1rem;font-weight:700;'>" + val.toLocaleString() + "</span> <span style='color:#9ba3b5;'>satellites</span>",
             )
             .style("opacity", 1);
         })
         .on("mouseleave", function () {
           d3.select(this)
-            .attr(
-              "stroke",
-              val > 0 ? "rgba(0,229,255,0.15)" : "rgba(255,255,255,0.04)",
-            )
-            .attr("stroke-width", 1)
-            .style(
-              "filter",
-              val > 1000 ? "drop-shadow(0 0 6px rgba(0,229,255,0.2))" : "none",
-            );
+            .attr("stroke", val > 0 ? cellColor : "rgba(255,255,255,0.06)")
+            .attr("stroke-width", val > 0 ? 1.5 : 1)
+            .attr("fill-opacity", val > 0 ? 0.12 : 0)
+            .style("filter", val > 0 ? "drop-shadow(0 0 6px " + cellColor + glowStrength + ")" : "none");
           heatmapInfo.style("opacity", 0);
         });
 
