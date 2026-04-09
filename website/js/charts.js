@@ -612,7 +612,7 @@ function drawPurposeChart(data) {
       d3.select(this).attr("fill-opacity", 0.3).style("filter", "drop-shadow(0 0 12px " + (PURPOSE_COLORS[d.purpose] || "#666") + "80)");
       tip.html("<strong>" + d.purpose + "</strong><br>" + d.count.toLocaleString() + " (" + d.pct + "%)")
         .style("left", (event.clientX + 10) + "px")
-        .style("top", (event.clientY - 30) + "px")
+        .style("top", (event.clientY - 70) + "px")
         .style("opacity", 1);
     })
     .on("mouseleave", function(event, d) {

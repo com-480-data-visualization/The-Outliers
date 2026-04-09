@@ -269,8 +269,8 @@ body {
 
 .step.is-active p {
   color: var(--text-primary);
-  border-left-color: var(--accent-orange);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 20px rgba(232, 113, 10, 0.08);
+  border-left-color: var(--accent-blue);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 20px rgba(26, 115, 232, 0.1);
 }
 
 .sticky {
@@ -363,15 +363,16 @@ svg .grid .domain {
 .tooltip {
   position: fixed;
   padding: 10px 14px;
-  background: rgba(22, 27, 46, 0.95);
-  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(14, 16, 24, 0.95);
+  border: 1px solid rgba(255,255,255,0.2);
   border-radius: 8px;
   color: var(--text-primary);
   font-size: 0.85rem;
   pointer-events: none;
-  z-index: 100;
+  z-index: 9999;
   opacity: 0;
   transition: opacity 0.15s;
+  box-shadow: 0 0 16px rgba(0,0,0,0.6), 0 0 30px rgba(26,115,232,0.06);
 }
 
 /* ===== 3D GLOBE ===== */
