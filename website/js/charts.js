@@ -583,8 +583,8 @@ function drawPurposeOrbitChart(data) {
           d3.select(this).attr('stroke', '#00e5ff').attr('stroke-width', 2)
             .style('filter', 'drop-shadow(0 0 10px rgba(0,229,255,0.4))');
           tip.html(`<strong>${d.purpose}</strong> in ${o}<br><span style="color:#00e5ff;font-weight:700;">${val.toLocaleString()}</span> satellites`)
-            .style('left', (event.clientX + 12) + 'px')
-            .style('top', (event.clientY - 35) + 'px')
+            .style('left', (event.clientX + 16) + 'px')
+            .style('top', (event.clientY - 70) + 'px')
             .style('opacity', 1);
         })
         .on('mouseleave', function() {
@@ -593,16 +593,17 @@ function drawPurposeOrbitChart(data) {
           tip.style('opacity', 0);
         });
 
-      // Number label - dark text on bright cyan, white text on dark cells
+      // Number label - dark text on bright cells, white on dark
       if (val > 0) {
-        const textColor = val > 300 ? '#0a0e1a' : '#e8eaf0';
+        // Above ~50, the cyan is bright enough to need dark text
+        const textColor = val >= 50 ? '#0a0e1a' : '#e8eaf0';
         svg.append('text')
           .attr('x', x(o) + x.bandwidth() / 2)
           .attr('y', y(d.purpose) + y.bandwidth() / 2)
           .attr('text-anchor', 'middle').attr('dy', '0.35em')
           .attr('fill', textColor)
           .attr('font-size', val > 500 ? '15px' : '12px')
-          .attr('font-weight', val > 500 ? '800' : '600')
+          .attr('font-weight', val > 100 ? '800' : '600')
           .style('pointer-events', 'none')
           .text(val.toLocaleString());
       }
