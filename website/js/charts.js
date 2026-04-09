@@ -555,83 +555,98 @@ function drawOrbitDonut(data) {
 }
 
 /* ===========================================================
-   5. PURPOSE HORIZONTAL BAR CHART
+   5. PURPOSE VERTICAL BAR CHART
    =========================================================== */
 
 function drawPurposeChart(data) {
-  const container = d3.select("#purpose-chart");
+  var container = d3.select("#purpose-chart");
   if (container.empty()) return;
 
-  const margin = { top: 10, right: 40, bottom: 20, left: 150 };
-  const width = 460 - margin.left - margin.right;
-  const height = 300 - margin.top - margin.bottom;
+  var margin = { top: 20, right: 10, bottom: 90, left: 50 };
+  var width = 460 - margin.left - margin.right;
+  var height = 420 - margin.top - margin.bottom;
 
-  const svg = container
+  var svg = container
     .append("svg")
-    .attr(
-      "viewBox",
-      `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`,
-    )
+    .attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
     .append("g")
-    .attr("transform", `translate(${margin.left},${margin.top})`);
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  const x = d3
-    .scaleLinear()
-    .domain([0, d3.max(data, (d) => d.count)])
-    .range([0, width]);
+  var x = d3.scaleBand()
+    .domain(data.map(function(d) { return d.purpose; }))
+    .range([0, width])
+    .padding(0.35);
 
-  const y = d3
-    .scaleBand()
-    .domain(data.map((d) => d.purpose))
-    .range([0, height])
-    .padding(0.3);
+  var y = d3.scaleLinear()
+    .domain([0, d3.max(data, function(d) { return d.count; }) * 1.1])
+    .range([height, 0]);
 
-  const tip = ensureTooltip();
+  // Grid
+  svg.append("g")
+    .attr("class", "grid")
+    .call(d3.axisLeft(y).ticks(5).tickSize(-width).tickFormat(""));
 
-  svg
-    .selectAll(".bar")
+  var tip = ensureTooltip();
+
+  // Bars
+  svg.selectAll(".bar")
     .data(data)
     .join("rect")
-    .attr("y", (d) => y(d.purpose))
-    .attr("height", y.bandwidth())
-    .attr("x", 0)
-    .attr("width", 0)
-    .attr("fill", (d) => PURPOSE_COLORS[d.purpose] || "#666")
-    .attr("rx", 4)
-    .on("mouseenter", function (event, d) {
-      tip
-        .html(
-          `<strong>${d.purpose}</strong><br>${d.count.toLocaleString()} (${d.pct}%)`,
-        )
-        .style("left", event.clientX + 10 + "px")
-        .style("top", event.clientY - 30 + "px")
+    .attr("x", function(d) { return x(d.purpose); })
+    .attr("width", x.bandwidth())
+    .attr("y", height)
+    .attr("height", 0)
+    .attr("fill", function(d) { return PURPOSE_COLORS[d.purpose] || "#666"; })
+    .attr("rx", 6)
+    .on("mouseenter", function(event, d) {
+      d3.select(this).style("filter", "brightness(1.3)");
+      tip.html("<strong>" + d.purpose + "</strong><br>" + d.count.toLocaleString() + " (" + d.pct + "%)")
+        .style("left", (event.clientX + 10) + "px")
+        .style("top", (event.clientY - 30) + "px")
         .style("opacity", 1);
     })
-    .on("mouseleave", function () {
+    .on("mouseleave", function() {
+      d3.select(this).style("filter", "none");
       tip.style("opacity", 0);
     })
     .transition()
     .duration(800)
-    .delay((d, i) => i * 80)
-    .attr("width", (d) => x(d.count));
+    .delay(function(d, i) { return i * 100; })
+    .ease(d3.easeCubicOut)
+    .attr("y", function(d) { return y(d.count); })
+    .attr("height", function(d) { return height - y(d.count); });
 
-  svg
-    .selectAll(".bar-label")
+  // Percentage labels on top of bars
+  svg.selectAll(".bar-label")
     .data(data)
     .join("text")
-    .attr("x", (d) => x(d.count) + 6)
-    .attr("y", (d) => y(d.purpose) + y.bandwidth() / 2)
-    .attr("dy", "0.35em")
-    .attr("fill", "#9ba3b5")
-    .attr("font-size", "11px")
-    .text((d) => d.pct + "%");
+    .attr("x", function(d) { return x(d.purpose) + x.bandwidth() / 2; })
+    .attr("y", function(d) { return y(d.count) - 8; })
+    .attr("text-anchor", "middle")
+    .attr("fill", "#e8eaf0")
+    .attr("font-size", "12px")
+    .attr("font-weight", "600")
+    .text(function(d) { return d.pct + "%"; });
 
-  svg
-    .append("g")
+  // X axis with rotated labels
+  svg.append("g")
     .attr("class", "axis")
-    .call(d3.axisLeft(y).tickSize(0))
-    .select(".domain")
-    .remove();
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x).tickSize(0))
+    .select(".domain").remove();
+
+  svg.selectAll(".axis text")
+    .attr("transform", "rotate(-40)")
+    .style("text-anchor", "end")
+    .attr("dx", "-0.6em")
+    .attr("dy", "0.2em")
+    .attr("font-size", "11px");
+
+  // Y axis
+  svg.append("g")
+    .attr("class", "axis")
+    .call(d3.axisLeft(y).ticks(5).tickFormat(d3.format(",")))
+    .select(".domain").remove();
 }
 
 /* ===========================================================

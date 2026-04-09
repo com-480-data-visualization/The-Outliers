@@ -190,6 +190,14 @@ body {
   grid-column: 1 / -1;
 }
 
+#purpose-chart {
+  padding-bottom: 30px;
+}
+
+#purpose-chart svg {
+  overflow: visible;
+}
+
 .viz-block h3 {
   font-family: var(--font-heading);
   font-size: 1.2rem;
