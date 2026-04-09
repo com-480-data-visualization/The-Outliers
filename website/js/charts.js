@@ -488,7 +488,7 @@ function drawOrbitDonut(data) {
     .join("path")
     .attr("d", arc)
     .attr("fill", (d) => color(d.data.orbit))
-    .attr("stroke", "#161b2e")
+    .attr("stroke", "#1e2028")
     .attr("stroke-width", 2)
     .on("mouseenter", function (event, d) {
       d3.select(this).transition().duration(150).attr("d", arcHover);
@@ -819,51 +819,105 @@ function drawPurposeOrbitChart(data) {
    =========================================================== */
 
 function drawHeroParticles() {
-  const canvas = document.getElementById("hero-canvas");
-  if (!canvas) return;
+  var container = document.getElementById("hero-canvas");
+  if (!container) return;
 
-  const w = window.innerWidth;
-  const h = window.innerHeight;
+  var cvs = document.createElement("canvas");
+  cvs.style.cssText = "position:absolute;inset:0;width:100%;height:100%;";
+  container.appendChild(cvs);
 
-  const svg = d3
-    .select(canvas)
-    .append("svg")
-    .attr("width", w)
-    .attr("height", h);
+  var ctx = cvs.getContext("2d");
+  var w, h, stars;
 
-  // Create orbiting dots to represent satellites
-  const nParticles = 80;
-  const particles = d3.range(nParticles).map(() => ({
-    cx: w / 2,
-    cy: h / 2,
-    r: 150 + Math.random() * Math.min(w, h) * 0.35,
-    angle: Math.random() * Math.PI * 2,
-    speed: 0.0003 + Math.random() * 0.001,
-    size: 1.5 + Math.random() * 3,
-    opacity: 0.2 + Math.random() * 0.5,
-  }));
-
-  const dots = svg
-    .selectAll("circle")
-    .data(particles)
-    .join("circle")
-    .attr("r", (d) => d.size)
-    .attr("fill", (d, i) => (i % 5 === 0 ? COLORS.accent : COLORS.main))
-    .attr("opacity", (d) => d.opacity);
-
-  function animate() {
-    particles.forEach((p) => {
-      p.angle += p.speed;
-    });
-
-    dots
-      .attr("cx", (d) => d.cx + Math.cos(d.angle) * d.r)
-      .attr("cy", (d) => d.cy + Math.sin(d.angle) * d.r * 0.4);
-
-    requestAnimationFrame(animate);
+  function resize() {
+    w = cvs.width = container.offsetWidth;
+    h = cvs.height = container.offsetHeight;
   }
 
-  animate();
+  function createStars() {
+    stars = [];
+    for (var i = 0; i < 300; i++) {
+      stars.push({
+        x: Math.random() * w, y: Math.random() * h,
+        r: Math.random() * 1.4 + 0.2,
+        opacity: Math.random() * 0.6 + 0.15,
+        drift: Math.random() * 0.12 + 0.01,
+        twinkleSpeed: Math.random() * 0.015 + 0.003,
+        twinklePhase: Math.random() * Math.PI * 2,
+      });
+    }
+  }
+
+  function draw(time) {
+    ctx.clearRect(0, 0, w, h);
+    for (var j = 0; j < stars.length; j++) {
+      var s = stars[j];
+      s.x += s.drift;
+      if (s.x > w) s.x = 0;
+      var twinkle = Math.sin(time * s.twinkleSpeed + s.twinklePhase) * 0.25 + 0.75;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(200, 215, 240, " + (s.opacity * twinkle) + ")";
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  createStars();
+  requestAnimationFrame(draw);
+  window.addEventListener("resize", function() { resize(); createStars(); });
+}
+
+/* ===========================================================
+   FULL-PAGE STAR FIELD
+   =========================================================== */
+
+function drawPageStars() {
+  var canvas = document.getElementById("page-stars");
+  if (!canvas) return;
+
+  var ctx = canvas.getContext("2d");
+  var w, h, stars;
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+
+  function createStars() {
+    stars = [];
+    for (var i = 0; i < 300; i++) {
+      stars.push({
+        x: Math.random() * w, y: Math.random() * h,
+        r: Math.random() * 1.4 + 0.2,
+        opacity: Math.random() * 0.6 + 0.15,
+        drift: Math.random() * 0.12 + 0.01,
+        twinkleSpeed: Math.random() * 0.015 + 0.003,
+        twinklePhase: Math.random() * Math.PI * 2,
+      });
+    }
+  }
+
+  function draw(time) {
+    ctx.clearRect(0, 0, w, h);
+    for (var j = 0; j < stars.length; j++) {
+      var s = stars[j];
+      s.x += s.drift;
+      if (s.x > w) s.x = 0;
+      var twinkle = Math.sin(time * s.twinkleSpeed + s.twinklePhase) * 0.25 + 0.75;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(200, 215, 240, " + (s.opacity * twinkle) + ")";
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  createStars();
+  requestAnimationFrame(draw);
+  window.addEventListener("resize", function() { resize(); createStars(); });
 }
 
 // Export

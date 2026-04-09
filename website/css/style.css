@@ -5,7 +5,7 @@
 :root {
   --bg-dark: #000000;
   --bg-section: #050508;
-  --bg-card: rgba(8, 10, 20, 0.85);
+  --bg-card: #1e2028;
   --text-primary: #e8eaf0;
   --text-secondary: #9ba3b5;
   --accent-blue: #1a73e8;
@@ -43,7 +43,7 @@ body {
   min-height: 100vh;
   padding: 80px 60px;
   position: relative;
-  z-index: 1;
+  background: transparent;
 }
 
 /* ===== HERO ===== */
@@ -64,8 +64,10 @@ body {
 
 #page-stars {
   position: fixed;
-  inset: 0;
-  z-index: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
 }
 
@@ -122,6 +124,7 @@ body {
 .chapter {
   padding: 100px 60px;
   min-height: auto;
+  background: transparent;
 }
 
 .chapter-header {
@@ -171,11 +174,10 @@ body {
 
 .viz-block {
   background: var(--bg-card);
-  backdrop-filter: blur(12px);
   border-radius: 16px;
   padding: 32px;
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 4px 30px rgba(0,0,0,0.5), 0 0 1px rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.6), 0 0 1px rgba(255,255,255,0.12);
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
@@ -250,7 +252,6 @@ body {
   line-height: 1.7;
   color: var(--text-secondary);
   background: var(--bg-card);
-  backdrop-filter: blur(12px);
   border-radius: 12px;
   padding: 14px 18px;
   border-left: 3px solid rgba(255, 255, 255, 0.1);
@@ -282,7 +283,7 @@ body {
   justify-content: center;
   gap: 60px;
   padding: 80px 40px;
-  background: linear-gradient(135deg, #050508 0%, #0a0c14 100%);
+  background: rgba(10, 12, 24, 0.4);
   flex-wrap: wrap;
 }
 
@@ -314,8 +315,6 @@ body {
   padding: 60px 40px;
   background: transparent;
   border-top: 1px solid rgba(255,255,255,0.06);
-  position: relative;
-  z-index: 1;
 }
 
 .footer p {
