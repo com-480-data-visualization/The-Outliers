@@ -10,13 +10,19 @@ Who is filling Earth's orbit, and how is space becoming an increasingly crowded 
 ## Project Structure
 
 ```
+├── index.html              GitHub Pages redirect
 ├── data/                   Raw dataset (UCS Satellite Database)
-├── eda.ipynb               Exploratory data analysis notebook
 ├── img/                    EDA plots and wireframe sketches
 ├── milestones/             Milestone documents
 │   ├── milestone1/
+│   │   ├── milestone1.md
+│   │   └── eda.ipynb       Exploratory data analysis notebook
 │   └── milestone2/
+│       ├── milestone2.md
+│       ├── milestone2.pdf
+│       └── wireframes.py   Wireframe generation script
 └── prototype/              Functional prototype (HTML/CSS/D3.js)
+    ├── index.html
     ├── css/
     ├── js/
     └── data/               Preprocessed JSON for the prototype
