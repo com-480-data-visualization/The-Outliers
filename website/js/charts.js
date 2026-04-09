@@ -947,25 +947,15 @@ function drawTitleOrbits() {
   if (!canvas) return;
 
   var ctx = canvas.getContext("2d");
-  var cw = 1500, ch = 600;
+  var heroEl = document.getElementById("hero");
+  var cw = heroEl ? heroEl.offsetWidth : 1200;
+  var ch = heroEl ? heroEl.offsetHeight : 600;
   canvas.width = cw;
   canvas.height = ch;
-  canvas.style.width = cw + "px";
-  canvas.style.height = ch + "px";
 
   var cx = cw / 2, cy = ch / 2;
 
   // Scroll creates a "barrier" from the top - dots bounce off it
-  var barrierY = 0;
-  var heroEl = document.getElementById("hero");
-  window.addEventListener("scroll", function() {
-    if (!heroEl) return;
-    var rect = heroEl.getBoundingClientRect();
-    // rect.top goes from 0 (top of viewport) to negative as you scroll
-    // Convert to how far the hero has scrolled: 0 at top, increases as you scroll
-    var scrolled = Math.max(0, -rect.top);
-    barrierY = Math.min(scrolled * 0.8, ch * 0.85);
-  }, { passive: true });
 
   // Orbit definitions: each ring has satellites on it
   // tilt = rotation of the ellipse (radians), gives 3D sphere feel
@@ -1013,15 +1003,6 @@ function drawTitleOrbits() {
       drawEllipse(orb.rx, orb.ry, orb.tilt, orb.color, orb.alpha);
     });
 
-    // Faint barrier line
-    if (barrierY > 5) {
-      ctx.beginPath();
-      ctx.moveTo(0, barrierY);
-      ctx.lineTo(cw, barrierY);
-      ctx.strokeStyle = "rgba(26, 115, 232, " + Math.min(barrierY / ch * 0.15, 0.1) + ")";
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    }
 
     // Update and draw satellites
     sats.forEach(function(sat) {
@@ -1035,12 +1016,6 @@ function drawTitleOrbits() {
       var sinT = Math.sin(orb.tilt);
       var x = cx + lx * cosT - ly * sinT;
       var y = cy + lx * sinT + ly * cosT;
-
-      // Barrier: scroll pushes a wall from the top, dots bounce off it
-      if (barrierY > 0 && y < barrierY) {
-        y = barrierY + (barrierY - y) * 0.6;
-        x += Math.sin(sat.angle * 3) * 20;
-      }
 
       // Depth: satellites behind title are dimmer
       var depth = Math.sin(sat.angle);
