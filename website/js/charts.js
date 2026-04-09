@@ -488,10 +488,14 @@ function drawOrbitDonut(data) {
     .join("path")
     .attr("d", arc)
     .attr("fill", (d) => color(d.data.orbit))
-    .attr("stroke", "#1e2028")
+    .attr("fill-opacity", 0.15)
+    .attr("stroke", (d) => color(d.data.orbit))
     .attr("stroke-width", 2)
+    .style("filter", (d) => "drop-shadow(0 0 8px " + color(d.data.orbit) + "50)")
     .on("mouseenter", function (event, d) {
-      d3.select(this).transition().duration(150).attr("d", arcHover);
+      d3.select(this).transition().duration(150).attr("d", arcHover)
+        .attr("fill-opacity", 0.35)
+        .style("filter", "drop-shadow(0 0 16px " + color(d.data.orbit) + "90)");
       tip
         .html(
           `<strong>${d.data.orbit}</strong><br>${d.data.count.toLocaleString()} (${d.data.pct}%)`,
@@ -500,8 +504,10 @@ function drawOrbitDonut(data) {
         .style("top", event.clientY - 30 + "px")
         .style("opacity", 1);
     })
-    .on("mouseleave", function () {
-      d3.select(this).transition().duration(150).attr("d", arc);
+    .on("mouseleave", function (event, d) {
+      d3.select(this).transition().duration(150).attr("d", arc)
+        .attr("fill-opacity", 0.15)
+        .style("filter", "drop-shadow(0 0 8px " + color(d.data.orbit) + "50)");
       tip.style("opacity", 0);
     });
 
@@ -597,16 +603,20 @@ function drawPurposeChart(data) {
     .attr("y", height)
     .attr("height", 0)
     .attr("fill", function(d) { return PURPOSE_COLORS[d.purpose] || "#666"; })
+    .attr("fill-opacity", 0.15)
+    .attr("stroke", function(d) { return PURPOSE_COLORS[d.purpose] || "#666"; })
+    .attr("stroke-width", 2)
+    .style("filter", function(d) { return "drop-shadow(0 0 6px " + (PURPOSE_COLORS[d.purpose] || "#666") + "40)"; })
     .attr("rx", 6)
     .on("mouseenter", function(event, d) {
-      d3.select(this).style("filter", "brightness(1.3)");
+      d3.select(this).attr("fill-opacity", 0.3).style("filter", "drop-shadow(0 0 12px " + (PURPOSE_COLORS[d.purpose] || "#666") + "80)");
       tip.html("<strong>" + d.purpose + "</strong><br>" + d.count.toLocaleString() + " (" + d.pct + "%)")
         .style("left", (event.clientX + 10) + "px")
         .style("top", (event.clientY - 30) + "px")
         .style("opacity", 1);
     })
-    .on("mouseleave", function() {
-      d3.select(this).style("filter", "none");
+    .on("mouseleave", function(event, d) {
+      d3.select(this).attr("fill-opacity", 0.15).style("filter", "drop-shadow(0 0 6px " + (PURPOSE_COLORS[d.purpose] || "#666") + "40)");
       tip.style("opacity", 0);
     })
     .transition()
