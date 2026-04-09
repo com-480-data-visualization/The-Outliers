@@ -328,6 +328,70 @@ svg .grid .domain {
   transition: opacity 0.15s;
 }
 
+/* ===== 3D GLOBE ===== */
+#globe-container {
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: grab;
+}
+
+#globe-container:active {
+  cursor: grabbing;
+}
+
+.globe-controls {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px 0 16px;
+}
+
+.globe-filter {
+  background: var(--bg-dark);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-secondary);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.globe-filter:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--text-primary);
+}
+
+.globe-filter.active {
+  background: var(--accent-blue);
+  border-color: var(--accent-blue);
+  color: #fff;
+}
+
+.globe-legend {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 14px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
   .section {

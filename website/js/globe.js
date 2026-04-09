@@ -1,125 +1,116 @@
 /**
- * 3D Globe visualization using Globe.gl
- * Shows 6,718 satellites at their orbital positions using real altitude + inclination data.
+ * globe.js — 3D Globe visualization using Globe.gl
+ * Loads its own slim dataset (satellites-globe.json) with altitude + inclination.
  */
 
-// Compressed altitude scale: maps real km to visual globe units
-// Log scale keeps LEO, MEO, GEO all visible as distinct layers
-function altitudeToVisual(alt_km) {
-    if (!alt_km || alt_km <= 0) return 0.02;
-    const clamped = Math.min(alt_km, 50000); // cap extreme outliers
-    return Math.log1p(clamped / 6371) * 0.42;
-}
-
-// Orbit class colors (matching CSS palette)
 const ORBIT_COLORS = {
-    "LEO": "#1a73e8",
-    "MEO": "#e8710a",
-    "GEO": "#34a853",
-    "Elliptical": "#9334e6"
+    LEO: '#1a73e8',
+    MEO: '#e8710a',
+    GEO: '#34a853',
+    Elliptical: '#9334e6',
 };
 
-// Prepare satellite data for Globe.gl points
+function altitudeToVisual(alt_km) {
+    if (!alt_km || alt_km <= 0) return 0.02;
+    return Math.log1p(Math.min(alt_km, 50000) / 6371) * 0.42;
+}
+
 function prepareSatellitePoints(data) {
     return data
-        .filter(d => d.altitude && d.inclination != null)
+        .filter(d => d.altitude > 0 && d.inclination != null)
         .map(d => {
-            // Clamp inclination to valid range
             const inc = Math.min(Math.abs(d.inclination), 180);
-            // Max latitude a satellite reaches equals its inclination
             const maxLat = Math.min(inc, 90);
-            // Random latitude within the orbital envelope
-            const lat = (Math.random() * 2 - 1) * maxLat;
-            const lng = Math.random() * 360 - 180;
-
             return {
-                lat,
-                lng,
+                lat: (Math.random() * 2 - 1) * maxLat,
+                lng: Math.random() * 360 - 180,
                 alt: altitudeToVisual(d.altitude),
-                size: d.orbit_class === "GEO" ? 0.22 : (d.orbit_class === "MEO" ? 0.18 : 0.07),
-                color: ORBIT_COLORS[d.orbit_class] || "#c9d1d9",
-                orbit_class: d.orbit_class,
-                name: d.name,
-                purpose: d.purpose || "Unknown",
-                country: d.country || "Unknown",
-                altitude_km: Math.round(d.altitude)
+                size: d.orbit_class === 'GEO' ? 0.22 : d.orbit_class === 'MEO' ? 0.18 : 0.07,
+                color: ORBIT_COLORS[d.orbit_class] || '#c9d1d9',
+                orbit_class: d.orbit_class || 'Unknown',
+                name: d.name || 'Unknown',
+                purpose: d.purpose || 'Unknown',
+                country: d.country || 'Unknown',
+                altitude_km: Math.round(d.altitude),
             };
         });
 }
 
-function initGlobe(data) {
-    const container = document.getElementById("globe-container");
-    if (!container || typeof Globe === "undefined") {
-        console.warn("Globe.gl not available or container not found");
+async function initGlobe() {
+    const container = document.getElementById('globe-container');
+    if (!container) return;
+    if (typeof Globe === 'undefined') {
+        console.warn('Globe.gl library not loaded');
         return;
     }
 
-    const allPoints = prepareSatellitePoints(data);
-    let activeFilter = "all";
+    // Load slim globe data
+    let rawData;
+    try {
+        const res = await fetch('data/satellites-globe.json');
+        rawData = await res.json();
+    } catch (e) {
+        console.error('Failed to load globe data:', e);
+        return;
+    }
 
-    const globe = new Globe(container)
-        .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-night.jpg")
-        .backgroundImageUrl("https://unpkg.com/three-globe/example/img/night-sky.png")
-        .backgroundColor("rgba(13, 17, 23, 0)")
+    const allPoints = prepareSatellitePoints(rawData);
+    console.log(`Globe: prepared ${allPoints.length} points`);
+
+    // Mount globe
+    const globe = Globe()
+        .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
+        .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
+        .backgroundColor('rgba(0,0,0,0)')
         .showAtmosphere(true)
-        .atmosphereColor("rgba(26, 115, 232, 0.3)")
-        .atmosphereAltitude(0.2)
+        .atmosphereColor('rgba(26, 115, 232, 0.25)')
+        .atmosphereAltitude(0.18)
+        .width(container.clientWidth)
+        .height(550)
+        (container);
+
+    // Add satellite points
+    globe
         .pointsData(allPoints)
-        .pointLat("lat")
-        .pointLng("lng")
-        .pointAltitude("alt")
-        .pointRadius("size")
-        .pointColor("color")
+        .pointLat('lat')
+        .pointLng('lng')
+        .pointAltitude('alt')
+        .pointRadius('size')
+        .pointColor('color')
         .pointLabel(d =>
-            `<div style="background:#161b22;padding:8px 12px;border-radius:6px;border:1px solid #30363d;font-size:13px;color:#c9d1d9;">
-                <strong style="color:#f0f6fc;">${d.name}</strong><br>
+            `<div style="background:rgba(22,27,46,0.95);padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);font-size:13px;color:#e8eaf0;font-family:Inter,sans-serif;">
+                <strong>${d.name}</strong><br>
                 <span style="color:${d.color};">${d.orbit_class}</span> &middot; ${d.altitude_km.toLocaleString()} km<br>
                 ${d.purpose} &middot; ${d.country}
             </div>`)
-        .pointsMerge(true)
-        .width(container.clientWidth)
-        .height(600);
+        .pointsMerge(true);
 
-    // Auto-rotate
+    // Controls
     globe.controls().autoRotate = true;
     globe.controls().autoRotateSpeed = 0.4;
     globe.controls().enableZoom = true;
-    globe.controls().minDistance = 150;
-    globe.controls().maxDistance = 500;
-
-    // Initial camera angle (slightly tilted)
-    globe.pointOfView({ lat: 20, lng: 0, altitude: 2.5 }, 0);
-
-    console.log(`Globe initialized with ${allPoints.length} satellite points`);
+    globe.controls().minDistance = 120;
+    globe.controls().maxDistance = 400;
+    globe.pointOfView({ lat: 25, lng: 0, altitude: 2.2 }, 0);
 
     // Filter buttons
-    const filterBtns = document.querySelectorAll(".globe-filter");
-    filterBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            filterBtns.forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-
-            activeFilter = btn.dataset.filter;
-            const filtered = activeFilter === "all"
-                ? allPoints
-                : allPoints.filter(d => d.orbit_class === activeFilter);
-
-            globe.pointsData(filtered);
+    document.querySelectorAll('.globe-filter').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.globe-filter').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const filter = btn.dataset.filter;
+            globe.pointsData(filter === 'all' ? allPoints : allPoints.filter(d => d.orbit_class === filter));
         });
     });
 
-    // Pause auto-rotate on hover, resume on leave
-    container.addEventListener("mouseenter", () => {
-        globe.controls().autoRotateSpeed = 0.1;
-    });
-    container.addEventListener("mouseleave", () => {
-        globe.controls().autoRotateSpeed = 0.4;
-    });
+    // Slow rotation on hover
+    container.addEventListener('mouseenter', () => { globe.controls().autoRotateSpeed = 0.1; });
+    container.addEventListener('mouseleave', () => { globe.controls().autoRotateSpeed = 0.4; });
 
-    // Handle resize
-    window.addEventListener("resize", () => {
-        globe.width(container.clientWidth);
-    });
+    // Resize
+    window.addEventListener('resize', () => { globe.width(container.clientWidth); });
 
-    return globe;
+    console.log('Globe initialized');
 }
+
+window.initGlobe = initGlobe;
