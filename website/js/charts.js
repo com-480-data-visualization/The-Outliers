@@ -953,97 +953,81 @@ function drawTitleOrbits() {
   canvas.width = cw;
   canvas.height = ch;
 
-  var cx = cw / 2, cy = ch / 2;
+  // Sphere center: right of title
+  var titleEl = document.querySelector(".hero-title");
+  var titleRect = titleEl ? titleEl.getBoundingClientRect() : { right: cw * 0.7, top: ch * 0.3, height: 100 };
+  var heroRect = heroEl.getBoundingClientRect();
+  var sx = titleRect.right - heroRect.left + 90;
+  var sy = titleRect.top - heroRect.top + titleRect.height / 2;
+  var R = titleRect.height * 0.45;
 
-  // Scroll creates a "barrier" from the top - dots bounce off it
+  var colors = ["#1a73e8", "#1a73e8", "#1a73e8", "#e8710a"];
+  var NUM_RINGS = 80;
+  var DOTS_PER_RING = 12;
 
-  // Orbit definitions: each ring has satellites on it
-  // tilt = rotation of the ellipse (radians), gives 3D sphere feel
-  var orbits = [
-    { rx: 630, ry: 90, tilt: 0,    color: "#1a73e8", alpha: 0.08 },  // LEO blue
-    { rx: 570, ry: 135, tilt: 0.3,  color: "#e8710a", alpha: 0.06 },  // MEO orange
-    { rx: 525, ry: 165, tilt: -0.4, color: "#34a853", alpha: 0.06 }, // GEO green
-    { rx: 600, ry: 112, tilt: 0.15, color: "#9334e6", alpha: 0.05 },  // Elliptical purple
-    { rx: 540, ry: 150, tilt: -0.2, color: "#1a73e8", alpha: 0.04 }, // extra LEO
-  ];
-
-  // Create satellites
-  var sats = [];
-  orbits.forEach(function(orb, oi) {
-    var count = oi < 2 ? 3 : 2; // more on inner orbits
-    for (var i = 0; i < count; i++) {
-      var dir = (oi % 2 === 0) ? 1 : -1;
-      sats.push({
-        orbit: oi,
-        angle: (Math.PI * 2 / count) * i + oi * 0.7,
-        speed: dir * (0.004 + Math.random() * 0.006),
-        size: 2 + Math.random() * 2.5,
-        color: orb.color
+  // Build rings distributed like latitude lines on a sphere
+  var rings = [];
+  for (var i = 0; i < NUM_RINGS; i++) {
+    var lat = (i / (NUM_RINGS - 1)) * Math.PI - Math.PI / 2;
+    var ringR = R * Math.cos(lat);
+    var yOff = R * Math.sin(lat);
+    var col = colors[i % colors.length];
+    var spd = (i % 2 === 0 ? 1 : -1) * (0.005 + (i % 4) * 0.002);
+    var dots = [];
+    for (var j = 0; j < DOTS_PER_RING; j++) {
+      dots.push({
+        angle: (Math.PI * 2 / DOTS_PER_RING) * j + i * 0.4,
+        size: 0.6 + Math.random() * 0.9
       });
     }
-  });
-
-  function drawEllipse(rx, ry, tilt, color, alpha) {
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.rotate(tilt);
-    ctx.beginPath();
-    ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
-    ctx.strokeStyle = color.slice(0, 7) + Math.round(alpha * 255).toString(16).padStart(2, "0");
-    ctx.lineWidth = 0.6;
-    ctx.stroke();
-    ctx.restore();
+    rings.push({ ringR: ringR, yOff: yOff, color: col, speed: spd, dots: dots, alpha: 0.04 + (ringR / R) * 0.04 });
   }
+
+  var globalRot = 0;
 
   function animate() {
     ctx.clearRect(0, 0, cw, ch);
+    globalRot += 0.003;
 
-    // Draw orbit rings (compressed by barrier)
-    orbits.forEach(function(orb) {
-      drawEllipse(orb.rx, orb.ry, orb.tilt, orb.color, orb.alpha);
-    });
+    for (var i = 0; i < rings.length; i++) {
+      var ring = rings[i];
 
+      // Ring center stays fixed (no global rotation on position)
+      var rcy = sy + ring.yOff;
+      var visualR = ring.ringR;
 
-    // Update and draw satellites
-    sats.forEach(function(sat) {
-      sat.angle += sat.speed;
-      var orb = orbits[sat.orbit];
+      var squash = ring.ringR > 0 ? (ring.ringR / R) * 0.4 + 0.05 : 0.05;
 
-      // Position on tilted ellipse
-      var lx = Math.cos(sat.angle) * orb.rx;
-      var ly = Math.sin(sat.angle) * orb.ry;
-      var cosT = Math.cos(orb.tilt);
-      var sinT = Math.sin(orb.tilt);
-      var x = cx + lx * cosT - ly * sinT;
-      var y = cy + lx * sinT + ly * cosT;
+      // Dots
+      for (var j = 0; j < ring.dots.length; j++) {
+        var dot = ring.dots[j];
+        dot.angle += ring.speed;
 
-      // Depth: satellites behind title are dimmer
-      var depth = Math.sin(sat.angle);
-      var dimming = 0.3 + (depth + 1) * 0.35; // 0.3 to 1.0
+        var dx = Math.cos(dot.angle) * visualR;
+        var dz = Math.sin(dot.angle) * visualR * squash;
 
-      // Glow
-      var grd = ctx.createRadialGradient(x, y, 0, x, y, sat.size * 4);
-      grd.addColorStop(0, sat.color + Math.round(dimming * 60).toString(16).padStart(2, "0"));
-      grd.addColorStop(1, sat.color + "00");
-      ctx.beginPath();
-      ctx.arc(x, y, sat.size * 4, 0, Math.PI * 2);
-      ctx.fillStyle = grd;
-      ctx.fill();
+        var x = sx + dx;
+        var y = rcy + dz;
 
-      // Core dot
-      ctx.beginPath();
-      ctx.arc(x, y, sat.size * dimming, 0, Math.PI * 2);
-      ctx.fillStyle = sat.color;
-      ctx.globalAlpha = dimming;
-      ctx.fill();
-      ctx.globalAlpha = 1;
+        // Depth based on front/back (z = sin of angle on the ring)
+        var zPos = Math.sin(dot.angle);
+        var dim = 0.3 + (zPos + 1) * 0.35;
 
-      // White highlight
-      ctx.beginPath();
-      ctx.arc(x, y, sat.size * 0.3 * dimming, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(255,255,255," + (dimming * 0.7) + ")";
-      ctx.fill();
-    });
+        // Glow
+        ctx.beginPath();
+        ctx.arc(x, y, dot.size * 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = ring.color + Math.round(dim * 25).toString(16).padStart(2, "0");
+        ctx.fill();
+
+        // Core
+        ctx.beginPath();
+        ctx.arc(x, y, dot.size * dim, 0, Math.PI * 2);
+        ctx.globalAlpha = dim;
+        ctx.fillStyle = ring.color;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+    }
 
     requestAnimationFrame(animate);
   }
