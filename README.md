@@ -1,6 +1,8 @@
 # Crowded Orbit
 
-**COM-480 Data Visualization Project, EPFL 2025**
+| | |
+|---|---|
+| **COM-480 Data Visualization Project, EPFL 2025** | [🌐 **Live Website**](https://com-480-data-visualization.github.io/The-Outliers/) |
 
 Who is filling Earth's orbit, and how is space becoming an increasingly crowded infrastructure?
 
@@ -35,10 +37,6 @@ You can find the full document [here](milestones/milestone2/milestone2.md).
 
 **Milestone 3** (May 29): Final deliverables
 *Coming soon.*
-
-## Website
-
-[https://com-480-data-visualization.github.io/The-Outliers/](https://com-480-data-visualization.github.io/The-Outliers/)
 
 ## Late policy
 
