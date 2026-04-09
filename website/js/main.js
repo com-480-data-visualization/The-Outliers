@@ -28,8 +28,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   drawPurposeChart(data.purpose_breakdown);
   drawPurposeOrbitChart(data.purpose_by_orbit);
 
-  // Initialize 3D globe (loads its own data)
+  // Initialize 3D globe when section is visible
   if (typeof initGlobe === 'function') {
-    initGlobe();
+    const globeEl = document.getElementById('globe-container');
+    if (globeEl) {
+      let globeLoaded = false;
+      const obs = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !globeLoaded) {
+          globeLoaded = true;
+          initGlobe();
+          obs.disconnect();
+        }
+      }, { threshold: 0.3 });
+      obs.observe(globeEl);
+    }
   }
 });
