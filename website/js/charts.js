@@ -946,6 +946,7 @@ function drawTitleOrbits() {
   var canvas = document.getElementById("orbit-canvas");
   if (!canvas) return;
 
+  (function() {
   var ctx = canvas.getContext("2d");
   var heroEl = document.getElementById("hero");
   var cw = heroEl ? heroEl.offsetWidth : 1200;
@@ -1033,6 +1034,7 @@ function drawTitleOrbits() {
   }
 
   animate();
+  })();
 }
 
 // Export
