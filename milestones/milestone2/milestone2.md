@@ -6,21 +6,19 @@ Kevin Abou Jaoude, Youssef Dib, Mark Nabbout
 
 ## Project Goal
 
-**Crowded Orbit** is a scrollytelling data visualization that reveals how Earth's orbit transformed from a near-empty scientific frontier into a crowded, unequally controlled infrastructure. The user scrolls through a guided three-chapter narrative: *The Explosion* (how fast orbit filled up), *Who Owns Space?* (geopolitical and corporate concentration), and *Where Is the Congestion?* (orbital and purpose distribution), before being invited to freely explore a 3D interactive globe of all 6,718 operational satellites.
+**Crowded Orbit** is a scrollytelling data visualization that reveals how Earth's orbit transformed from a near-empty scientific frontier into a crowded, unequally controlled infrastructure. The user scrolls through a guided three-chapter narrative: _The Explosion_ (how fast orbit filled up), _Who Owns Space?_ (geopolitical and corporate concentration), and _Where Is the Congestion?_ (orbital and purpose distribution), before being invited to freely explore a 3D interactive globe of all 6,718 operational satellites.
 
 The narrative follows a structure inspired by Freytag's pyramid (Lecture 12, Storytelling):
 
 - **Exposition**: The hero section sets the scene with 6,718 objects orbiting Earth.
 - **Rising action**: The timeline chart progressively reveals decades of slow growth, then the sudden vertical takeoff post-2019.
 - **Climax**: The country and operator analysis reveals that a single company (SpaceX) controls nearly 50% of all satellites, with a Gini coefficient of 0.862.
-- **Falling action**: The orbital and purpose breakdown explains *where* the congestion sits (88.4% in LEO) and *why* (71.8% Communications, driven by mega-constellations).
+- **Falling action**: The orbital and purpose breakdown explains _where_ the congestion sits (88.4% in LEO) and _why_ (71.8% Communications, driven by mega-constellations).
 - **Resolution**: The 3D globe lets users explore all satellites freely, filtering by orbit class and hovering for details.
 
 ## Functional Prototype
 
-The prototype is available in the [`website/`](../../website/) folder. It includes all MVP components listed below, fully implemented with real data (not placeholders). The site loads two JSON data files: `satellites.json` (aggregated statistics for all charts) and `satellites-globe.json` (6,718 individual satellite records for the 3D globe).
-
-To run locally: `cd website && python -m http.server 8080`, then open `http://localhost:8080`.
+The prototype is available in the [`prototype/`](../../prototype/) folder and is deployed at [https://com-480-data-visualization.github.io/The-Outliers/](https://com-480-data-visualization.github.io/The-Outliers/). It includes all MVP components listed above, fully implemented with real data (not placeholders). The site loads two JSON data files: `satellites.json` (aggregated statistics for all charts) and `satellites-globe.json` (6,718 individual satellite records for the 3D globe).
 
 ## Visualization Sketches
 
@@ -43,17 +41,17 @@ A 3D interactive globe (Globe.gl) renders all 6,718 satellites as color-coded po
 
 ## Tools and Relevant Lectures
 
-| Visualization | Tools | Relevant Lectures |
-|---|---|---|
-| Website structure, layout, responsive design | HTML5, CSS3 (Grid, Flexbox, custom properties) | Lecture 1 (Web Development) |
-| All D3 charts (bindData, scales, axes, transitions, shapes) | **D3.js v7** | Lecture 4 (D3.js), Lectures 2–3 (JavaScript) |
-| Scrollytelling (step activation, progressive reveal) | Native IntersectionObserver API, CSS transitions | Lecture 5 (Interaction, Views), Lecture 12 (Storytelling) |
-| Hover tooltips, filter buttons, animated counters | D3 event listeners, DOM manipulation | Lecture 5 (Interaction) |
-| Color-coding orbits and purposes, donut inner label | D3 scaleOrdinal, perceptually distinct palette | Lecture 6 (Perception & Colors, Mark & Channel) |
-| Horizontal bar charts, chart type selection | Encoding effectiveness ranking (position > length > color) | Lecture 7 (Designing Viz, Do's and Don'ts) |
-| 3D interactive globe with satellite positions | Globe.gl (built on Three.js), logarithmic altitude scale | Lecture 8 (Maps, Practical Maps) |
-| Lorenz curve (inequality), Gini annotation | D3 area, line generators | Lecture 6 (Mark & Channel), Lecture 11 (Tabular Data) |
-| Narrative pacing, scroll-driven tension | Freytag's pyramid adapted for data | Lecture 12 (Storytelling) |
+| Visualization                                               | Tools                                                      | Relevant Lectures                                         |
+| ----------------------------------------------------------- | ---------------------------------------------------------- | --------------------------------------------------------- |
+| Website structure, layout, responsive design                | HTML5, CSS3 (Grid, Flexbox, custom properties)             | Lecture 1 (Web Development)                               |
+| All D3 charts (bindData, scales, axes, transitions, shapes) | **D3.js v7**                                               | Lecture 4 (D3.js), Lectures 2–3 (JavaScript)              |
+| Scrollytelling (step activation, progressive reveal)        | Native IntersectionObserver API, CSS transitions           | Lecture 5 (Interaction, Views), Lecture 12 (Storytelling) |
+| Hover tooltips, filter buttons, animated counters           | D3 event listeners, DOM manipulation                       | Lecture 5 (Interaction)                                   |
+| Color-coding orbits and purposes, donut inner label         | D3 scaleOrdinal, perceptually distinct palette             | Lecture 6 (Perception & Colors, Mark & Channel)           |
+| Horizontal bar charts, chart type selection                 | Encoding effectiveness ranking (position > length > color) | Lecture 7 (Designing Viz, Do's and Don'ts)                |
+| 3D interactive globe with satellite positions               | Globe.gl (built on Three.js), logarithmic altitude scale   | Lecture 8 (Maps, Practical Maps)                          |
+| Lorenz curve (inequality), Gini annotation                  | D3 area, line generators                                   | Lecture 6 (Mark & Channel), Lecture 11 (Tabular Data)     |
+| Narrative pacing, scroll-driven tension                     | Freytag's pyramid adapted for data                         | Lecture 12 (Storytelling)                                 |
 
 **Additional tools:** Google Fonts (Space Grotesk + Inter), pre-aggregated JSON data exported from the EDA notebook (6,718 satellite records for the globe, aggregated statistics for all charts).
 
