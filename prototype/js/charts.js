@@ -954,80 +954,97 @@ function drawTitleOrbits() {
   canvas.width = cw;
   canvas.height = ch;
 
-  // Sphere center: right of title
+  // Sphere center: below title
   var titleEl = document.querySelector(".hero-title");
-  var titleRect = titleEl ? titleEl.getBoundingClientRect() : { right: cw * 0.7, top: ch * 0.3, height: 100 };
+  var titleRect = titleEl ? titleEl.getBoundingClientRect() : { left: cw * 0.3, right: cw * 0.7, bottom: ch * 0.4, width: cw * 0.4, height: 100 };
   var heroRect = heroEl.getBoundingClientRect();
-  var sx = titleRect.right - heroRect.left + 90;
-  var sy = titleRect.top - heroRect.top + titleRect.height / 2;
-  var R = titleRect.height * 0.45;
+  var sx = titleRect.left - heroRect.left + titleRect.width / 2;
+  var sy = titleRect.bottom - heroRect.top + 100;
+  var R = titleRect.height * 0.55;
 
-  var colors = ["#1a73e8", "#1a73e8", "#1a73e8", "#e8710a"];
-  var NUM_RINGS = 80;
-  var DOTS_PER_RING = 12;
+  var NUM_POINTS = 960;
 
-  // Build rings distributed like latitude lines on a sphere
-  var rings = [];
-  for (var i = 0; i < NUM_RINGS; i++) {
-    var lat = (i / (NUM_RINGS - 1)) * Math.PI - Math.PI / 2;
-    var ringR = R * Math.cos(lat);
-    var yOff = R * Math.sin(lat);
-    var col = colors[i % colors.length];
-    var spd = (i % 2 === 0 ? 1 : -1) * (0.005 + (i % 4) * 0.002);
-    var dots = [];
-    for (var j = 0; j < DOTS_PER_RING; j++) {
-      dots.push({
-        angle: (Math.PI * 2 / DOTS_PER_RING) * j + i * 0.4,
-        size: 0.6 + Math.random() * 0.9
-      });
-    }
-    rings.push({ ringR: ringR, yOff: yOff, color: col, speed: spd, dots: dots, alpha: 0.04 + (ringR / R) * 0.04 });
+  // Seeded pseudo-random for deterministic results
+  var seed = 12345;
+  function seededRandom() {
+    seed = (seed * 16807 + 0) % 2147483647;
+    return (seed - 1) / 2147483646;
+  }
+
+  // Fibonacci sphere: uniform point distribution with no overlapping
+  var points = [];
+  var goldenAngle = Math.PI * (3 - Math.sqrt(5));
+  for (var i = 0; i < NUM_POINTS; i++) {
+    var y = 1 - (i / (NUM_POINTS - 1)) * 2; // -1 to 1
+    var radiusAtY = Math.sqrt(1 - y * y);
+    var theta = goldenAngle * i;
+
+    points.push({
+      lat: Math.asin(y),
+      lon: theta,
+      ringR: radiusAtY * R,
+      yOff: y * R,
+      speed: (i % 2 === 0 ? 1 : -1) * (0.002 + seededRandom() * 0.002),
+      angle: theta,
+      size: 0.6 + seededRandom() * 0.9,
+      color: seededRandom() < 0.2 ? "#e8710a" : "#1a73e8"
+    });
   }
 
   var globalRot = 0;
+  var speedMultiplier = 1;
+  var scrollTimeout;
+
+  // Hero parallax: title slides more, sphere slides less
+  var heroContent = document.querySelector(".hero-content");
+  var sphereBaseY = sy;
+  window.addEventListener("scroll", function() {
+    speedMultiplier = 4;
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(function() { speedMultiplier = 1; }, 150);
+
+    var scrollY = window.scrollY;
+    if (heroContent) {
+      // Moves down at 0.4x scroll speed — stays visible much longer
+      heroContent.style.transform = "translateY(" + (scrollY * 0.4) + "px)";
+    }
+    sy = sphereBaseY + scrollY * 0.25;
+  }, { passive: true });
 
   function animate() {
     ctx.clearRect(0, 0, cw, ch);
     globalRot += 0.003;
 
-    for (var i = 0; i < rings.length; i++) {
-      var ring = rings[i];
+    // Smoothly decay back to normal speed
+    speedMultiplier += (1 - speedMultiplier) * 0.05;
 
-      // Ring center stays fixed (no global rotation on position)
-      var rcy = sy + ring.yOff;
-      var visualR = ring.ringR;
+    for (var i = 0; i < points.length; i++) {
+      var p = points[i];
+      p.angle += p.speed * speedMultiplier;
 
-      var squash = ring.ringR > 0 ? (ring.ringR / R) * 0.4 + 0.05 : 0.05;
+      var dx = Math.cos(p.angle) * p.ringR;
+      var dz = Math.sin(p.angle) * p.ringR * 0.35;
 
-      // Dots
-      for (var j = 0; j < ring.dots.length; j++) {
-        var dot = ring.dots[j];
-        dot.angle += ring.speed;
+      var x = sx + dx;
+      var y = sy + p.yOff + dz;
 
-        var dx = Math.cos(dot.angle) * visualR;
-        var dz = Math.sin(dot.angle) * visualR * squash;
+      // Depth based on front/back
+      var zPos = Math.sin(p.angle);
+      var dim = 0.55 + (zPos + 1) * 0.225;
 
-        var x = sx + dx;
-        var y = rcy + dz;
+      // Glow
+      ctx.beginPath();
+      ctx.arc(x, y, p.size * 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = p.color + Math.round(dim * 25).toString(16).padStart(2, "0");
+      ctx.fill();
 
-        // Depth based on front/back (z = sin of angle on the ring)
-        var zPos = Math.sin(dot.angle);
-        var dim = 0.3 + (zPos + 1) * 0.35;
-
-        // Glow
-        ctx.beginPath();
-        ctx.arc(x, y, dot.size * 3.5, 0, Math.PI * 2);
-        ctx.fillStyle = ring.color + Math.round(dim * 25).toString(16).padStart(2, "0");
-        ctx.fill();
-
-        // Core
-        ctx.beginPath();
-        ctx.arc(x, y, dot.size * dim, 0, Math.PI * 2);
-        ctx.globalAlpha = dim;
-        ctx.fillStyle = ring.color;
-        ctx.fill();
-        ctx.globalAlpha = 1;
-      }
+      // Core
+      ctx.beginPath();
+      ctx.arc(x, y, p.size * dim, 0, Math.PI * 2);
+      ctx.globalAlpha = dim;
+      ctx.fillStyle = p.color;
+      ctx.fill();
+      ctx.globalAlpha = 1;
     }
 
     requestAnimationFrame(animate);
