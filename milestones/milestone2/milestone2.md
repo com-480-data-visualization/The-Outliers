@@ -17,7 +17,7 @@ The narrative follows a structure inspired by Freytag's pyramid (Lecture 12 - St
 
 A scroll-driven area chart paired with a narrative column. As the user scrolls through five annotated steps (1974 → 1998 → 2018 → 2021 → 2023), the chart progressively reveals via an animated clip-path. A tracking marker and label highlight the current data point.
 
-**Design choices:** Area chart (not bar) because the cumulative nature of the data emphasizes magnitude over individual years. The scroll-driven reveal builds tension gradually - the reader *experiences* the acceleration rather than seeing it all at once (Lecture 12 - Storytelling). The left-text / right-chart layout follows The Pudding's scrollytelling convention.
+**Design choices:** We chose an area chart over a bar chart because the filled shape conveys the cumulative weight of the data better than individual bars. Revealing the chart as the reader scrolls lets them feel the acceleration firsthand instead of seeing it all at once (Lecture 12 - Storytelling). The left-text / right-chart layout follows The Pudding's scrollytelling convention.
 
 ![Timeline wireframe](../../img/wireframes/01_timeline.png?v=2)
 
@@ -25,7 +25,7 @@ A scroll-driven area chart paired with a narrative column. As the user scrolls t
 
 Two paired visualizations. **Left:** a horizontal bar chart of the top 10 countries by satellite count, with the USA highlighted in a contrasting color to emphasize its 67.1% dominance. **Right:** a Lorenz curve plotting cumulative operator share vs. cumulative satellite share, with the shaded area representing inequality (Gini = 0.862).
 
-**Design choices:** Horizontal bars rather than vertical because country names are long categorical labels - vertical bars would require angled text, which reduces readability (Lecture 7 - Do's and Don'ts of Viz). The Lorenz curve is paired with the bar chart so the user sees both *national* and *corporate* concentration side by side, reinforcing the inequality message.
+**Design choices:** Horizontal bars work better than vertical ones here because country names are long - vertical bars would force angled labels that are harder to read (Lecture 7 - Do's and Don'ts of Viz). The Lorenz curve sits next to the bar chart so the reader sees both *national* and *corporate* concentration side by side, reinforcing the inequality message.
 
 ![World map wireframe](../../img/wireframes/02_worldmap.png?v=2)
 ![Operator concentration wireframe](../../img/wireframes/05_concentration.png?v=2)
@@ -36,7 +36,7 @@ Three sub-visualizations. **A donut chart** showing orbit class distribution (LE
 
 Below these, a **3D interactive globe** (Globe.gl / Three.js) renders all 6,718 individual satellites as color-coded points. Users can drag to rotate, scroll to zoom, and click filter buttons (All / LEO / MEO / GEO / Elliptical) to isolate orbit classes. Hovering a point shows satellite name, country, altitude, and purpose.
 
-**Design choices:** The donut chart uses an inner label instead of a separate legend - the single most important number (88.4%) is readable at a glance (Lecture 6 - Perception and Marks/Channels). The purpose × orbit heatmap uses a log-scaled sequential color encoding (`d3.scaleSequentialLog`) to handle the wide range of values (from 1 to 4,000+) across purpose × orbit combinations, making patterns immediately visible without the clutter of many small bars (Lecture 6 - Perception and Marks/Channels). The 3D globe uses logarithmic altitude scaling so LEO and GEO satellites are both visible without GEO dwarfing the scene.
+**Design choices:** The donut chart places the key number (88.4%) right in the center instead of in a separate legend, so the reader sees it immediately (Lecture 6 - Perception and Marks/Channels). The purpose × orbit heatmap uses a log-scaled color encoding (`d3.scaleSequentialLog`) because values range from 1 to over 4,000 - a linear scale would wash out the smaller cells, while the log scale keeps patterns visible across the full range (Lecture 6 - Perception and Marks/Channels). The 3D globe scales altitude logarithmically so that LEO and GEO satellites are both visible - without this, GEO's true distance would push LEO into an invisible speck.
 
 ![Orbital structure wireframe](../../img/wireframes/03_orbital.png?v=2)
 ![Purpose × Orbit heatmap wireframe](../../img/wireframes/04_purpose.png?v=3)
