@@ -1,35 +1,43 @@
 /**
- * scrollytelling.js — Scroll-driven step activation for the narrative sections.
- * Uses IntersectionObserver (no external library) as taught in Lecture 5 (Interaction).
+ * scrollytelling.js - Scroll-driven stacking cards.
+ * The entire .scrolly grid is sticky. The parent .viz-container is tall (300vh via CSS).
+ * As the user scrolls through that height, cards reveal one by one and stay.
+ * No DOM injection, no spacers.
  */
 
 function initScrollytelling() {
+  const container = document.querySelector('#chapter-timeline .viz-container');
   const steps = document.querySelectorAll('.step');
-  if (!steps.length) return;
+  if (!container || !steps.length) return;
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          // Deactivate all steps, activate current
-          steps.forEach((s) => s.classList.remove('is-active'));
-          entry.target.classList.add('is-active');
+  let currentStep = -1;
 
-          // Dispatch custom event so charts can react
-          const stepIndex = +entry.target.dataset.step;
-          window.dispatchEvent(
-            new CustomEvent('scrolly-step', { detail: { step: stepIndex } })
-          );
-        }
-      });
-    },
-    {
-      rootMargin: '-30% 0px -30% 0px', // trigger when step is near center
-      threshold: 0.5,
-    }
-  );
+  function onScroll() {
+    const rect = container.getBoundingClientRect();
+    const scrolled = -rect.top;
+    const scrollable = rect.height - window.innerHeight;
+    if (scrollable <= 0) return;
 
-  steps.forEach((step) => observer.observe(step));
+    const progress = Math.max(0, Math.min(1, scrolled / scrollable));
+    const activeIdx = Math.min(steps.length - 1, Math.floor(progress * steps.length));
+
+    if (activeIdx === currentStep) return;
+    currentStep = activeIdx;
+
+    steps.forEach((step, i) => {
+      step.classList.remove('is-active', 'is-passed');
+      if (i < activeIdx) step.classList.add('is-passed');
+      else if (i === activeIdx) step.classList.add('is-active');
+    });
+
+    const stepNum = +(steps[activeIdx].dataset.step);
+    window.dispatchEvent(
+      new CustomEvent('scrolly-step', { detail: { step: stepNum } })
+    );
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
 }
 
 /**
@@ -63,7 +71,6 @@ function animateCounter(el) {
   function tick(now) {
     const elapsed = now - start;
     const progress = Math.min(elapsed / duration, 1);
-    // ease-out cubic
     const eased = 1 - Math.pow(1 - progress, 3);
     const current = eased * target;
     el.textContent = isDecimal
@@ -75,6 +82,5 @@ function animateCounter(el) {
   requestAnimationFrame(tick);
 }
 
-// Export for main.js
 window.initScrollytelling = initScrollytelling;
 window.initStatCounters = initStatCounters;
