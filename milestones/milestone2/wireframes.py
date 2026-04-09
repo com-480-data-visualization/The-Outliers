@@ -11,8 +11,10 @@ import os
 
 os.makedirs("../img/wireframes", exist_ok=True)
 
-# Load satellite data
-with open("../../website/data/satellites.json", "r") as f:
+# Load satellite data (resolve relative to this script's location)
+_script_dir = os.path.dirname(os.path.abspath(__file__))
+_data_path = os.path.join(_script_dir, "..", "..", "prototype", "data", "satellites.json")
+with open(_data_path, "r") as f:
     SAT_DATA = json.load(f)
 
 # Shared style
@@ -242,8 +244,8 @@ plt.close()
 # ============================================================
 from matplotlib.colors import LinearSegmentedColormap
 
-fig = plt.figure(figsize=(10, 6.5), facecolor=DARK_BG)
-ax = fig.add_axes([0.18, 0.08, 0.55, 0.72])
+fig = plt.figure(figsize=(12, 6.5), facecolor=DARK_BG)
+ax = fig.add_axes([0.22, 0.08, 0.50, 0.72])
 ax.set_facecolor(DARK_BG)
 ax.spines["top"].set_visible(False)
 ax.spines["right"].set_visible(False)
