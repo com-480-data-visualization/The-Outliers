@@ -1,6 +1,6 @@
 # Crowded Orbit
 
-**COM-480 Data Visualization Project, EPFL 2025**
+**COM-480 Data Visualization Project, EPFL 2026**
 
 [🌐 **Live Website**](https://com-480-data-visualization.github.io/The-Outliers/)
 
