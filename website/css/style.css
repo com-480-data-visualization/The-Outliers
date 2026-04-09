@@ -5,7 +5,7 @@
 :root {
   --bg-dark: #000000;
   --bg-section: #050508;
-  --bg-card: #0a0c14;
+  --bg-card: rgba(8, 10, 20, 0.85);
   --text-primary: #e8eaf0;
   --text-secondary: #9ba3b5;
   --accent-blue: #1a73e8;
@@ -171,16 +171,17 @@ body {
 
 .viz-block {
   background: var(--bg-card);
+  backdrop-filter: blur(12px);
   border-radius: 16px;
   padding: 32px;
-  border: 1px solid rgba(255,255,255,0.06);
-  box-shadow: 0 4px 30px rgba(0,0,0,0.3), 0 0 60px rgba(26,115,232,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.5), 0 0 1px rgba(255,255,255,0.1);
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .viz-block:hover {
-  border-color: rgba(255,255,255,0.1);
-  box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 80px rgba(26,115,232,0.06);
+  border-color: rgba(255,255,255,0.14);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 40px rgba(26,115,232,0.05);
 }
 
 .viz-block.full-width {
@@ -249,17 +250,18 @@ body {
   line-height: 1.7;
   color: var(--text-secondary);
   background: var(--bg-card);
+  backdrop-filter: blur(12px);
   border-radius: 12px;
   padding: 14px 18px;
-  border-left: 3px solid rgba(26, 115, 232, 0.3);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.03);
+  border-left: 3px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 1px rgba(255,255,255,0.08);
   transition: border-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
 }
 
 .step.is-active p {
   color: var(--text-primary);
   border-left-color: var(--accent-orange);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 0 16px rgba(232, 113, 10, 0.06);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 20px rgba(232, 113, 10, 0.08);
 }
 
 .sticky {
