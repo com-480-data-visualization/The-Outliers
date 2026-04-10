@@ -568,9 +568,9 @@ function drawPurposeChart(data) {
   var container = d3.select("#purpose-chart");
   if (container.empty()) return;
 
-  var margin = { top: 20, right: 10, bottom: 10, left: 50 };
+  var margin = { top: 20, right: 10, bottom: 60, left: 50 };
   var width = 460 - margin.left - margin.right;
-  var height = 340 - margin.top - margin.bottom;
+  var height = 500 - margin.top - margin.bottom;
 
   var svg = container
     .append("svg")
@@ -651,6 +651,16 @@ function drawPurposeChart(data) {
     .attr("dx", "-0.6em")
     .attr("dy", "0.2em")
     .attr("font-size", "11px");
+
+  // Wrap "Technology Development" onto two lines so the rotated label is shorter
+  svg.selectAll(".axis text").each(function() {
+    var t = d3.select(this);
+    if (t.text() === "Technology Development") {
+      t.text(null);
+      t.append("tspan").attr("x", 0).attr("dy", "0em").text("Technology");
+      t.append("tspan").attr("x", 0).attr("dy", "1.1em").text("Development");
+    }
+  });
 
   // Y axis
   svg.append("g")
