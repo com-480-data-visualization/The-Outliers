@@ -79,12 +79,13 @@ ax_text.text(0.1, 0.95, "SCROLL NARRATIVE", color=MUTED, fontsize=7,
 ax_chart = fig.add_subplot(gs[1])
 setup_ax(ax_chart, "Cumulative Operational Satellites")
 
+peak = SAT_DATA["summary"]["total_satellites"]
 x = np.arange(1974, 2023)
 y = np.concatenate([
     np.linspace(20, 200, 15),
     np.linspace(200, 800, 15),
     np.linspace(800, 1200, 9),
-    np.linspace(1200, 6700, 10),
+    np.linspace(1200, peak, 10),
 ])
 ax_chart.fill_between(x, y, color=ACCENT, alpha=0.2)
 ax_chart.plot(x, y, color=ACCENT, linewidth=2)
@@ -114,15 +115,16 @@ gs = fig.add_gridspec(1, 2, width_ratios=[1.3, 1], wspace=0.3)
 ax1 = fig.add_subplot(gs[0])
 setup_ax(ax1, "Top 15 Countries")
 
-countries = ["USA", "China", "UK", "Russia", "Japan", "India", "Canada",
-             "Germany", "Luxembourg", "Argentina", "France", "S. Korea",
-             "Spain", "Israel", "Others"]
-counts = [4510, 590, 440, 200, 95, 65, 55, 45, 40, 35, 32, 28, 25, 20, 538]
+# Top 14 countries from the data + an "Others" bucket for everything else.
+top14 = SAT_DATA["top_countries"][:14]
+countries = [c["country"] for c in top14] + ["Others"]
+others_count = SAT_DATA["summary"]["total_satellites"] - sum(c["count"] for c in top14)
+counts = [c["count"] for c in top14] + [others_count]
 
 bars = ax1.barh(range(len(countries)), counts, color=ACCENT, alpha=0.8, height=0.6)
 bars[0].set_color(ACCENT2)
 ax1.set_yticks(range(len(countries)))
-ax1.set_yticklabels(countries[::-1], color=TEXT, fontsize=7)
+ax1.set_yticklabels(countries, color=TEXT, fontsize=7)
 ax1.invert_yaxis()
 ax1.set_xlabel("Satellites", color=MUTED, fontsize=9)
 
@@ -134,8 +136,10 @@ for bar, val in zip(bars, counts):
 ax2 = fig.add_subplot(gs[1])
 setup_ax(ax2, "Operator Inequality")
 
-x_lorenz = np.linspace(0, 1, 100)
-y_lorenz = x_lorenz ** 4.5
+# Real Lorenz curve from the data instead of a synthetic power curve.
+lorenz = SAT_DATA["lorenz_curve"]
+x_lorenz = np.array([p["pct_operators"] / 100 for p in lorenz])
+y_lorenz = np.array([p["pct_satellites"] / 100 for p in lorenz])
 ax2.plot(x_lorenz, y_lorenz, color=ACCENT2, linewidth=2)
 ax2.plot([0, 1], [0, 1], color=MUTED, linestyle="--", linewidth=1, alpha=0.5)
 ax2.fill_between(x_lorenz, y_lorenz, x_lorenz, alpha=0.1, color=ACCENT2)
@@ -143,9 +147,11 @@ ax2.set_xlabel("% of operators", color=MUTED, fontsize=9)
 ax2.set_ylabel("% of satellites", color=MUTED, fontsize=9)
 ax2.set_aspect("equal")
 
-ax2.text(0.3, 0.7, "Gini = 0.862", color=ACCENT2, fontsize=11,
+gini = SAT_DATA["summary"]["gini_coefficient"]
+top1_share = 100 - next(p["pct_satellites"] for p in lorenz if p["pct_operators"] == 99)
+ax2.text(0.3, 0.7, f"Gini = {gini}", color=ACCENT2, fontsize=11,
          fontweight="bold", transform=ax2.transAxes)
-ax2.text(0.3, 0.62, "Top 1% of operators\nown 50% of satellites",
+ax2.text(0.3, 0.62, f"Top 1% of operators\nown {top1_share:.0f}% of satellites",
          color=MUTED, fontsize=8, transform=ax2.transAxes)
 
 fig.suptitle("Country Ownership + Operator Inequality", color=TEXT,
