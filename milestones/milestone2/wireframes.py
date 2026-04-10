@@ -136,7 +136,6 @@ for bar, val in zip(bars, counts):
 ax2 = fig.add_subplot(gs[1])
 setup_ax(ax2, "Operator Inequality")
 
-# Real Lorenz curve from the data instead of a synthetic power curve.
 lorenz = SAT_DATA["lorenz_curve"]
 x_lorenz = np.array([p["pct_operators"] / 100 for p in lorenz])
 y_lorenz = np.array([p["pct_satellites"] / 100 for p in lorenz])
