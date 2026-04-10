@@ -10,7 +10,7 @@ Kevin Abou Jaoude, Youssef Dib, Mark Nabbout
 
 The narrative follows a structure inspired by Freytag's pyramid (Lecture 12, Storytelling):
 
-- **Exposition**: The hero section sets the scene with 6,715 objects orbiting Earth.
+- **Exposition**: The hero section sets the scene with 6,713 objects orbiting Earth.
 - **Rising action**: The timeline chart progressively reveals decades of slow growth, then the sudden vertical takeoff post-2019.
 - **Climax**: The country and operator analysis reveals that a single company (SpaceX) controls nearly 50% of all satellites, with a Gini coefficient of 0.862.
 - **Falling action**: The orbital and purpose breakdown explains _where_ the congestion sits (88.4% in LEO) and _why_ (71.8% Communications, driven by mega-constellations).

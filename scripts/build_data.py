@@ -96,13 +96,15 @@ OPERATOR_ALIASES = {
 _FLAGS: list[dict[str, Any]] = []
 
 # Flag categories that cause the row to be dropped from the output entirely.
-# Each row in any of these categories has corrupt orbital data that the
-# script cannot recover (unlike invalid_eccentricity, which it recomputes
-# from perigee/apogee, or orbit_reclassified, which it overrides in place).
+# Each row in any of these categories has corrupt or missing orbital data
+# that the script cannot recover (unlike invalid_eccentricity, which it
+# recomputes from perigee/apogee, or orbit_reclassified, which it overrides
+# in place).
 DROP_CATEGORIES = {
     "apogee_lt_perigee",
     "invalid_inclination",
     "suspicious_apogee",
+    "missing_orbital_data",
 }
 
 
@@ -181,6 +183,23 @@ def sanity_check_row(
             name,
             "invalid_inclination",
             f"inclination = {inclination} degrees is outside [0, 180]",
+        )
+    # Both inclination AND a usable altitude are required to position the
+    # satellite on the 3D globe; without them the row cannot be visualised
+    # and is excluded from the aggregate counts as well so the two outputs
+    # always agree on the total.
+    if pd.isna(inclination) or (
+        pd.isna(perigee) and pd.isna(apogee)
+    ):
+        missing = []
+        if pd.isna(inclination):
+            missing.append("inclination")
+        if pd.isna(perigee) and pd.isna(apogee):
+            missing.append("perigee/apogee")
+        flag(
+            name,
+            "missing_orbital_data",
+            f"missing {' and '.join(missing)} - cannot be positioned on the globe",
         )
 
 
@@ -545,18 +564,18 @@ def build_main_json(df: pd.DataFrame) -> dict:
 
 
 def build_globe_json(df: pd.DataFrame) -> list:
-    """Slim per-satellite list for the 3D globe (Globe.gl points layer)."""
-    g = df.dropna(subset=["mean_altitude", "Inclination (degrees)"]).copy()
-    g = g[g["mean_altitude"] > 0]
-
+    """Slim per-satellite list for the 3D globe (Globe.gl points layer).
+    Rows missing orbital data have already been dropped upstream by
+    load_dataframe, so this function trusts that every row has both a
+    valid altitude and a valid inclination."""
     out_df = pd.DataFrame(
         {
-            "name": g["Current Official Name of Satellite"].astype(str).str.strip(),
-            "country": g["Country of Operator/Owner"].fillna("Unknown").astype(str).str.strip(),
-            "orbit_class": g["orbit_class"],
-            "purpose": g["Purpose"].fillna("Unknown").astype(str).str.strip(),
-            "altitude": g["mean_altitude"].round(1),
-            "inclination": g["Inclination (degrees)"].round(2),
+            "name": df["Current Official Name of Satellite"].astype(str).str.strip(),
+            "country": df["Country of Operator/Owner"].fillna("Unknown").astype(str).str.strip(),
+            "orbit_class": df["orbit_class"],
+            "purpose": df["Purpose"].fillna("Unknown").astype(str).str.strip(),
+            "altitude": df["mean_altitude"].round(1),
+            "inclination": df["Inclination (degrees)"].round(2),
         }
     )
     return out_df.to_dict(orient="records")
@@ -577,9 +596,10 @@ def write_quality_report(flags: list[dict[str, Any]]) -> None:
     cat_descriptions = {
         "dropped": (
             "Rows excluded from both output JSONs because their orbital "
-            "parameters are corrupt and cannot be recovered. Aggregate counts "
+            "parameters are either corrupt or incomplete. Aggregate counts "
             "in `satellites.json` and the per-satellite list in "
-            "`satellites-globe.json` both exclude these."
+            "`satellites-globe.json` both exclude these so the two files "
+            "always agree on the total satellite count."
         ),
         "orbit_reclassified": (
             "Rows whose UCS `Class of Orbit` was overridden by the script's "

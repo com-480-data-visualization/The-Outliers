@@ -193,9 +193,10 @@ def test_build_against_real_csv():
 
     # ---- summary ----
     s = main_json["summary"]
-    # 6718 in the raw CSV minus 3 rows dropped for corrupt orbital data
-    # (Ciel-2, Eutelsat Hotbird 13G, Yaogan 35A).
-    assert s["total_satellites"] == 6715
+    # 6718 in the raw CSV minus 5 dropped rows: 3 with corrupt orbital data
+    # (Ciel-2, Eutelsat Hotbird 13G, Yaogan 35A) and 2 with missing
+    # inclination (Lemur-2-KarenB, Lemur-2 Mimi1307).
+    assert s["total_satellites"] == 6713
     assert s["orbit_classes"] == 4
     # Numbers can drift slightly with reclassification, but never wildly.
     assert 0.85 <= s["pct_leo"] / 100 <= 0.92
@@ -256,14 +257,25 @@ def test_build_against_real_csv():
     assert "Eutelsat Hotbird 13G" in flag_names
     assert "Ciel-2" in flag_names
     assert "Yaogan 35A" in flag_names
+    assert "Lemur-2-KarenB" in flag_names
+    assert "Lemur-2 Mimi1307" in flag_names
 
-    # ---- the 3 dropped rows must NOT appear in either output JSON ----
-    dropped_names = {"Ciel-2", "Eutelsat Hotbird 13G", "Yaogan 35A"}
+    # ---- all 5 dropped rows must NOT appear in either output JSON ----
+    dropped_names = {
+        "Ciel-2",
+        "Eutelsat Hotbird 13G",
+        "Yaogan 35A",
+        "Lemur-2-KarenB",
+        "Lemur-2 Mimi1307",
+    }
     assert all(g["name"] not in dropped_names for g in globe_json), \
         "A dropped row leaked into the globe JSON"
     # And they must each have a 'dropped' flag (not their original sanity flag).
     dropped_flags = {f["name"] for f in flags if f["category"] == "dropped"}
     assert dropped_flags == dropped_names
+
+    # ---- the two output JSONs must agree on the satellite count ----
+    assert len(globe_json) == s["total_satellites"]
 
 
 def test_build_output_is_valid_json():

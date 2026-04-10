@@ -71,7 +71,7 @@ function initCounter() {
     const el = document.getElementById("hero-count");
     if (!el) return;
 
-    const target = 6718;
+    const target = 6713;
     const duration = 2200;
 
     // Wait until hero is visible

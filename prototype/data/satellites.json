@@ -1,6 +1,6 @@
 {
   "summary": {
-    "total_satellites": 6715,
+    "total_satellites": 6713,
     "unique_countries": 104,
     "unique_operators": 633,
     "orbit_classes": 4,
@@ -193,14 +193,14 @@
     },
     {
       "year": 2022,
-      "count": 2118,
-      "cumulative": 6714
+      "count": 2116,
+      "cumulative": 6712
     }
   ],
   "top_countries": [
     {
       "country": "USA",
-      "count": 4511
+      "count": 4509
     },
     {
       "country": "China",
@@ -262,7 +262,7 @@
   "orbit_distribution": [
     {
       "orbit": "LEO",
-      "count": 5942,
+      "count": 5940,
       "pct": 88.5
     },
     {
@@ -289,7 +289,7 @@
     },
     {
       "purpose": "Earth Observation",
-      "count": 1191,
+      "count": 1189,
       "pct": 17.7
     },
     {
@@ -323,7 +323,7 @@
     },
     {
       "purpose": "Earth Observation",
-      "LEO": 1129,
+      "LEO": 1127,
       "MEO": 2,
       "GEO": 47,
       "Elliptical": 13
@@ -369,7 +369,7 @@
     },
     {
       "operator": "Spire Global",
-      "count": 127
+      "count": 125
     },
     {
       "operator": "Russia MoD",
@@ -469,7 +469,7 @@
     },
     {
       "decade": "2020s",
-      "count": 4788
+      "count": 4786
     }
   ]
 }
