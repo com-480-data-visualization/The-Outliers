@@ -6,11 +6,11 @@ Kevin Abou Jaoude, Youssef Dib, Mark Nabbout
 
 ## Project Goal
 
-**Crowded Orbit** is a scrollytelling data visualization that reveals how Earth's orbit transformed from a near-empty scientific frontier into a crowded, unequally controlled infrastructure. The user scrolls through a guided three-chapter narrative: _The Explosion_ (how fast orbit filled up), _Who Owns Space?_ (geopolitical and corporate concentration), and _Where Is the Congestion?_ (orbital and purpose distribution), before being invited to freely explore a 3D interactive globe of all 6,718 operational satellites.
+**Crowded Orbit** is a scrollytelling data visualization that reveals how Earth's orbit transformed from a near-empty scientific frontier into a crowded, unequally controlled infrastructure. The user scrolls through a guided three-chapter narrative: _The Explosion_ (how fast orbit filled up), _Who Owns Space?_ (geopolitical and corporate concentration), and _Where Is the Congestion?_ (orbital and purpose distribution), before being invited to freely explore a 3D interactive globe of all 6,713 operational satellites.
 
 The narrative follows a structure inspired by Freytag's pyramid (Lecture 12, Storytelling):
 
-- **Exposition**: The hero section sets the scene with 6,718 objects orbiting Earth.
+- **Exposition**: The hero section sets the scene with 6,715 objects orbiting Earth.
 - **Rising action**: The timeline chart progressively reveals decades of slow growth, then the sudden vertical takeoff post-2019.
 - **Climax**: The country and operator analysis reveals that a single company (SpaceX) controls nearly 50% of all satellites, with a Gini coefficient of 0.862.
 - **Falling action**: The orbital and purpose breakdown explains _where_ the congestion sits (88.4% in LEO) and _why_ (71.8% Communications, driven by mega-constellations).
@@ -18,7 +18,7 @@ The narrative follows a structure inspired by Freytag's pyramid (Lecture 12, Sto
 
 ## Functional Prototype
 
-The prototype is available in the [`prototype/`](../../prototype/) folder and is deployed at [https://com-480-data-visualization.github.io/The-Outliers/](https://com-480-data-visualization.github.io/The-Outliers/). It includes all MVP components listed above, fully implemented with real data (not placeholders). The site loads two JSON data files: `satellites.json` (aggregated statistics for all charts) and `satellites-globe.json` (6,718 individual satellite records for the 3D globe).
+The prototype is available in the [`prototype/`](../../prototype/) folder and is deployed at [https://com-480-data-visualization.github.io/The-Outliers/](https://com-480-data-visualization.github.io/The-Outliers/). It includes all MVP components listed below, fully implemented with real data (not placeholders). The site loads two JSON data files: `satellites.json` (aggregated statistics for all charts) and `satellites-globe.json` (6,713 individual satellite records for the 3D globe).
 
 ## Visualization Sketches
 
@@ -34,7 +34,7 @@ A horizontal bar chart shows the top 15 countries by satellite count, with the U
 
 
 **Section 3: 3D Globe + Purpose by Orbit Heatmap.**
-A 3D interactive globe (Globe.gl) renders all 6,718 satellites as color-coded points by orbit class. Users can drag to rotate, scroll to zoom, and filter by LEO/MEO/GEO/Elliptical. Hovering a satellite shows its name, altitude, purpose, and country. Below, a log-scaled heatmap cross-references purpose × orbit class, revealing that Communications dominates LEO while Navigation clusters in MEO (L6).
+A 3D interactive globe (Globe.gl) renders all 6,713 satellites as color-coded points by orbit class. Users can drag to rotate, scroll to zoom, and filter by LEO/MEO/GEO/Elliptical. Hovering a satellite shows its name, altitude, purpose, and country. Below, a log-scaled heatmap cross-references purpose × orbit class, revealing that Communications dominates LEO while Navigation clusters in MEO (L6).
 
 ![Globe + Heatmap wireframe](../../img/wireframes/03_globe_heatmap.png)
 
@@ -55,7 +55,7 @@ A 3D interactive globe (Globe.gl) renders all 6,718 satellites as color-coded po
 | Lorenz curve (inequality), Gini annotation                  | D3 area, line generators                                   | Lecture 6 (Mark & Channel), Lecture 11 (Tabular Data)     |
 | Narrative pacing, scroll-driven tension                     | Freytag's pyramid adapted for data                         | Lecture 12 (Storytelling)                                 |
 
-**Additional tools:** Google Fonts (Space Grotesk + Inter), pre-aggregated JSON data exported from the EDA notebook (6,718 satellite records for the globe, aggregated statistics for all charts).
+**Additional tools:** Google Fonts (Space Grotesk + Inter), pre-aggregated JSON data exported from the EDA notebook (6,713 satellite records for the globe, aggregated statistics for all charts).
 
 ## Core Visualization (MVP)
 
@@ -66,7 +66,7 @@ All components below are **already implemented** in the prototype:
 - Country bar chart (top 10, USA highlighted) and Lorenz curve (Gini = 0.862)
 - Orbit donut chart (center label "88.4% in LEO") and purpose bar chart (6 color-coded categories)
 - Purpose × Orbit heatmap with log-scaled color encoding and hover info cards
-- 3D interactive globe (Globe.gl, 6,718 satellites) with orbit-class filters, drag/zoom, hover details
+- 3D interactive globe (Globe.gl, 6,713 satellites) with orbit-class filters, drag/zoom, hover details
 - Dark space-themed responsive layout with animated stat counters
 
 ## Extra Ideas (can be dropped without losing the narrative)
