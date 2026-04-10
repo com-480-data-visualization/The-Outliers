@@ -1,0 +1,7 @@
+# Dependencies for scripts/build_data.py and scripts/test_build_data.py.
+# Install with:  pip install -r scripts/requirements.txt
+#
+# Pinned to versions that the script has actually been run against. Newer
+# versions are likely to work but are not validated.
+pandas>=2.0,<3.0
+numpy>=1.24,<3.0
