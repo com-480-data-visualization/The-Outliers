@@ -25,7 +25,7 @@
 
     <link rel="stylesheet" href="css/style.css" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300;9..144,400;9..144,700;9..144,900&family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
     <!-- D3.js v7 -->
@@ -56,24 +56,58 @@
     <!-- 2D twinkle dust across the whole page (chapters and below) -->
     <canvas id="page-stars" aria-hidden="true"></canvas>
 
-    <!-- ====== HERO / INTRO ====== -->
+    <!-- ====== HERO / CINEMATIC INTRO ======
+         A tall scroll stage. Inside, a sticky viewport-sized frame holds the
+         3D Earth + satellite cloud, three sequential "acts" of poster text,
+         and the locked-in title that emerges last. Scroll progress (0→1)
+         drives the act crossfades and the tracer underline. -->
     <section id="hero" class="section hero">
-      <div class="hero-bg" id="hero-canvas" aria-hidden="true"></div>
-      <!-- 3D Earth + 6,713 satellites, confined to the hero section -->
-      <canvas
-        id="space-canvas"
-        aria-hidden="true"
-        role="img"
-        aria-label="3D Earth surrounded by all 6,713 operational satellites color-coded by orbit class"
-      ></canvas>
-      <div class="hero-content">
-        <h1 class="hero-title">CROWDED ORBIT</h1>
-        <p class="hero-subtitle">
-          How satellites reshaped the space around Earth
-        </p>
-        <div class="scroll-indicator">
-          <span>Scroll to explore</span>
-          <div class="scroll-arrow"></div>
+      <div class="hero-stage">
+        <div class="hero-bg" id="hero-canvas" aria-hidden="true"></div>
+        <canvas
+          id="space-canvas"
+          aria-hidden="true"
+          role="img"
+          aria-label="3D Earth surrounded by all 6,713 operational satellites color-coded by orbit class"
+        ></canvas>
+
+        <!-- A faint horizontal rule that draws across the screen as the user
+             progresses through the acts. Reads as a film "timeline". -->
+        <div class="hero-tracer" aria-hidden="true">
+          <span class="hero-tracer-fill"></span>
+          <span class="hero-tracer-mark hero-tracer-mark-start">1974</span>
+          <span class="hero-tracer-mark hero-tracer-mark-end">2023</span>
+        </div>
+
+        <!-- Three acts that crossfade in sequence as the user scrolls. -->
+        <div class="hero-acts" aria-hidden="true">
+          <div class="hero-act" data-act="1">
+            <span class="hero-act-word">A frontier.</span>
+          </div>
+          <div class="hero-act" data-act="2">
+            <span class="hero-act-word">Then, an avalanche.</span>
+          </div>
+          <div class="hero-act" data-act="3">
+            <span class="hero-act-word">6,713 and counting.</span>
+          </div>
+        </div>
+
+        <!-- The final title. Hidden until the last act of the scroll stage,
+             when it ignites letter by letter. -->
+        <div class="hero-finale" data-act="finale">
+          <h1 class="hero-title" aria-label="Crowded Orbit">
+            <span class="hero-title-row">
+              <span class="hero-letter" style="--i:0">C</span><span class="hero-letter" style="--i:1">R</span><span class="hero-letter" style="--i:2">O</span><span class="hero-letter" style="--i:3">W</span><span class="hero-letter" style="--i:4">D</span><span class="hero-letter" style="--i:5">E</span><span class="hero-letter" style="--i:6">D</span>
+            </span>
+            <span class="hero-title-row">
+              <span class="hero-letter" style="--i:7">O</span><span class="hero-letter" style="--i:8">R</span><span class="hero-letter" style="--i:9">B</span><span class="hero-letter" style="--i:10">I</span><span class="hero-letter" style="--i:11">T</span>
+            </span>
+          </h1>
+          <p class="hero-subtitle">How satellites reshaped the space around Earth.</p>
+          <div class="scroll-indicator">
+            <span>Keep scrolling</span>
+            <div class="scroll-arrow"></div>
+          </div>
         </div>
       </div>
     </section>
@@ -501,6 +535,7 @@
     <script type="module" src="js/scroll.js"></script>
 
     <script src="js/globe.js"></script>
+    <script src="js/cinematic-hero.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>

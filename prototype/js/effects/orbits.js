@@ -65,20 +65,34 @@ function drawTitleOrbits() {
   var speedMultiplier = 1;
   var scrollTimeout;
 
-  // Hero parallax: title slides more, sphere slides less
-  var heroContent = document.querySelector(".hero-content");
+  // Hero parallax: sphere drifts down as the user scrolls. The old version
+  // also translated .hero-content, but the cinematic intro owns its own
+  // layout now, so we only adjust the sphere centre.
+  //
+  // The listener is rAF-coalesced (one read/write per frame max) and bails
+  // out once the hero is offscreen — there's nothing to parallax once the
+  // user is in the chapters below.
   var sphereBaseY = sy;
+  var pending = false;
+  var lastScrollY = 0;
+
+  function onScrollFrame() {
+    pending = false;
+    var heroRect = heroEl ? heroEl.getBoundingClientRect() : null;
+    if (heroRect && heroRect.bottom < -10) return; // hero gone — stop work
+    sy = sphereBaseY + lastScrollY * 0.25;
+  }
+
   window.addEventListener("scroll", function() {
     speedMultiplier = 4;
     clearTimeout(scrollTimeout);
     scrollTimeout = setTimeout(function() { speedMultiplier = 1; }, 150);
 
-    var scrollY = window.scrollY;
-    if (heroContent) {
-      // Moves down at 0.4x scroll speed — stays visible much longer
-      heroContent.style.transform = "translateY(" + (scrollY * 0.4) + "px)";
+    lastScrollY = window.scrollY;
+    if (!pending) {
+      pending = true;
+      requestAnimationFrame(onScrollFrame);
     }
-    sy = sphereBaseY + scrollY * 0.25;
   }, { passive: true });
 
   function animate() {
