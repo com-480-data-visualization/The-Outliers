@@ -3,7 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crowded Orbit -Visualizing Earth's Satellite Infrastructure</title>
+    <title>Crowded Orbit: Visualizing Earth's Satellite Infrastructure</title>
+    <meta
+      name="description"
+      content="A scrollytelling data visualization of every operational satellite orbiting Earth: how fast orbit filled up, who owns it, and where the congestion concentrates. COM-480 Data Visualization, EPFL 2026."
+    />
+    <meta name="theme-color" content="#0a0e1a" />
+    <meta name="author" content="Kevin Abou Jaoude, Youssef Dib, Mark Nabbout" />
+
+    <!-- Open Graph / social preview -->
+    <meta property="og:title" content="Crowded Orbit" />
+    <meta
+      property="og:description"
+      content="How 6,713 satellites reshaped the space around Earth. An EPFL data visualization project."
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://com-480-data-visualization.github.io/The-Outliers/"
+    />
+
     <link rel="stylesheet" href="css/style.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@400;600;700&display=swap"
@@ -13,13 +32,40 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
   </head>
   <body>
-    <!-- Full-page star field background -->
-    <canvas id="page-stars"></canvas>
+    <noscript>
+      <div style="
+        max-width: 720px;
+        margin: 80px auto;
+        padding: 32px;
+        text-align: center;
+        font-family: system-ui, sans-serif;
+        color: #e8eaf0;
+        background: rgba(20, 22, 30, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+      ">
+        <h1 style="margin-bottom: 16px; font-size: 1.5rem;">Crowded Orbit</h1>
+        <p>
+          This visualization is built with D3.js and Three.js and requires
+          JavaScript. Please enable JavaScript in your browser to explore the
+          6,713 satellites orbiting Earth.
+        </p>
+      </div>
+    </noscript>
+
+    <!-- 2D twinkle dust across the whole page (chapters and below) -->
+    <canvas id="page-stars" aria-hidden="true"></canvas>
 
     <!-- ====== HERO / INTRO ====== -->
     <section id="hero" class="section hero">
-      <div class="hero-bg" id="hero-canvas"></div>
-      <canvas id="orbit-canvas"></canvas>
+      <div class="hero-bg" id="hero-canvas" aria-hidden="true"></div>
+      <!-- 3D Earth + 6,713 satellites, confined to the hero section -->
+      <canvas
+        id="space-canvas"
+        aria-hidden="true"
+        role="img"
+        aria-label="3D Earth surrounded by all 6,713 operational satellites color-coded by orbit class"
+      ></canvas>
       <div class="hero-content">
         <h1 class="hero-title">CROWDED ORBIT</h1>
         <p class="hero-subtitle">
@@ -34,7 +80,7 @@
 
     <!-- ====== CHAPTER 1: THE EXPLOSION ====== -->
     <section id="chapter-timeline" class="section chapter">
-      <div class="chapter-header">
+      <div class="chapter-header fade-in">
         <span class="chapter-label">Chapter 1</span>
         <h2>The Explosion</h2>
         <p class="chapter-intro">
@@ -88,11 +134,28 @@
           </div>
         </div>
       </div>
+
+      <!-- Companion view to the scrollytelling timeline above: same years,
+           same totals, but broken down by purpose. Makes the "Communications
+           ate the orbit" finding immediately visible. -->
+      <div class="viz-container" style="margin-top: 40px;">
+        <div class="viz-block full-width fade-in">
+          <h3>What are those satellites for?</h3>
+          <p class="viz-note">
+            The cumulative count split by purpose. Communications was a
+            modest band through 2018, then absorbs nearly every new launch
+            from 2019 onward as Starlink and OneWeb deploy their fleets.
+            By 2022, <strong>72% of every active satellite is for
+            communications</strong>.
+          </p>
+          <div id="purpose-over-time-chart"></div>
+        </div>
+      </div>
     </section>
 
     <!-- ====== CHAPTER 2: WHO OWNS SPACE ====== -->
     <section id="chapter-countries" class="section chapter">
-      <div class="chapter-header">
+      <div class="chapter-header fade-in">
         <span class="chapter-label">Chapter 2</span>
         <h2>Who Owns Space?</h2>
         <p class="chapter-intro">
@@ -116,12 +179,88 @@
             <div id="lorenz-chart"></div>
           </div>
         </div>
+
+        <!-- Operator deep-dive: click any bar to slide open a panel with
+             that operator's launch timeline, orbit mix, purpose mix and
+             primary country. This is the "who, specifically" view that
+             puts faces on the Gini=0.862 inequality above. -->
+        <div class="viz-block full-width fade-in">
+          <h3>The 10 operators behind the curve</h3>
+          <p class="viz-note">
+            Click any operator to open a deep-dive panel with their launch
+            history, orbit class mix, and primary purpose.
+          </p>
+          <div id="operators-chart"></div>
+        </div>
       </div>
     </section>
 
+    <!-- ===== Operator deep-dive drawer (slides in from the right) ===== -->
+    <div
+      id="operator-drawer"
+      class="op-drawer"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="op-drawer-title"
+      aria-hidden="true"
+    >
+      <div class="op-drawer-scrim" data-op-close></div>
+      <aside class="op-drawer-panel" tabindex="-1" data-lenis-prevent>
+        <header class="op-drawer-header">
+          <div>
+            <div class="op-drawer-eyebrow">Operator</div>
+            <h3 id="op-drawer-title" class="op-drawer-title">Operator name</h3>
+            <div class="op-drawer-subtitle">
+              <span id="op-drawer-country">Country</span>
+              <span class="op-drawer-dot">·</span>
+              <span id="op-drawer-years">Years</span>
+            </div>
+          </div>
+          <button
+            type="button"
+            class="op-drawer-close"
+            data-op-close
+            aria-label="Close operator panel"
+          >
+            ×
+          </button>
+        </header>
+
+        <div class="op-drawer-kpis">
+          <div class="op-kpi">
+            <div class="op-kpi-value" id="op-drawer-count">0</div>
+            <div class="op-kpi-label">satellites</div>
+          </div>
+          <div class="op-kpi">
+            <div class="op-kpi-value" id="op-drawer-pct">0%</div>
+            <div class="op-kpi-label">of all active</div>
+          </div>
+          <div class="op-kpi">
+            <div class="op-kpi-value" id="op-drawer-orbits">0</div>
+            <div class="op-kpi-label">orbit classes</div>
+          </div>
+        </div>
+
+        <section class="op-drawer-section">
+          <h4 class="op-drawer-section-title">Launch timeline (cumulative)</h4>
+          <div id="op-drawer-timeline" class="op-drawer-sparkline"></div>
+        </section>
+
+        <section class="op-drawer-section">
+          <h4 class="op-drawer-section-title">Orbit mix</h4>
+          <div id="op-drawer-orbit-bars" class="op-drawer-bars"></div>
+        </section>
+
+        <section class="op-drawer-section">
+          <h4 class="op-drawer-section-title">Purposes</h4>
+          <div id="op-drawer-purpose-bars" class="op-drawer-bars"></div>
+        </section>
+      </aside>
+    </div>
+
     <!-- ====== CHAPTER 3: WHERE IS THE CONGESTION ====== -->
     <section id="chapter-orbits" class="section chapter">
-      <div class="chapter-header">
+      <div class="chapter-header fade-in">
         <span class="chapter-label">Chapter 3</span>
         <h2>Where Is the Congestion?</h2>
         <p class="chapter-intro">
@@ -139,16 +278,89 @@
             Each dot is a real satellite positioned by its orbital altitude and
             inclination. Drag to rotate, scroll to zoom.
           </p>
-          <div class="globe-controls">
-            <button class="globe-filter active" data-filter="all">All</button>
-            <button class="globe-filter" data-filter="LEO">LEO</button>
-            <button class="globe-filter" data-filter="MEO">MEO</button>
-            <button class="globe-filter" data-filter="GEO">GEO</button>
-            <button class="globe-filter" data-filter="Elliptical">
+          <div
+            class="globe-controls"
+            role="group"
+            aria-label="Filter satellites by orbit class"
+          >
+            <button class="globe-filter active" data-filter="all" type="button" aria-pressed="true">All</button>
+            <button class="globe-filter" data-filter="LEO" type="button" aria-pressed="false" aria-label="Show only Low Earth Orbit satellites">LEO</button>
+            <button class="globe-filter" data-filter="MEO" type="button" aria-pressed="false" aria-label="Show only Medium Earth Orbit satellites">MEO</button>
+            <button class="globe-filter" data-filter="GEO" type="button" aria-pressed="false" aria-label="Show only Geostationary Orbit satellites">GEO</button>
+            <button class="globe-filter" data-filter="Elliptical" type="button" aria-pressed="false" aria-label="Show only Elliptical orbit satellites">
               Elliptical
             </button>
           </div>
+
+          <!-- Mega-constellation isolator: filter to a single constellation
+               family. Composes with the orbit filter above and the year
+               slider below. Each button is also a "linked view" cue: when a
+               constellation is selected, the matching country bar in
+               Chapter 2 lights up. -->
+          <div
+            class="constellation-controls"
+            role="group"
+            aria-label="Isolate a satellite constellation"
+          >
+            <span class="constellation-label">Isolate:</span>
+            <button class="constellation-filter active" data-constellation="all" type="button" aria-pressed="true">All</button>
+            <button class="constellation-filter" data-constellation="Starlink" type="button" aria-pressed="false" aria-label="Isolate Starlink constellation, 3,395 satellites">
+              Starlink <span class="constellation-count">3,395</span>
+            </button>
+            <button class="constellation-filter" data-constellation="OneWeb" type="button" aria-pressed="false" aria-label="Isolate OneWeb constellation, 502 satellites">
+              OneWeb <span class="constellation-count">502</span>
+            </button>
+            <button class="constellation-filter" data-constellation="Iridium" type="button" aria-pressed="false" aria-label="Isolate Iridium constellation, 73 satellites">
+              Iridium <span class="constellation-count">73</span>
+            </button>
+            <button class="constellation-filter" data-constellation="Galileo" type="button" aria-pressed="false" aria-label="Isolate Galileo constellation, 28 satellites">
+              Galileo <span class="constellation-count">28</span>
+            </button>
+            <button class="constellation-filter" data-constellation="Other" type="button" aria-pressed="false" aria-label="Show only satellites outside the named constellations, 2,715 satellites">
+              Other <span class="constellation-count">2,715</span>
+            </button>
+          </div>
+
           <div id="globe-container" style="width: 100%; height: 550px"></div>
+
+          <!-- Time slider: filter the globe to satellites launched on or
+               before the slider year. Play sweeps through the timeline. -->
+          <div class="time-slider" role="group" aria-label="Filter satellites by launch year">
+            <button
+              id="time-play"
+              class="time-play"
+              type="button"
+              aria-label="Play launch history from 1974 to 2023"
+            >
+              <span class="time-play-icon" aria-hidden="true">▶</span>
+              <span class="time-play-label">Play history</span>
+            </button>
+            <div class="time-slider-track">
+              <div class="time-slider-readout">
+                <span id="time-year">2023</span>
+                <span class="time-slider-readout-sub">
+                  <span id="time-count">6,713</span> satellites
+                </span>
+              </div>
+              <input
+                id="time-range"
+                class="time-range"
+                type="range"
+                min="1974"
+                max="2023"
+                value="2023"
+                step="1"
+                aria-label="Launch-year filter"
+              />
+              <div class="time-slider-axis">
+                <span>1974</span>
+                <span>1990</span>
+                <span>2010</span>
+                <span>2023</span>
+              </div>
+            </div>
+          </div>
+
           <div class="globe-legend">
             <span class="legend-item"
               ><span class="legend-dot" style="background: #1a73e8"></span>LEO
@@ -192,6 +404,42 @@
       </div>
     </section>
 
+    <!-- ====== CHAPTER 4: THE NEXT DECADE ====== -->
+    <section id="chapter-future" class="section chapter">
+      <div class="chapter-header fade-in">
+        <span class="chapter-label">Chapter 4</span>
+        <h2>The Next Decade</h2>
+        <p class="chapter-intro">
+          Today's 6,713 satellites are not the ceiling. They are the floor.
+          Public filings with the FCC, the ITU and national regulators
+          already cover <strong>more than 80,000 satellites</strong> for
+          deployment by ~2030: a 12-fold expansion of the orbital
+          population in roughly seven years.
+        </p>
+      </div>
+      <div class="viz-container">
+        <div class="viz-block full-width fade-in">
+          <div class="future-header">
+            <div>
+              <h3>Today vs. tomorrow</h3>
+              <p class="viz-note" style="margin-bottom: 0">
+                Counts represent satellites filed with regulators (FCC, ITU,
+                national agencies) for deployment by approximately 2030.
+                Actual deployments depend on launch cadence, regulatory
+                approvals and constellation viability, so the upper bound
+                may slip — but the trajectory does not.
+              </p>
+            </div>
+            <div class="future-headline">
+              <div class="future-headline-value">~12×</div>
+              <div class="future-headline-label">more satellites by 2030</div>
+            </div>
+          </div>
+          <div id="future-chart"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- ====== KEY STATS BAR ====== -->
     <section id="stats-bar" class="section stats-bar">
       <div class="stat">
@@ -227,7 +475,31 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/globe.gl@2.45.3/dist/globe.gl.min.js"></script>
     <script src="js/scrollytelling.js"></script>
-    <script src="js/charts.js"></script>
+
+    <!-- Charts (split from the old monolithic charts.js; shared.js must load first) -->
+    <script src="js/charts/shared.js"></script>
+    <script src="js/charts/timeline.js"></script>
+    <script src="js/charts/countries.js"></script>
+    <script src="js/charts/lorenz.js"></script>
+    <script src="js/charts/donut.js"></script>
+    <script src="js/charts/operators.js"></script>
+    <script src="js/charts/purpose.js"></script>
+    <script src="js/charts/purpose-over-time.js"></script>
+    <script src="js/charts/heatmap.js"></script>
+    <script src="js/charts/future.js"></script>
+
+    <!-- Decorative canvas effects -->
+    <script src="js/effects/stars.js"></script>
+    <script src="js/effects/orbits.js"></script>
+
+    <!-- 3D Three.js scene (loaded as an ES module so Globe.gl can keep
+         using its own bundled Three.js without a global conflict) -->
+    <script type="module" src="js/scene/journey.js"></script>
+
+    <!-- Page-wide smooth scroll (Lenis) + chapter entrance fades.
+         ES module so Lenis is imported directly from the CDN. -->
+    <script type="module" src="js/scroll.js"></script>
+
     <script src="js/globe.js"></script>
     <script src="js/main.js"></script>
   </body>

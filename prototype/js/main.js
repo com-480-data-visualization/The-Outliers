@@ -3,10 +3,14 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Fire visuals that don't need data immediately
+  // Boot the hero 3D Earth + satellite scene
+  if (typeof initJourney === 'function') {
+    initJourney();
+  }
+
+  // 2D canvas visuals: page-wide twinkle dust + dense hero starfield
   drawPageStars();
   drawHeroParticles();
-  drawTitleOrbits();
 
   // Initialize 3D globe immediately (loads its own data)
   if (typeof initGlobe === 'function') {
@@ -22,11 +26,14 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(res => res.json())
     .then(data => {
       drawTimelineChart(data.cumulative_launches);
+      drawPurposeOverTimeChart(data.cumulative_purpose_by_year);
       drawCountriesChart(data.top_countries);
       drawLorenzChart(data.lorenz_curve);
+      drawOperatorsChart(data.top_operators, data.operator_details);
       drawOrbitDonut(data.orbit_distribution);
       drawPurposeChart(data.purpose_breakdown);
       drawPurposeOrbitChart(data.purpose_by_orbit);
+      drawFutureChart();
     })
     .catch(e => console.error('Failed to load satellite data:', e));
 });

@@ -65,6 +65,19 @@ body {
   z-index: 0;
 }
 
+/* 3D Three.js Earth + satellite cloud — scoped to the hero section only.
+   Sized to the hero element; once the user scrolls past, it scrolls away
+   with the hero and the rest of the page is plain DOM + page-stars. */
+#space-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  display: block;
+}
+
 #page-stars {
   position: fixed;
   top: 0;
@@ -93,23 +106,8 @@ body {
     0 0 10px rgba(26, 115, 232, 0.4),
     0 0 40px rgba(26, 115, 232, 0.2),
     0 0 80px rgba(26, 115, 232, 0.1);
-  margin-bottom: 260px;
+  margin-bottom: 16px;
   position: relative;
-}
-
-/* Orbital canvas overlay */
-.title-orbit-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-#orbit-canvas {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 0;
 }
 
 .hero-subtitle {
@@ -236,8 +234,11 @@ body {
 
 /* ===== SCROLLYTELLING ===== */
 
-/* The section itself is tall - this is what creates the scroll distance */
-#chapter-timeline .viz-container {
+/* Only the viz-container that holds the scrollytelling chart gets the tall
+   300vh height — that's what creates the scroll distance for the 5 steps.
+   The new stacked-area block (and any future additions) sit at their
+   natural height. */
+#chapter-timeline .viz-container:has(.scrolly) {
   min-height: 300vh;
   position: relative;
 }
@@ -439,6 +440,350 @@ svg .grid .domain {
   color: #fff;
 }
 
+/* ===== Mega-constellation isolator (Chapter 3) ===== */
+.constellation-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+
+.constellation-label {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+
+.constellation-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-dark);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.constellation-filter:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.constellation-filter.active {
+  background: var(--accent-orange);
+  border-color: var(--accent-orange);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(232, 113, 10, 0.35);
+}
+
+.constellation-filter.active .constellation-count {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.constellation-count {
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.06);
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+/* Linked-view highlight on the country bar chart in Chapter 2.
+   A white outline with a soft blue/orange glow signals "this country is
+   home to the currently isolated constellation." */
+.bar.linked-country {
+  stroke: #ffffff;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.6));
+}
+
+/* ===== Operator deep-dive (Chapter 2) ===== */
+
+/* Operator bar chart: same visual language as the country bars, but each
+   bar is clickable and gets a subtle hover hint. */
+#operators-chart .op-bar {
+  cursor: pointer;
+  transition: fill-opacity 0.15s ease, filter 0.15s ease;
+}
+#operators-chart .op-bar:hover {
+  fill-opacity: 0.9;
+  filter: drop-shadow(0 0 12px rgba(26, 115, 232, 0.5));
+}
+#operators-chart .op-bar:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+#operators-chart .op-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  fill: var(--text-secondary);
+  cursor: pointer;
+}
+#operators-chart .op-label:hover {
+  fill: var(--text-primary);
+}
+
+/* ===== Operator drawer (slides in from the right) ===== */
+.op-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.op-drawer.is-open {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.op-drawer-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.op-drawer-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: min(480px, 92vw);
+  background: #0c111c;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: -16px 0 60px rgba(0, 0, 0, 0.55),
+    -4px 0 30px rgba(26, 115, 232, 0.08);
+  padding: 28px 28px 40px;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.op-drawer.is-open .op-drawer-panel {
+  transform: translateX(0);
+}
+
+.op-drawer-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.op-drawer-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-blue);
+  margin-bottom: 4px;
+}
+
+.op-drawer-title {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 6px;
+  line-height: 1.15;
+}
+
+.op-drawer-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.op-drawer-dot {
+  margin: 0 8px;
+  opacity: 0.6;
+}
+
+.op-drawer-close {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.op-drawer-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+.op-drawer-close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.op-drawer-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 26px;
+}
+
+.op-kpi {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 12px 10px;
+  text-align: center;
+}
+.op-kpi-value {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+.op-kpi-label {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  letter-spacing: 0.02em;
+}
+
+.op-drawer-section {
+  margin-bottom: 24px;
+}
+.op-drawer-section-title {
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.op-drawer-sparkline {
+  width: 100%;
+}
+
+/* Mini horizontal bars for orbit / purpose breakdowns inside the drawer */
+.op-drawer-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.op-bar-row {
+  display: grid;
+  grid-template-columns: 110px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+}
+.op-bar-row-label {
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.op-bar-row-track {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.op-bar-row-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+.op-bar-row-value {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.82rem;
+  min-width: 50px;
+  text-align: right;
+}
+
+@media (max-width: 700px) {
+  .op-drawer-panel {
+    width: 100vw;
+    padding: 20px 18px 32px;
+  }
+}
+
+/* ===== Chapter 4: The Next Decade ===== */
+.future-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.future-headline {
+  background: linear-gradient(
+    135deg,
+    rgba(26, 115, 232, 0.18),
+    rgba(232, 113, 10, 0.18)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 14px 22px;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(26, 115, 232, 0.08),
+    0 0 60px rgba(232, 113, 10, 0.05);
+}
+.future-headline-value {
+  font-family: var(--font-heading);
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+  text-shadow: 0 0 18px rgba(255, 255, 255, 0.25);
+}
+.future-headline-label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+/* The 2023 bar is tiny next to the 2030 bar. A soft pulsing glow on it
+   draws the eye and reinforces the "we are right here at the start"
+   feeling. */
+.future-now-glow {
+  animation: future-now-pulse 2.6s ease-in-out infinite;
+}
+@keyframes future-now-pulse {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.35)); }
+  50%      { filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.7)); }
+}
+
+@media (max-width: 700px) {
+  .future-header {
+    grid-template-columns: 1fr;
+  }
+  .future-headline {
+    justify-self: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .future-now-glow { animation: none; }
+}
+
 .globe-legend {
   display: flex;
   justify-content: center;
@@ -460,6 +805,167 @@ svg .grid .domain {
   height: 10px;
   border-radius: 50%;
   display: inline-block;
+}
+
+/* ===== TIME SLIDER (Chapter 3) ===== */
+.time-slider {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 18px;
+  align-items: center;
+  margin: 18px 0 8px;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(26, 115, 232, 0.04);
+}
+
+.time-play {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent-blue);
+  color: #fff;
+  border: 1px solid var(--accent-blue);
+  border-radius: 22px;
+  padding: 8px 16px 8px 14px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  box-shadow: 0 0 16px rgba(26, 115, 232, 0.25);
+  white-space: nowrap;
+}
+
+.time-play:hover {
+  filter: brightness(1.12);
+  box-shadow: 0 0 22px rgba(26, 115, 232, 0.45);
+}
+
+.time-play:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.time-play.is-playing {
+  background: var(--accent-orange);
+  border-color: var(--accent-orange);
+  box-shadow: 0 0 18px rgba(232, 113, 10, 0.35);
+}
+
+.time-play-icon {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.time-slider-track {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.time-slider-readout {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+}
+
+#time-year {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--accent-blue);
+  text-shadow: 0 0 12px rgba(26, 115, 232, 0.35);
+  min-width: 70px;
+  display: inline-block;
+}
+
+.time-slider-readout-sub {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+#time-count {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.time-range {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  cursor: pointer;
+  margin: 6px 0 2px;
+}
+
+.time-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+  border: 2px solid #fff;
+  box-shadow: 0 0 12px rgba(26, 115, 232, 0.55);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.time-range::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 18px rgba(26, 115, 232, 0.8);
+}
+
+.time-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+  border: 2px solid #fff;
+  box-shadow: 0 0 12px rgba(26, 115, 232, 0.55);
+  cursor: pointer;
+}
+
+.time-range:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.time-slider-axis {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 700px) {
+  .time-slider {
+    grid-template-columns: 1fr;
+  }
+  .time-play {
+    justify-self: start;
+  }
+}
+
+/* ===== Heatmap: scroll horizontally rather than overflow on narrow screens ===== */
+#purpose-orbit-chart {
+  overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ===== RESPONSIVE ===== */
@@ -487,5 +993,60 @@ svg .grid .domain {
   }
   .stat-number {
     font-size: 2.5rem;
+  }
+  /* Globe section: shorter on small screens, tighter filter rows */
+  #globe-container {
+    height: 420px !important;
+  }
+  .globe-controls,
+  .constellation-controls {
+    gap: 6px;
+  }
+  .constellation-filter {
+    padding: 5px 10px;
+    font-size: 0.74rem;
+  }
+}
+
+/* ===== Chapter entrance fades (paired with js/scroll.js) =====
+   Any element tagged `.fade-in` starts faintly hidden and slides up into
+   view when 15% of it enters the viewport. One-shot via IntersectionObserver,
+   so the transition is never reversed on scroll-up. */
+.fade-in {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.fade-in.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ===== Reduced motion: honor the OS preference ===== */
+/* Users who request reduced motion (Windows: Animation effects off, macOS:
+   Reduce motion, GNOME: Enable animations off) get an instant-rendering
+   site. We still keep the static visualizations; only the time-based
+   transitions and infinite animations are disabled. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .scroll-indicator {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+  .fade-in {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

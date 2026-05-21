@@ -392,6 +392,726 @@
       "count": 53
     }
   ],
+  "operator_details": {
+    "SpaceX": {
+      "name": "SpaceX",
+      "count": 3395,
+      "country": "USA",
+      "first_launch": 2019,
+      "latest_launch": 2022,
+      "orbit_distribution": [
+        {
+          "orbit": "LEO",
+          "count": 3395
+        }
+      ],
+      "purpose_distribution": [
+        {
+          "purpose": "Communications",
+          "count": 3395
+        }
+      ],
+      "launch_timeline": [
+        {
+          "year": 2019,
+          "cumulative": 56
+        },
+        {
+          "year": 2020,
+          "cumulative": 786
+        },
+        {
+          "year": 2021,
+          "cumulative": 1731
+        },
+        {
+          "year": 2022,
+          "cumulative": 3395
+        }
+      ]
+    },
+    "OneWeb": {
+      "name": "OneWeb",
+      "count": 502,
+      "country": "United Kingdom",
+      "first_launch": 2019,
+      "latest_launch": 2022,
+      "orbit_distribution": [
+        {
+          "orbit": "LEO",
+          "count": 502
+        }
+      ],
+      "purpose_distribution": [
+        {
+          "purpose": "Communications",
+          "count": 502
+        }
+      ],
+      "launch_timeline": [
+        {
+          "year": 2019,
+          "cumulative": 6
+        },
+        {
+          "year": 2020,
+          "cumulative": 110
+        },
+        {
+          "year": 2021,
+          "cumulative": 392
+        },
+        {
+          "year": 2022,
+          "cumulative": 502
+        }
+      ]
+    },
+    "Planet Labs": {
+      "name": "Planet Labs",
+      "count": 195,
+      "country": "USA",
+      "first_launch": 2013,
+      "latest_launch": 2022,
+      "orbit_distribution": [
+        {
+          "orbit": "LEO",
+          "count": 195
+        }
+      ],
+      "purpose_distribution": [
+        {
+          "purpose": "Earth Observation",
+          "count": 195
+        }
+      ],
+      "launch_timeline": [
+        {
+          "year": 2013,
+          "cumulative": 1
+        },
+        {
+          "year": 2014,
+          "cumulative": 2
+        },
+        {
+          "year": 2015,
+          "cumulative": 2
+        },
+        {
+          "year": 2016,
+          "cumulative": 10
+        },
+        {
+          "year": 2017,
+          "cumulative": 48
+        },
+        {
+          "year": 2018,
+          "cumulative": 63
+        },
+        {
+          "year": 2019,
+          "cumulative": 75
+        },
+        {
+          "year": 2020,
+          "cumulative": 111
+        },
+        {
+          "year": 2021,
+          "cumulative": 154
+        },
+        {
+          "year": 2022,
+          "cumulative": 195
+        }
+      ]
+    },
+    "China MoD": {
+      "name": "China MoD",
+      "count": 146,
+      "country": "China",
+      "first_launch": 2008,
+      "latest_launch": 2022,
+      "orbit_distribution": [
+        {
+          "orbit": "LEO",
+          "count": 97
+        },
+        {
+          "orbit": "MEO",
+          "count": 29
+        },
+        {
+          "orbit": "GEO",
+          "count": 20
+        }
+      ],
+      "purpose_distribution": [
+        {
+          "purpose": "Earth Observation",
+          "count": 97
+        },
+        {
+          "purpose": "Navigation",
+          "count": 49
+        }
+      ],
+      "launch_timeline": [
+        {
+          "year": 2008,
+          "cumulative": 1
+        },
+        {
+          "year": 2009,
+          "cumulative": 4
+        },
+        {
+          "year": 2010,
+          "cumulative": 12
+        },
+        {
+          "year": 2011,
+          "cumulative": 17
+        },
+        {
+          "year": 2012,
+          "cumulative": 27
+        },
+        {
+          "year": 2013,
+          "cumulative": 31
+        },
+        {
+          "year": 2014,
+          "cumulative": 42
+        },
+        {
+          "year": 2015,
+          "cumulative": 49
+        },
+        {
+          "year": 2016,
+          "cumulative": 52
+        },
+        {
+          "year": 2017,
+          "cumulative": 63
+        },
+        {
+          "year": 2018,
+          "cumulative": 88
+        },
+        {
+          "year": 2019,
+          "cumulative": 101
+        },
+        {
+          "year": 2020,
+          "cumulative": 110
+        },
+        {
+          "year": 2021,
+          "cumulative": 133
+        },
+        {
+          "year": 2022,
+          "cumulative": 146
+        }
+      ]
+    },
+    "Spire Global": {
+      "name": "Spire Global",
+      "count": 125,
+      "country": "USA",
+      "first_launch": 2014,
+      "latest_launch": 2022,
+      "orbit_distribution": [
+        {
+          "orbit": "LEO",
+          "count": 125
+        }
+      ],
+      "purpose_distribution": [
+        {
+          "purpose": "Earth Observation",
+          "count": 124
+        },
+        {
+          "purpose": "Technology Development",
+          "count": 1
+        }
+      ],
+      "launch_timeline": [
+        {
+          "year": 2014,
+          "cumulative": 1
+        },
+        {
+          "year": 2015,
+          "cumulative": 5
+        },
+        {
+          "year": 2016,
+          "cumulative": 9
+        },
+        {
+          "year": 2017,
+          "cumulative": 43
+        },
+        {
+          "year": 2018,
+          "cumulative": 71
+        },
+        {
+          "year": 2019,
+          "cumulative": 87
+        },
+        {
+          "year": 2020,
+          "cumulative": 102
+        },
+        {
+          "year": 2021,
+          "cumulative": 118
+        },
+        {
+          "year": 2022,
+          "cumulative": 125
+        }
+      ]
+    },
+    "Russia MoD": {
+      "name": "Russia MoD",
+      "count": 113,
+      "country": "Russia",
+      "first_launch": 1999,
+      "latest_launch": 2022,
+      "orbit_distribution": [
+        {
+          "orbit": "LEO",
+          "count": 67
+        },
+        {
+          "orbit": "MEO",
+          "count": 30
+        },
+        {
+          "orbit": "GEO",
+          "count": 11
+        },
+        {
+          "orbit": "Elliptical",
+          "count": 5
+        }
+      ],
+      "purpose_distribution": [
+        {
+          "purpose": "Communications",
+          "count": 43
+        },
+        {
+          "purpose": "Earth Observation",
+          "count": 34
+        },
+        {
+          "purpose": "Technology Development",
+          "count": 5
+        },
+        {
+          "purpose": "Navigation",
+          "count": 29
+        },
+        {
+          "purpose": "Other",
+          "count": 2
+        }
+      ],
+      "launch_timeline": [
+        {
+          "year": 1999,
+          "cumulative": 1
+        },
+        {
+          "year": 2000,
+          "cumulative": 1
+        },
+        {
+          "year": 2001,
+          "cumulative": 3
+        },
+        {
+          "year": 2002,
+          "cumulative": 6
+        },
+        {
+          "year": 2003,
+          "cumulative": 8
+        },
+        {
+          "year": 2004,
+          "cumulative": 10
+        },
+        {
+          "year": 2005,
+          "cumulative": 11
+        },
+        {
+          "year": 2006,
+          "cumulative": 13
+        },
+        {
+          "year": 2007,
+          "cumulative": 19
+        },
+        {
+          "year": 2008,
+          "cumulative": 22
+        },
+        {
+          "year": 2009,
+          "cumulative": 27
+        },
+        {
+          "year": 2010,
+          "cumulative": 35
+        },
+        {
+          "year": 2011,
+          "cumulative": 39
+        },
+        {
+          "year": 2012,
+          "cumulative": 41
+        },
+        {
+          "year": 2013,
+          "cumulative": 50
+        },
+        {
+          "year": 2014,
+          "cumulative": 58
+        },
+        {
+          "year": 2015,
+          "cumulative": 66
+        },
+        {
+          "year": 2016,
+          "cumulative": 71
+        },
+        {
+          "year": 2017,
+          "cumulative": 76
+        },
+        {
+          "year": 2018,
+          "cumulative": 84
+        },
+        {
+          "year": 2019,
+          "cumulative": 98
+        },
+        {
+          "year": 2020,
+          "cumulative": 103
+        },
+        {
+          "year": 2021,
+          "cumulative": 107
+        },
+        {
+          "year": 2022,
+          "cumulative": 113
+        }
+      ]
+    },
+    "Swarm": {
+      "name": "Swarm",
+      "count": 84,
+      "country": "USA",
+      "first_launch": 2018,
+      "latest_launch": 2022,
+      "orbit_distribution": [
+        {
+          "orbit": "LEO",
+          "count": 84
+        }
+      ],
+      "purpose_distribution": [
+        {
+          "purpose": "Communications",
+          "count": 84
+        }
+      ],
+      "launch_timeline": [
+        {
+          "year": 2018,
+          "cumulative": 3
+        },
+        {
+          "year": 2019,
+          "cumulative": 3
+        },
+        {
+          "year": 2020,
+          "cumulative": 9
+        },
+        {
+          "year": 2021,
+          "cumulative": 28
+        },
+        {
+          "year": 2022,
+          "cumulative": 84
+        }
+      ]
+    },
+    "Iridium": {
+      "name": "Iridium",
+      "count": 75,
+      "country": "USA",
+      "first_launch": 2017,
+      "latest_launch": 2019,
+      "orbit_distribution": [
+        {
+          "orbit": "LEO",
+          "count": 75
+        }
+      ],
+      "purpose_distribution": [
+        {
+          "purpose": "Communications",
+          "count": 75
+        }
+      ],
+      "launch_timeline": [
+        {
+          "year": 2017,
+          "cumulative": 40
+        },
+        {
+          "year": 2018,
+          "cumulative": 65
+        },
+        {
+          "year": 2019,
+          "cumulative": 75
+        }
+      ]
+    },
+    "US Air Force": {
+      "name": "US Air Force",
+      "count": 61,
+      "country": "USA",
+      "first_launch": 1994,
+      "latest_launch": 2022,
+      "orbit_distribution": [
+        {
+          "orbit": "MEO",
+          "count": 34
+        },
+        {
+          "orbit": "GEO",
+          "count": 26
+        },
+        {
+          "orbit": "Elliptical",
+          "count": 1
+        }
+      ],
+      "purpose_distribution": [
+        {
+          "purpose": "Communications",
+          "count": 16
+        },
+        {
+          "purpose": "Earth Observation",
+          "count": 10
+        },
+        {
+          "purpose": "Technology Development",
+          "count": 1
+        },
+        {
+          "purpose": "Navigation",
+          "count": 34
+        }
+      ],
+      "launch_timeline": [
+        {
+          "year": 1994,
+          "cumulative": 1
+        },
+        {
+          "year": 1995,
+          "cumulative": 2
+        },
+        {
+          "year": 1996,
+          "cumulative": 2
+        },
+        {
+          "year": 1997,
+          "cumulative": 4
+        },
+        {
+          "year": 1998,
+          "cumulative": 4
+        },
+        {
+          "year": 1999,
+          "cumulative": 5
+        },
+        {
+          "year": 2000,
+          "cumulative": 11
+        },
+        {
+          "year": 2001,
+          "cumulative": 14
+        },
+        {
+          "year": 2002,
+          "cumulative": 15
+        },
+        {
+          "year": 2003,
+          "cumulative": 20
+        },
+        {
+          "year": 2004,
+          "cumulative": 23
+        },
+        {
+          "year": 2005,
+          "cumulative": 24
+        },
+        {
+          "year": 2006,
+          "cumulative": 27
+        },
+        {
+          "year": 2007,
+          "cumulative": 29
+        },
+        {
+          "year": 2008,
+          "cumulative": 30
+        },
+        {
+          "year": 2009,
+          "cumulative": 31
+        },
+        {
+          "year": 2010,
+          "cumulative": 32
+        },
+        {
+          "year": 2011,
+          "cumulative": 34
+        },
+        {
+          "year": 2012,
+          "cumulative": 36
+        },
+        {
+          "year": 2013,
+          "cumulative": 39
+        },
+        {
+          "year": 2014,
+          "cumulative": 43
+        },
+        {
+          "year": 2015,
+          "cumulative": 46
+        },
+        {
+          "year": 2016,
+          "cumulative": 47
+        },
+        {
+          "year": 2017,
+          "cumulative": 48
+        },
+        {
+          "year": 2018,
+          "cumulative": 52
+        },
+        {
+          "year": 2019,
+          "cumulative": 55
+        },
+        {
+          "year": 2020,
+          "cumulative": 58
+        },
+        {
+          "year": 2021,
+          "cumulative": 60
+        },
+        {
+          "year": 2022,
+          "cumulative": 61
+        }
+      ]
+    },
+    "Chang Guang": {
+      "name": "Chang Guang",
+      "count": 53,
+      "country": "China",
+      "first_launch": 2015,
+      "latest_launch": 2022,
+      "orbit_distribution": [
+        {
+          "orbit": "LEO",
+          "count": 53
+        }
+      ],
+      "purpose_distribution": [
+        {
+          "purpose": "Earth Observation",
+          "count": 53
+        }
+      ],
+      "launch_timeline": [
+        {
+          "year": 2015,
+          "cumulative": 3
+        },
+        {
+          "year": 2016,
+          "cumulative": 3
+        },
+        {
+          "year": 2017,
+          "cumulative": 7
+        },
+        {
+          "year": 2018,
+          "cumulative": 9
+        },
+        {
+          "year": 2019,
+          "cumulative": 14
+        },
+        {
+          "year": 2020,
+          "cumulative": 24
+        },
+        {
+          "year": 2021,
+          "cumulative": 30
+        },
+        {
+          "year": 2022,
+          "cumulative": 53
+        }
+      ]
+    }
+  },
   "lorenz_curve": [
     {
       "pct_operators": 0,
@@ -470,6 +1190,332 @@
     {
       "decade": "2020s",
       "count": 4786
+    }
+  ],
+  "cumulative_purpose_by_year": [
+    {
+      "year": 1974,
+      "Communications": 1,
+      "Earth Observation": 0,
+      "Technology Development": 0,
+      "Navigation": 0,
+      "Space Science": 0,
+      "Other": 0
+    },
+    {
+      "year": 1988,
+      "Communications": 2,
+      "Earth Observation": 0,
+      "Technology Development": 0,
+      "Navigation": 0,
+      "Space Science": 0,
+      "Other": 0
+    },
+    {
+      "year": 1989,
+      "Communications": 3,
+      "Earth Observation": 0,
+      "Technology Development": 0,
+      "Navigation": 0,
+      "Space Science": 0,
+      "Other": 0
+    },
+    {
+      "year": 1990,
+      "Communications": 4,
+      "Earth Observation": 0,
+      "Technology Development": 0,
+      "Navigation": 0,
+      "Space Science": 1,
+      "Other": 0
+    },
+    {
+      "year": 1991,
+      "Communications": 5,
+      "Earth Observation": 0,
+      "Technology Development": 0,
+      "Navigation": 0,
+      "Space Science": 1,
+      "Other": 0
+    },
+    {
+      "year": 1992,
+      "Communications": 5,
+      "Earth Observation": 0,
+      "Technology Development": 0,
+      "Navigation": 0,
+      "Space Science": 2,
+      "Other": 0
+    },
+    {
+      "year": 1993,
+      "Communications": 7,
+      "Earth Observation": 1,
+      "Technology Development": 0,
+      "Navigation": 0,
+      "Space Science": 2,
+      "Other": 0
+    },
+    {
+      "year": 1994,
+      "Communications": 8,
+      "Earth Observation": 2,
+      "Technology Development": 0,
+      "Navigation": 0,
+      "Space Science": 2,
+      "Other": 0
+    },
+    {
+      "year": 1995,
+      "Communications": 12,
+      "Earth Observation": 2,
+      "Technology Development": 0,
+      "Navigation": 0,
+      "Space Science": 2,
+      "Other": 0
+    },
+    {
+      "year": 1996,
+      "Communications": 15,
+      "Earth Observation": 3,
+      "Technology Development": 0,
+      "Navigation": 0,
+      "Space Science": 2,
+      "Other": 0
+    },
+    {
+      "year": 1997,
+      "Communications": 28,
+      "Earth Observation": 6,
+      "Technology Development": 0,
+      "Navigation": 1,
+      "Space Science": 2,
+      "Other": 0
+    },
+    {
+      "year": 1998,
+      "Communications": 41,
+      "Earth Observation": 9,
+      "Technology Development": 0,
+      "Navigation": 1,
+      "Space Science": 3,
+      "Other": 0
+    },
+    {
+      "year": 1999,
+      "Communications": 52,
+      "Earth Observation": 13,
+      "Technology Development": 0,
+      "Navigation": 2,
+      "Space Science": 5,
+      "Other": 0
+    },
+    {
+      "year": 2000,
+      "Communications": 69,
+      "Earth Observation": 15,
+      "Technology Development": 0,
+      "Navigation": 5,
+      "Space Science": 9,
+      "Other": 0
+    },
+    {
+      "year": 2001,
+      "Communications": 78,
+      "Earth Observation": 18,
+      "Technology Development": 2,
+      "Navigation": 6,
+      "Space Science": 10,
+      "Other": 0
+    },
+    {
+      "year": 2002,
+      "Communications": 98,
+      "Earth Observation": 21,
+      "Technology Development": 2,
+      "Navigation": 6,
+      "Space Science": 12,
+      "Other": 0
+    },
+    {
+      "year": 2003,
+      "Communications": 112,
+      "Earth Observation": 25,
+      "Technology Development": 4,
+      "Navigation": 8,
+      "Space Science": 15,
+      "Other": 0
+    },
+    {
+      "year": 2004,
+      "Communications": 124,
+      "Earth Observation": 31,
+      "Technology Development": 6,
+      "Navigation": 10,
+      "Space Science": 18,
+      "Other": 0
+    },
+    {
+      "year": 2005,
+      "Communications": 140,
+      "Earth Observation": 39,
+      "Technology Development": 7,
+      "Navigation": 11,
+      "Space Science": 19,
+      "Other": 0
+    },
+    {
+      "year": 2006,
+      "Communications": 157,
+      "Earth Observation": 52,
+      "Technology Development": 8,
+      "Navigation": 15,
+      "Space Science": 22,
+      "Other": 0
+    },
+    {
+      "year": 2007,
+      "Communications": 185,
+      "Earth Observation": 67,
+      "Technology Development": 10,
+      "Navigation": 21,
+      "Space Science": 25,
+      "Other": 0
+    },
+    {
+      "year": 2008,
+      "Communications": 212,
+      "Earth Observation": 80,
+      "Technology Development": 13,
+      "Navigation": 22,
+      "Space Science": 29,
+      "Other": 0
+    },
+    {
+      "year": 2009,
+      "Communications": 242,
+      "Earth Observation": 96,
+      "Technology Development": 21,
+      "Navigation": 25,
+      "Space Science": 30,
+      "Other": 0
+    },
+    {
+      "year": 2010,
+      "Communications": 273,
+      "Earth Observation": 115,
+      "Technology Development": 23,
+      "Navigation": 34,
+      "Space Science": 35,
+      "Other": 0
+    },
+    {
+      "year": 2011,
+      "Communications": 313,
+      "Earth Observation": 141,
+      "Technology Development": 29,
+      "Navigation": 44,
+      "Space Science": 37,
+      "Other": 0
+    },
+    {
+      "year": 2012,
+      "Communications": 347,
+      "Earth Observation": 167,
+      "Technology Development": 39,
+      "Navigation": 52,
+      "Space Science": 39,
+      "Other": 0
+    },
+    {
+      "year": 2013,
+      "Communications": 393,
+      "Earth Observation": 194,
+      "Technology Development": 54,
+      "Navigation": 55,
+      "Space Science": 43,
+      "Other": 0
+    },
+    {
+      "year": 2014,
+      "Communications": 443,
+      "Earth Observation": 233,
+      "Technology Development": 69,
+      "Navigation": 65,
+      "Space Science": 46,
+      "Other": 0
+    },
+    {
+      "year": 2015,
+      "Communications": 495,
+      "Earth Observation": 268,
+      "Technology Development": 93,
+      "Navigation": 79,
+      "Space Science": 56,
+      "Other": 0
+    },
+    {
+      "year": 2016,
+      "Communications": 519,
+      "Earth Observation": 324,
+      "Technology Development": 105,
+      "Navigation": 93,
+      "Space Science": 61,
+      "Other": 0
+    },
+    {
+      "year": 2017,
+      "Communications": 590,
+      "Earth Observation": 449,
+      "Technology Development": 128,
+      "Navigation": 103,
+      "Space Science": 63,
+      "Other": 0
+    },
+    {
+      "year": 2018,
+      "Communications": 664,
+      "Earth Observation": 586,
+      "Technology Development": 189,
+      "Navigation": 129,
+      "Space Science": 73,
+      "Other": 4
+    },
+    {
+      "year": 2019,
+      "Communications": 772,
+      "Earth Observation": 686,
+      "Technology Development": 241,
+      "Navigation": 142,
+      "Space Science": 80,
+      "Other": 5
+    },
+    {
+      "year": 2020,
+      "Communications": 1643,
+      "Earth Observation": 821,
+      "Technology Development": 280,
+      "Navigation": 148,
+      "Space Science": 93,
+      "Other": 11
+    },
+    {
+      "year": 2021,
+      "Communications": 2944,
+      "Earth Observation": 1008,
+      "Technology Development": 367,
+      "Navigation": 153,
+      "Space Science": 105,
+      "Other": 19
+    },
+    {
+      "year": 2022,
+      "Communications": 4821,
+      "Earth Observation": 1188,
+      "Technology Development": 411,
+      "Navigation": 155,
+      "Space Science": 109,
+      "Other": 28
     }
   ]
 }
