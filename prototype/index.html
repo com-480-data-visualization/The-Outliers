@@ -56,13 +56,94 @@
     <!-- 2D twinkle dust across the whole page (chapters and below) -->
     <canvas id="page-stars" aria-hidden="true"></canvas>
 
+    <!-- ====== CHAPTER NAVIGATOR ======
+         Fixed glowing burger in the top-right. Click toggles a flyout panel
+         that lists every chapter + a back-to-top entry. The active chapter
+         (whatever's currently in view) gets a highlighted bar. -->
+    <button
+      id="nav-toggle"
+      class="nav-toggle"
+      type="button"
+      aria-label="Open chapter navigation"
+      aria-controls="nav-menu"
+      aria-expanded="false"
+    >
+      <span class="nav-toggle-burger" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+      <span class="nav-toggle-ring" aria-hidden="true"></span>
+    </button>
+
+    <nav
+      id="nav-menu"
+      class="nav-menu"
+      aria-label="Chapter navigation"
+      aria-hidden="true"
+    >
+      <div class="nav-menu-header">
+        <span class="nav-menu-eyebrow">Navigate</span>
+        <span class="nav-menu-title">Crowded Orbit</span>
+      </div>
+      <ol class="nav-menu-list">
+        <li>
+          <a href="#hero" class="nav-link" data-target="hero">
+            <span class="nav-link-index">00</span>
+            <span class="nav-link-body">
+              <span class="nav-link-label">Back to top</span>
+              <span class="nav-link-sub">The opening scene</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="#chapter-timeline" class="nav-link" data-target="chapter-timeline">
+            <span class="nav-link-index">01</span>
+            <span class="nav-link-body">
+              <span class="nav-link-label">The Explosion</span>
+              <span class="nav-link-sub">75.5% launched since 2019</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="#chapter-countries" class="nav-link" data-target="chapter-countries">
+            <span class="nav-link-index">02</span>
+            <span class="nav-link-body">
+              <span class="nav-link-label">Who Owns Space?</span>
+              <span class="nav-link-sub">USA 67% · Gini 0.86</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="#chapter-orbits" class="nav-link" data-target="chapter-orbits">
+            <span class="nav-link-index">03</span>
+            <span class="nav-link-body">
+              <span class="nav-link-label">The Congestion</span>
+              <span class="nav-link-sub">88% in Low Earth Orbit</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="#chapter-future" class="nav-link" data-target="chapter-future">
+            <span class="nav-link-index">04</span>
+            <span class="nav-link-body">
+              <span class="nav-link-label">The Next Decade</span>
+              <span class="nav-link-sub">~80,000 satellites by 2030</span>
+            </span>
+          </a>
+        </li>
+      </ol>
+    </nav>
+    <div id="nav-scrim" class="nav-scrim" aria-hidden="true"></div>
+
     <!-- ====== HERO / CINEMATIC INTRO ======
          A tall scroll stage. Inside, a sticky viewport-sized frame holds the
          3D Earth + satellite cloud, three sequential "acts" of poster text,
-         and the locked-in title that emerges last. Scroll progress (0→1)
-         drives the act crossfades and the tracer underline. -->
-    <section id="hero" class="section hero">
+         and the locked-in title. Phases: pre1 → pre2 → pre3 → reveal → final.
+         The animation is one-shot — once `final` is reached, the layout is
+         latched and scrolling back up does NOT replay it. -->
+    <section id="hero" class="section hero" data-phase="pre1">
       <div class="hero-stage">
+        <!-- 3D scene: rendered the whole time, but masked by .hero-vignette
+             until the reveal phase. -->
         <div class="hero-bg" id="hero-canvas" aria-hidden="true"></div>
         <canvas
           id="space-canvas"
@@ -71,37 +152,34 @@
           aria-label="3D Earth surrounded by all 6,713 operational satellites color-coded by orbit class"
         ></canvas>
 
-        <!-- A faint horizontal rule that draws across the screen as the user
-             progresses through the acts. Reads as a film "timeline". -->
-        <div class="hero-tracer" aria-hidden="true">
-          <span class="hero-tracer-fill"></span>
-          <span class="hero-tracer-mark hero-tracer-mark-start">1974</span>
-          <span class="hero-tracer-mark hero-tracer-mark-end">2023</span>
-        </div>
+        <!-- Black vignette overlay that hides the globe during the act
+             sequence. Dissolves outward (radial iris) at the reveal phase —
+             the "space movie" wipe the user asked for. -->
+        <div class="hero-vignette" aria-hidden="true"></div>
 
-        <!-- Three acts that crossfade in sequence as the user scrolls. -->
+        <!-- Three acts that crossfade in sequence. Each word sits on top of
+             a heavy shadow plate that fades out together with its act. -->
         <div class="hero-acts" aria-hidden="true">
           <div class="hero-act" data-act="1">
+            <span class="hero-act-shadow" aria-hidden="true">A frontier.</span>
             <span class="hero-act-word">A frontier.</span>
           </div>
           <div class="hero-act" data-act="2">
+            <span class="hero-act-shadow" aria-hidden="true">Then, an avalanche.</span>
             <span class="hero-act-word">Then, an avalanche.</span>
           </div>
           <div class="hero-act" data-act="3">
+            <span class="hero-act-shadow" aria-hidden="true">6,713 and counting.</span>
             <span class="hero-act-word">6,713 and counting.</span>
           </div>
         </div>
 
-        <!-- The final title. Hidden until the last act of the scroll stage,
-             when it ignites letter by letter. -->
+        <!-- The final title. Sits at the top of the frame so the globe fits
+             below it inside the same viewport. Slides in from the left after
+             the globe is revealed. One line, no row split. -->
         <div class="hero-finale" data-act="finale">
           <h1 class="hero-title" aria-label="Crowded Orbit">
-            <span class="hero-title-row">
-              <span class="hero-letter" style="--i:0">C</span><span class="hero-letter" style="--i:1">R</span><span class="hero-letter" style="--i:2">O</span><span class="hero-letter" style="--i:3">W</span><span class="hero-letter" style="--i:4">D</span><span class="hero-letter" style="--i:5">E</span><span class="hero-letter" style="--i:6">D</span>
-            </span>
-            <span class="hero-title-row">
-              <span class="hero-letter" style="--i:7">O</span><span class="hero-letter" style="--i:8">R</span><span class="hero-letter" style="--i:9">B</span><span class="hero-letter" style="--i:10">I</span><span class="hero-letter" style="--i:11">T</span>
-            </span>
+            <span class="hero-letter" style="--i:0">C</span><span class="hero-letter" style="--i:1">R</span><span class="hero-letter" style="--i:2">O</span><span class="hero-letter" style="--i:3">W</span><span class="hero-letter" style="--i:4">D</span><span class="hero-letter" style="--i:5">E</span><span class="hero-letter" style="--i:6">D</span><span class="hero-letter hero-letter-space" style="--i:7">&nbsp;</span><span class="hero-letter" style="--i:8">O</span><span class="hero-letter" style="--i:9">R</span><span class="hero-letter" style="--i:10">B</span><span class="hero-letter" style="--i:11">I</span><span class="hero-letter" style="--i:12">T</span>
           </h1>
           <p class="hero-subtitle">How satellites reshaped the space around Earth.</p>
           <div class="scroll-indicator">
@@ -536,6 +614,7 @@
 
     <script src="js/globe.js"></script>
     <script src="js/cinematic-hero.js"></script>
+    <script src="js/nav.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>

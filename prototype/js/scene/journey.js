@@ -117,7 +117,9 @@ async function initJourney() {
   // thing down vertically — leaves the upper half of the hero clean for
   // the title and subtitle text.
   const orbitalSystem = new THREE.Group();
-  orbitalSystem.position.y = -160;
+  // Centred vertically: the cinematic-intro finale puts the title at the
+  // top of the viewport, so the globe sits roughly in the middle below it.
+  orbitalSystem.position.y = -20;
   scene.add(orbitalSystem);
 
   // ---------- Earth ----------

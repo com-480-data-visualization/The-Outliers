@@ -128,12 +128,48 @@ async function initGlobe() {
     // auto-rotate off in that case (the user can still drag manually).
     const prefersReducedMotion = window.matchMedia &&
         window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    globe.controls().autoRotate = !prefersReducedMotion;
-    globe.controls().autoRotateSpeed = 0.4;
-    globe.controls().enableZoom = true;
-    globe.controls().minDistance = 120;
-    globe.controls().maxDistance = 400;
+    const controls = globe.controls();
+    controls.autoRotate = !prefersReducedMotion;
+    controls.autoRotateSpeed = 0.4;
+    // Wheel zoom is OFF by default so a stray scroll over the globe doesn't
+    // hijack the page scroll. The user opts in by holding Ctrl (toggled
+    // below). Drag still rotates as normal.
+    controls.enableZoom = false;
+    controls.minDistance = 120;
+    controls.maxDistance = 400;
     globe.pointOfView({ lat: 25, lng: 0, altitude: 2.2 }, 0);
+
+    // Ctrl-to-zoom gating. While Ctrl is held the controls re-enable wheel
+    // zoom; when released, zoom is disabled and the wheel passes through to
+    // the page. Listeners are attached to window so the keydown is caught
+    // even if the cursor isn't currently over the globe.
+    function setZoom(enabled) {
+      if (controls.enableZoom !== enabled) controls.enableZoom = enabled;
+    }
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Control' || e.ctrlKey || e.metaKey) setZoom(true);
+    });
+    window.addEventListener('keyup', (e) => {
+      if (e.key === 'Control' || (!e.ctrlKey && !e.metaKey)) setZoom(false);
+    });
+    // Catch the edge case where the user Alt-tabs / loses focus while Ctrl
+    // is down — without this, zoom would remain stuck on.
+    window.addEventListener('blur', () => setZoom(false));
+
+    // Optional UX hint: tiny tooltip near the globe explaining the gesture.
+    // Renders on first wheel without Ctrl so it only shows up to users who
+    // actually try to scroll the globe.
+    const hintEl = document.createElement('div');
+    hintEl.className = 'globe-zoom-hint';
+    hintEl.textContent = 'Hold Ctrl + scroll to zoom';
+    container.appendChild(hintEl);
+    let hintTimer = null;
+    container.addEventListener('wheel', (e) => {
+      if (e.ctrlKey || e.metaKey) return;
+      hintEl.classList.add('is-visible');
+      clearTimeout(hintTimer);
+      hintTimer = setTimeout(() => hintEl.classList.remove('is-visible'), 1400);
+    }, { passive: true });
 
     // ===== Composed filter state =====
     // Three filters apply at the same time. Each defaults to "no restriction".
