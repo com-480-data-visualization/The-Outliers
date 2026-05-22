@@ -228,6 +228,29 @@ def normalize_operator(raw):
     return OPERATOR_ALIASES.get(s.lower(), s)
 
 
+def classify_constellation(name) -> str:
+    """
+    Bucket each satellite into a named constellation family, or 'Other'.
+    Used by the Chapter 3 mega-constellation isolator.
+
+    Patterns are matched on the satellite's official name (case-insensitive),
+    which is robust to UCS operator-name drift. Counts as of 2023:
+        Starlink ~3,395, OneWeb ~502, Iridium ~73, Galileo ~28.
+    """
+    if pd.isna(name):
+        return "Other"
+    n = str(name).strip().upper()
+    if n.startswith("STARLINK"):
+        return "Starlink"
+    if n.startswith("ONEWEB"):
+        return "OneWeb"
+    if n.startswith("IRIDIUM"):
+        return "Iridium"
+    if "GALILEO" in n:
+        return "Galileo"
+    return "Other"
+
+
 def classify_orbit(perigee, apogee, ecc_csv, ucs_class) -> str:
     """
     Conservative orbit classification.
@@ -459,9 +482,17 @@ def build_main_json(df: pd.DataFrame) -> dict:
         for _, row in by_year.iterrows()
     ]
 
-    # Top 15 countries.
+    # Top 15 countries (for the Chapter 2 bar chart).
     cc = df["Country of Operator/Owner"].value_counts().head(15)
     top_countries = [{"country": str(k), "count": int(v)} for k, v in cc.items()]
+
+    # Full country count list (for the Chapter 2 world choropleth map).
+    # Includes every country in the dataset — small operators too — so the
+    # map can color in even minor space-faring nations.
+    all_cc = df["Country of Operator/Owner"].value_counts()
+    country_counts = [
+        {"country": str(k), "count": int(v)} for k, v in all_cc.items()
+    ]
 
     # Orbit distribution.
     od = df["orbit_class"].value_counts()
@@ -490,9 +521,79 @@ def build_main_json(df: pd.DataFrame) -> dict:
             row[o] = int((sub["orbit_class"] == o).sum())
         purpose_by_orbit.append(row)
 
+    # Country x Purpose matrix (top 10 countries × all canonical purposes).
+    # Drives the Chapter 2 specialization heatmap — reveals which countries
+    # lean into which mission types (USA → Communications, China → Earth
+    # Observation, Russia → Navigation, ...).
+    top10_countries = list(cc.head(10).index)
+    country_purpose_matrix = []
+    for country in top10_countries:
+        sub = df[df["Country of Operator/Owner"] == country]
+        row_cp: dict[str, object] = {"country": str(country)}
+        for p in TOP_PURPOSES + ["Other"]:
+            row_cp[p] = int((sub["purpose_canonical"] == p).sum())
+        country_purpose_matrix.append(row_cp)
+
     # Top 10 operators (cleaned names).
     op_top = df["operator_clean"].value_counts().head(10)
     top_operators = [{"operator": str(k), "count": int(v)} for k, v in op_top.items()]
+
+    # Per-operator deep-dive details for the Chapter 2 panel. For each of
+    # the top 10 operators we precompute everything the drawer needs so the
+    # client doesn't have to scan the full dataset: primary country, orbit
+    # mix, purpose mix, and the cumulative launch timeline.
+    operator_details = {}
+    for op_name in op_top.index:
+        op_df = df[df["operator_clean"] == op_name]
+
+        country_mode = op_df["Country of Operator/Owner"].mode()
+        primary_country = (
+            str(country_mode.iloc[0]) if len(country_mode) > 0 else "Unknown"
+        )
+
+        op_orbit_counts = op_df["orbit_class"].value_counts()
+        op_orbit_dist = [
+            {"orbit": cls, "count": int(op_orbit_counts.get(cls, 0))}
+            for cls in ORBIT_ORDER
+            if op_orbit_counts.get(cls, 0) > 0
+        ]
+
+        op_purpose_counts = op_df["purpose_canonical"].value_counts()
+        op_purpose_dist = [
+            {"purpose": p, "count": int(op_purpose_counts.get(p, 0))}
+            for p in TOP_PURPOSES + ["Other"]
+            if op_purpose_counts.get(p, 0) > 0
+        ]
+
+        op_years = op_df.dropna(subset=["launch_year"]).copy()
+        launch_timeline = []
+        if len(op_years) > 0:
+            op_years["launch_year"] = op_years["launch_year"].astype(int)
+            op_by_year = op_years.groupby("launch_year").size().sort_index()
+            cum = 0
+            start_year = int(op_by_year.index.min())
+            end_year = int(op_by_year.index.max())
+            for year in range(start_year, end_year + 1):
+                cum += int(op_by_year.get(year, 0))
+                launch_timeline.append({"year": year, "cumulative": cum})
+
+        first_launch = (
+            int(op_years["launch_year"].min()) if len(op_years) > 0 else None
+        )
+        latest_launch = (
+            int(op_years["launch_year"].max()) if len(op_years) > 0 else None
+        )
+
+        operator_details[str(op_name)] = {
+            "name": str(op_name),
+            "count": int(op_top[op_name]),
+            "country": primary_country,
+            "first_launch": first_launch,
+            "latest_launch": latest_launch,
+            "orbit_distribution": op_orbit_dist,
+            "purpose_distribution": op_purpose_dist,
+            "launch_timeline": launch_timeline,
+        }
 
     # Lorenz curve + Gini coefficient over the (cleaned) operator distribution.
     op_all = df["operator_clean"].dropna().value_counts().sort_values().to_numpy()
@@ -532,6 +633,28 @@ def build_main_json(df: pd.DataFrame) -> dict:
         {"decade": d, "count": int(dec_counts.get(d, 0))} for d in decades
     ]
 
+    # Cumulative purpose breakdown by year (for the Chapter 1 stacked area).
+    # Each row: {year, Communications, Earth Observation, ...} as a running
+    # total of satellites launched in or before that year, grouped by their
+    # canonical purpose. This makes the "Communications takes over post-2019"
+    # finding visible at a glance.
+    purpose_year_counts = (
+        yr.groupby(["launch_year", "purpose_canonical"])
+        .size()
+        .unstack(fill_value=0)
+    )
+    all_purposes = TOP_PURPOSES + ["Other"]
+    for p in all_purposes:
+        if p not in purpose_year_counts.columns:
+            purpose_year_counts[p] = 0
+    purpose_year_counts = purpose_year_counts[all_purposes].sort_index().cumsum()
+    cumulative_purpose_by_year = []
+    for year, row in purpose_year_counts.iterrows():
+        entry = {"year": int(year)}
+        for p in all_purposes:
+            entry[p] = int(row[p])
+        cumulative_purpose_by_year.append(entry)
+
     summary = {
         "total_satellites": n,
         "unique_countries": int(df["Country of Operator/Owner"].nunique()),
@@ -554,12 +677,16 @@ def build_main_json(df: pd.DataFrame) -> dict:
         "summary": summary,
         "cumulative_launches": cumulative_launches,
         "top_countries": top_countries,
+        "country_counts": country_counts,
         "orbit_distribution": orbit_distribution,
         "purpose_breakdown": purpose_breakdown,
         "purpose_by_orbit": purpose_by_orbit,
+        "country_purpose_matrix": country_purpose_matrix,
         "top_operators": top_operators,
+        "operator_details": operator_details,
         "lorenz_curve": lorenz_curve,
         "launches_by_decade": launches_by_decade,
+        "cumulative_purpose_by_year": cumulative_purpose_by_year,
     }
 
 
@@ -568,6 +695,9 @@ def build_globe_json(df: pd.DataFrame) -> list:
     Rows missing orbital data have already been dropped upstream by
     load_dataframe, so this function trusts that every row has both a
     valid altitude and a valid inclination."""
+    # launch_year is required by the Chapter 3 time slider. Some rows have
+    # an unparseable Date of Launch (left as NaN by load_dataframe); we cast
+    # via Int64 (nullable) so those serialise to JSON null rather than NaN.
     out_df = pd.DataFrame(
         {
             "name": df["Current Official Name of Satellite"].astype(str).str.strip(),
@@ -576,9 +706,20 @@ def build_globe_json(df: pd.DataFrame) -> list:
             "purpose": df["Purpose"].fillna("Unknown").astype(str).str.strip(),
             "altitude": df["mean_altitude"].round(1),
             "inclination": df["Inclination (degrees)"].round(2),
+            "launch_year": df["launch_year"].astype("Int64"),
+            "constellation": df["Current Official Name of Satellite"].apply(
+                classify_constellation
+            ),
         }
     )
-    return out_df.to_dict(orient="records")
+    # Replace pandas NA in launch_year with None so json.dumps emits null
+    records = out_df.to_dict(orient="records")
+    for r in records:
+        if pd.isna(r["launch_year"]):
+            r["launch_year"] = None
+        else:
+            r["launch_year"] = int(r["launch_year"])
+    return records
 
 
 # ---- Data quality report -------------------------------------------------

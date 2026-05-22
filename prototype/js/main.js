@@ -28,8 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
       drawTimelineChart(data.cumulative_launches);
       drawPurposeOverTimeChart(data.cumulative_purpose_by_year);
       drawCountriesChart(data.top_countries);
+      drawWorldMap(data.country_counts);
       drawLorenzChart(data.lorenz_curve);
       drawOperatorsChart(data.top_operators, data.operator_details);
+      drawCountryPurposeChart(data.country_purpose_matrix);
       drawOrbitDonut(data.orbit_distribution);
       drawPurposeChart(data.purpose_breakdown);
       drawPurposeOrbitChart(data.purpose_by_orbit);

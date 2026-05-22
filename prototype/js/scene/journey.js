@@ -23,7 +23,15 @@
  *    safe to call even when WebGL is unavailable.
  */
 
-import * as THREE from "https://unpkg.com/three@0.170.0/build/three.module.min.js";
+// esm.sh resolves Three.js's "three" bare-specifier imports inside the
+// postprocessing example modules, so we use it consistently for everything
+// in this file. Both THREE and the post-processing passes thus share a
+// single module instance, which `EffectComposer` requires.
+import * as THREE from "https://esm.sh/three@0.170.0";
+import { EffectComposer } from "https://esm.sh/three@0.170.0/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "https://esm.sh/three@0.170.0/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "https://esm.sh/three@0.170.0/examples/jsm/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "https://esm.sh/three@0.170.0/examples/jsm/postprocessing/OutputPass.js";
 
 // World-unit Earth radius. Everything else is scaled relative to this so
 // numbers stay readable. 100 is a round value that keeps satellite shells
@@ -42,11 +50,15 @@ const ORBIT_COLORS = {
 // Per-orbit point sizes (in CSS pixels at z = camera_distance). LEO points
 // are small (LEO is dense), GEO larger so they read as discrete dots at
 // distance. Multiplied in the shader by depth attenuation + pixel ratio.
+// LEO is 88% of the cloud, so its blue mass tends to dominate the frame
+// with additive blending. We shrink LEO slightly and grow the rarer
+// orange/green/purple shells so each colored band reads as distinct
+// against the bright LEO core.
 const ORBIT_SIZES = {
-  LEO: 6.5,
-  MEO: 10,
-  GEO: 14,
-  Elliptical: 9,
+  LEO: 5.5,
+  MEO: 13,
+  GEO: 17,
+  Elliptical: 11,
 };
 
 // Kepler's third law: T ∝ r^1.5, so omega ∝ r^-1.5. We pick a base ω that
@@ -206,6 +218,30 @@ async function initJourney() {
     console.warn("journey: failed to load satellites-globe.json", e);
   }
 
+  // ---------- Post-processing: bloom on bright pixels ----------
+  // Each satellite is a small additive-blended sprite. With a high
+  // brightness threshold the bloom pass only acts on those sprite cores
+  // (and the brightest sun-lit pixels of Earth), producing a soft halo
+  // around every dot. If the composer fails to construct (bad CDN, weak
+  // GPU), we fall back to direct renderer.render and the scene still works.
+  let composer = null;
+  try {
+    composer = new EffectComposer(renderer);
+    composer.setSize(initial.w, initial.h);
+    composer.addPass(new RenderPass(scene, camera));
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(initial.w, initial.h),
+      0.85, // strength — how intense the glow is overall
+      0.55, // radius — how wide the glow spreads
+      0.62, // threshold — only pixels brighter than this bloom
+    );
+    composer.addPass(bloomPass);
+    composer.addPass(new OutputPass()); // sRGB-correct final output
+  } catch (e) {
+    console.warn("journey: post-processing unavailable, plain render", e);
+    composer = null;
+  }
+
   // ---------- Resize handling ----------
   // Track the hero canvas's own size (not the viewport) so the renderer
   // stays sharp even when the hero element grows/shrinks via CSS.
@@ -213,6 +249,7 @@ async function initJourney() {
     const { w, h } = canvasSize();
     if (w === 0 || h === 0) return;
     renderer.setSize(w, h, false);
+    if (composer) composer.setSize(w, h);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
   }
@@ -235,7 +272,8 @@ async function initJourney() {
       stars.rotation.z += 0.00008;
       if (satSystem) satSystem.update(t);
     }
-    renderer.render(scene, camera);
+    if (composer) composer.render();
+    else renderer.render(scene, camera);
     requestAnimationFrame(animate);
   }
   animate();
@@ -357,7 +395,12 @@ function buildSatelliteSystem(raw) {
         float core = smoothstep(0.5, 0.0, d);
         float glow = smoothstep(0.5, 0.18, d) * 0.65;
         float alpha = max(core, glow);
-        gl_FragColor = vec4(vColor, alpha);
+        // Push the hue past 1.0 so additive blending preserves the color
+        // identity even in dense overlap zones (LEO shell, GEO ring).
+        // Without this, overlapping LEO points blow out to white instead
+        // of reading as a saturated blue band.
+        vec3 vivid = vColor * 1.35;
+        gl_FragColor = vec4(vivid, alpha);
       }
     `,
     transparent: true,

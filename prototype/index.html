@@ -30,6 +30,8 @@
     />
     <!-- D3.js v7 -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- topojson-client for the Chapter 2 world choropleth -->
+    <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
   </head>
   <body>
     <noscript>
@@ -277,6 +279,24 @@
         </p>
       </div>
       <div class="viz-container">
+
+        <!-- World choropleth: the geographic establishing shot for Chapter
+             2. Reads from the full country_counts array. Hovering any
+             country surfaces its satellite count + share of the global
+             fleet. Reacts to the Chapter 3 constellation isolator via the
+             same `constellation-changed` event the bar chart already
+             listens to, so picking Starlink lights up the USA here too. -->
+        <div class="viz-block full-width fade-in">
+          <h3>Where on Earth do the operators sit?</h3>
+          <p class="viz-note">
+            Each country shaded by how many operational satellites it
+            controls (log scale). Hover any country for details. The
+            picture is heavily lopsided: the USA holds two thirds of the
+            global fleet, then a long tail.
+          </p>
+          <div id="world-map-chart"></div>
+        </div>
+
         <div class="viz-row">
           <div class="viz-block">
             <h3>Satellites by Country</h3>
@@ -303,6 +323,24 @@
             history, orbit class mix, and primary purpose.
           </p>
           <div id="operators-chart"></div>
+        </div>
+
+        <!-- Country × Purpose matrix: who specializes in what?
+             USA dominates Communications (Starlink), China leans Earth
+             Observation, ESA focuses on Navigation (Galileo), Germany on
+             Technology Development. Log-scaled heatmap so small numbers
+             still register against the USA-Communications block. -->
+        <div class="viz-block full-width fade-in">
+          <h3>What does each country build for?</h3>
+          <p class="viz-note">
+            A 10 × 6 heatmap of the top countries against the six purpose
+            categories. Reveals specialization, not just volume: <strong>USA
+            is a communications power</strong> (Starlink, OneWeb-USA),
+            <strong>China leans Earth observation</strong> (Gaofen,
+            Yaogan), <strong>ESA focuses navigation</strong> (Galileo),
+            <strong>Germany favors technology development</strong>.
+          </p>
+          <div id="country-purpose-chart"></div>
         </div>
       </div>
     </section>
@@ -390,6 +428,56 @@
             Each dot is a real satellite positioned by its orbital altitude and
             inclination. Drag to rotate, scroll to zoom.
           </p>
+
+          <!-- Satellite search: type any satellite name and the globe flies
+               to it with a pulsing-ring spotlight. Suggestions are listed
+               live; keyboard navigation supported (↑ ↓ Enter Esc). -->
+          <div class="globe-search" role="search">
+            <div class="globe-search-input-wrap">
+              <span class="globe-search-icon" aria-hidden="true">🔍</span>
+              <input
+                id="globe-search"
+                class="globe-search-input"
+                type="search"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="Find a satellite (try Starlink-1007, ISS, or Hubble)"
+                aria-label="Search satellites by name"
+                aria-controls="globe-search-results"
+                aria-autocomplete="list"
+              />
+              <button
+                id="globe-search-clear"
+                class="globe-search-clear"
+                type="button"
+                aria-label="Clear search"
+                hidden
+              >×</button>
+            </div>
+            <ul
+              id="globe-search-results"
+              class="globe-search-results"
+              role="listbox"
+              hidden
+            ></ul>
+            <div
+              id="globe-spotlight-card"
+              class="globe-spotlight-card"
+              role="status"
+              aria-live="polite"
+              hidden
+            >
+              <button
+                class="globe-spotlight-close"
+                type="button"
+                aria-label="Dismiss spotlight"
+              >×</button>
+              <div class="globe-spotlight-eyebrow">Spotlight</div>
+              <div class="globe-spotlight-name" id="spotlight-name">—</div>
+              <div class="globe-spotlight-meta" id="spotlight-meta">—</div>
+            </div>
+          </div>
+
           <div
             class="globe-controls"
             role="group"
@@ -548,6 +636,54 @@
             </div>
           </div>
           <div id="future-chart"></div>
+
+          <!-- Source footnote: collapsed by default so it never crowds the
+               chart, but a single click expands the full citation list. -->
+          <details class="future-sources">
+            <summary>
+              <span class="future-sources-label">Sources</span>
+              <span class="future-sources-hint">Click to expand</span>
+            </summary>
+            <ul class="future-sources-list">
+              <li>
+                <strong>Starlink (42,000)</strong> — FCC International
+                Bureau filings. 12,000 Gen1 approved 2018; 30,000 Gen2 filed
+                2020, of which 7,500 approved December 2022, the rest
+                pending.
+              </li>
+              <li>
+                <strong>Guowang / Xingwang (12,992)</strong> — ITU Master
+                International Frequency Register filing by China SatNet,
+                2020.
+              </li>
+              <li>
+                <strong>Qianfan / Spacesail (~14,000)</strong> — Announced
+                by Shanghai Spacecom Satellite Technology, with first
+                launches starting August 2024. Coverage in SpaceNews and
+                Reuters.
+              </li>
+              <li>
+                <strong>OneWeb Gen2 (6,372)</strong> — UK Space Agency and
+                ITU filings for the Eutelsat-OneWeb Gen2 system, post the
+                2023 merger.
+              </li>
+              <li>
+                <strong>Project Kuiper (3,236)</strong> — FCC license
+                granted to Amazon's Kuiper Systems LLC, July 2020.
+              </li>
+              <li>
+                <strong>Other (~3,241)</strong> — Smaller constellations
+                with active filings, including AST SpaceMobile (243),
+                Telesat Lightspeed (198), and ~20 smaller communications
+                and Earth-observation operators.
+              </li>
+            </ul>
+            <p class="future-sources-note">
+              Counts represent licensed or filed satellites, not deployed
+              ones, as of November 2024. Historical precedent suggests the
+              actual 2030 fleet will be 50–70% of these numbers.
+            </p>
+          </details>
         </div>
       </div>
     </section>
@@ -592,9 +728,11 @@
     <script src="js/charts/shared.js"></script>
     <script src="js/charts/timeline.js"></script>
     <script src="js/charts/countries.js"></script>
+    <script src="js/charts/world-map.js"></script>
     <script src="js/charts/lorenz.js"></script>
     <script src="js/charts/donut.js"></script>
     <script src="js/charts/operators.js"></script>
+    <script src="js/charts/country-purpose.js"></script>
     <script src="js/charts/purpose.js"></script>
     <script src="js/charts/purpose-over-time.js"></script>
     <script src="js/charts/heatmap.js"></script>

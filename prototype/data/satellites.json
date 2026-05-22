@@ -259,6 +259,424 @@
       "count": 24
     }
   ],
+  "country_counts": [
+    {
+      "country": "USA",
+      "count": 4509
+    },
+    {
+      "country": "China",
+      "count": 585
+    },
+    {
+      "country": "United Kingdom",
+      "count": 561
+    },
+    {
+      "country": "Russia",
+      "count": 177
+    },
+    {
+      "country": "Japan",
+      "count": 88
+    },
+    {
+      "country": "ESA",
+      "count": 62
+    },
+    {
+      "country": "Multinational",
+      "count": 61
+    },
+    {
+      "country": "India",
+      "count": 59
+    },
+    {
+      "country": "Canada",
+      "count": 55
+    },
+    {
+      "country": "Germany",
+      "count": 48
+    },
+    {
+      "country": "Luxembourg",
+      "count": 45
+    },
+    {
+      "country": "Argentina",
+      "count": 38
+    },
+    {
+      "country": "Israel",
+      "count": 27
+    },
+    {
+      "country": "Spain",
+      "count": 26
+    },
+    {
+      "country": "France",
+      "count": 24
+    },
+    {
+      "country": "Finland",
+      "count": 23
+    },
+    {
+      "country": "South Korea",
+      "count": 21
+    },
+    {
+      "country": "Switzerland",
+      "count": 15
+    },
+    {
+      "country": "Italy",
+      "count": 15
+    },
+    {
+      "country": "Brazil",
+      "count": 14
+    },
+    {
+      "country": "Netherlands",
+      "count": 14
+    },
+    {
+      "country": "Australia",
+      "count": 14
+    },
+    {
+      "country": "United Arab Emirates",
+      "count": 13
+    },
+    {
+      "country": "Saudi Arabia",
+      "count": 13
+    },
+    {
+      "country": "Taiwan",
+      "count": 12
+    },
+    {
+      "country": "Turkey",
+      "count": 10
+    },
+    {
+      "country": "Norway",
+      "count": 9
+    },
+    {
+      "country": "Singapore",
+      "count": 8
+    },
+    {
+      "country": "Indonesia",
+      "count": 7
+    },
+    {
+      "country": "Mexico",
+      "count": 7
+    },
+    {
+      "country": "Thailand",
+      "count": 7
+    },
+    {
+      "country": "Kazakhstan",
+      "count": 6
+    },
+    {
+      "country": "Algeria",
+      "count": 5
+    },
+    {
+      "country": "USA/Argentina",
+      "count": 5
+    },
+    {
+      "country": "Egypt",
+      "count": 5
+    },
+    {
+      "country": "USA/Japan",
+      "count": 5
+    },
+    {
+      "country": "South Africa",
+      "count": 5
+    },
+    {
+      "country": "Poland",
+      "count": 5
+    },
+    {
+      "country": "Denmark",
+      "count": 4
+    },
+    {
+      "country": "Lithuania",
+      "count": 4
+    },
+    {
+      "country": "Czech Republic",
+      "count": 4
+    },
+    {
+      "country": "Malaysia",
+      "count": 4
+    },
+    {
+      "country": "Vietnam",
+      "count": 4
+    },
+    {
+      "country": "Chile",
+      "count": 4
+    },
+    {
+      "country": "France/Italy",
+      "count": 3
+    },
+    {
+      "country": "Nigeria",
+      "count": 3
+    },
+    {
+      "country": "Sweden",
+      "count": 3
+    },
+    {
+      "country": "Pakistan",
+      "count": 3
+    },
+    {
+      "country": "Belgium",
+      "count": 2
+    },
+    {
+      "country": "Azerbaijan",
+      "count": 2
+    },
+    {
+      "country": "Belarus",
+      "count": 2
+    },
+    {
+      "country": "Bulgaria",
+      "count": 2
+    },
+    {
+      "country": "China/Brazil",
+      "count": 2
+    },
+    {
+      "country": "China/France",
+      "count": 2
+    },
+    {
+      "country": "Ethiopia",
+      "count": 2
+    },
+    {
+      "country": "USA/Germany",
+      "count": 2
+    },
+    {
+      "country": "France/Italy/Belgium/Spain/Greece",
+      "count": 2
+    },
+    {
+      "country": "Greece",
+      "count": 2
+    },
+    {
+      "country": "Japan/Singapore",
+      "count": 2
+    },
+    {
+      "country": "Iran",
+      "count": 2
+    },
+    {
+      "country": "India/France",
+      "count": 2
+    },
+    {
+      "country": "Morocco",
+      "count": 2
+    },
+    {
+      "country": "Slovenia",
+      "count": 2
+    },
+    {
+      "country": "Ukraine",
+      "count": 2
+    },
+    {
+      "country": "France/Belgium/Sweden",
+      "count": 2
+    },
+    {
+      "country": "Venezuela",
+      "count": 2
+    },
+    {
+      "country": "Angola",
+      "count": 1
+    },
+    {
+      "country": "Bangladesh",
+      "count": 1
+    },
+    {
+      "country": "China ",
+      "count": 1
+    },
+    {
+      "country": "Tunisia",
+      "count": 1
+    },
+    {
+      "country": "Ecuador",
+      "count": 1
+    },
+    {
+      "country": "USA/Canada/Japan",
+      "count": 1
+    },
+    {
+      "country": "USA/Japan/Brazil",
+      "count": 1
+    },
+    {
+      "country": "Colombia",
+      "count": 1
+    },
+    {
+      "country": "Greece/United Kingdom",
+      "count": 1
+    },
+    {
+      "country": "ESA/",
+      "count": 1
+    },
+    {
+      "country": "United Kingdom/ESA",
+      "count": 1
+    },
+    {
+      "country": "USA/India/Singapore/Taiwan",
+      "count": 1
+    },
+    {
+      "country": "ESA/Russia",
+      "count": 1
+    },
+    {
+      "country": "USA/France",
+      "count": 1
+    },
+    {
+      "country": "Jordan",
+      "count": 1
+    },
+    {
+      "country": "United Kingdom/Netherlands",
+      "count": 1
+    },
+    {
+      "country": "Laos",
+      "count": 1
+    },
+    {
+      "country": "Morocco/Germany",
+      "count": 1
+    },
+    {
+      "country": "USA/Canada",
+      "count": 1
+    },
+    {
+      "country": "Sinapore",
+      "count": 1
+    },
+    {
+      "country": "Peru",
+      "count": 1
+    },
+    {
+      "country": "New Zealand",
+      "count": 1
+    },
+    {
+      "country": "Kuwait",
+      "count": 1
+    },
+    {
+      "country": "Sri Lanka",
+      "count": 1
+    },
+    {
+      "country": "Hungary",
+      "count": 1
+    },
+    {
+      "country": "India/Canada",
+      "count": 1
+    },
+    {
+      "country": "Nepal",
+      "count": 1
+    },
+    {
+      "country": "Sudan",
+      "count": 1
+    },
+    {
+      "country": "Singapore/Taiwan",
+      "count": 1
+    },
+    {
+      "country": "Poland/UK",
+      "count": 1
+    },
+    {
+      "country": "USA/United Kingdom/Italy",
+      "count": 1
+    },
+    {
+      "country": "Iraq",
+      "count": 1
+    },
+    {
+      "country": "Bolivia",
+      "count": 1
+    },
+    {
+      "country": "Estonia",
+      "count": 1
+    },
+    {
+      "country": "Austria",
+      "count": 1
+    },
+    {
+      "country": "Turkmenistan/Monaco",
+      "count": 1
+    },
+    {
+      "country": "France/Israel",
+      "count": 1
+    },
+    {
+      "country": "China/Italy",
+      "count": 1
+    }
+  ],
   "orbit_distribution": [
     {
       "orbit": "LEO",
@@ -348,6 +766,98 @@
       "MEO": 0,
       "GEO": 6,
       "Elliptical": 19
+    }
+  ],
+  "country_purpose_matrix": [
+    {
+      "country": "USA",
+      "Communications": 3793,
+      "Earth Observation": 476,
+      "Technology Development": 142,
+      "Navigation": 35,
+      "Space Science": 39,
+      "Other": 24
+    },
+    {
+      "country": "China",
+      "Communications": 71,
+      "Earth Observation": 329,
+      "Technology Development": 111,
+      "Navigation": 49,
+      "Space Science": 24,
+      "Other": 1
+    },
+    {
+      "country": "United Kingdom",
+      "Communications": 544,
+      "Earth Observation": 6,
+      "Technology Development": 10,
+      "Navigation": 0,
+      "Space Science": 0,
+      "Other": 1
+    },
+    {
+      "country": "Russia",
+      "Communications": 89,
+      "Earth Observation": 39,
+      "Technology Development": 9,
+      "Navigation": 30,
+      "Space Science": 8,
+      "Other": 2
+    },
+    {
+      "country": "Japan",
+      "Communications": 20,
+      "Earth Observation": 37,
+      "Technology Development": 23,
+      "Navigation": 5,
+      "Space Science": 3,
+      "Other": 0
+    },
+    {
+      "country": "ESA",
+      "Communications": 2,
+      "Earth Observation": 20,
+      "Technology Development": 4,
+      "Navigation": 28,
+      "Space Science": 8,
+      "Other": 0
+    },
+    {
+      "country": "Multinational",
+      "Communications": 47,
+      "Earth Observation": 6,
+      "Technology Development": 0,
+      "Navigation": 0,
+      "Space Science": 8,
+      "Other": 0
+    },
+    {
+      "country": "India",
+      "Communications": 20,
+      "Earth Observation": 24,
+      "Technology Development": 5,
+      "Navigation": 8,
+      "Space Science": 2,
+      "Other": 0
+    },
+    {
+      "country": "Canada",
+      "Communications": 37,
+      "Earth Observation": 9,
+      "Technology Development": 4,
+      "Navigation": 0,
+      "Space Science": 5,
+      "Other": 0
+    },
+    {
+      "country": "Germany",
+      "Communications": 3,
+      "Earth Observation": 13,
+      "Technology Development": 30,
+      "Navigation": 0,
+      "Space Science": 2,
+      "Other": 0
     }
   ],
   "top_operators": [

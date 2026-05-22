@@ -876,6 +876,40 @@ svg .grid .domain {
   filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.6));
 }
 
+/* ===== World choropleth (Chapter 2) ===== */
+.world-map-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.world-country {
+  transition: stroke 0.15s ease, stroke-width 0.15s ease,
+    filter 0.2s ease, fill 0.2s ease;
+  cursor: default;
+}
+
+/* Hover state lives in CSS so the highlight is always tied to the actual
+   cursor position. With JS-driven state we occasionally lost the
+   mouseleave when .raise() reordered the DOM, which left the white
+   outline stuck. CSS :hover can never desynchronize. */
+.world-country:hover {
+  stroke: #ffffff;
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+}
+
+.world-country.linked-country-map {
+  stroke: #ffffff;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.65));
+}
+
+@media (max-width: 700px) {
+  /* The map's intrinsic aspect (960 × 480) holds via viewBox; nothing to
+     override here beyond the standard viz-block responsive behavior. */
+}
+
 /* ===== Operator deep-dive (Chapter 2) ===== */
 
 /* Operator bar chart: same visual language as the country bars, but each
@@ -1156,6 +1190,93 @@ svg .grid .domain {
   }
 }
 
+/* Future chart sources footnote — a native <details> styled to match
+   the chapter palette. Collapsed by default so the chart stays the
+   focal point. */
+.future-sources {
+  margin-top: 22px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 0;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.future-sources[open] {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+.future-sources summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  user-select: none;
+  outline: none;
+}
+.future-sources summary::-webkit-details-marker { display: none; }
+.future-sources summary::before {
+  content: "›";
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  transition: transform 0.2s ease;
+  width: 12px;
+  text-align: center;
+}
+.future-sources[open] summary::before { transform: rotate(90deg); }
+.future-sources summary:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.future-sources-label {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  font-size: 0.72rem;
+}
+.future-sources-hint {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  opacity: 0.65;
+}
+.future-sources[open] .future-sources-hint { display: none; }
+
+.future-sources-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 18px 6px 36px;
+}
+.future-sources-list li {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  padding: 6px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+.future-sources-list li:first-child { border-top: none; }
+.future-sources-list strong { color: var(--text-primary); }
+
+.future-sources-note {
+  margin: 6px 18px 16px;
+  padding: 10px 12px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  background: rgba(232, 113, 10, 0.06);
+  border-left: 2px solid rgba(232, 113, 10, 0.6);
+  border-radius: 4px;
+  line-height: 1.55;
+}
+
 .globe-legend {
   display: flex;
   justify-content: center;
@@ -1177,6 +1298,193 @@ svg .grid .domain {
   height: 10px;
   border-radius: 50%;
   display: inline-block;
+}
+
+/* ===== Satellite search (Chapter 3) =====
+   Live search above the globe filters. Type any satellite name → fly the
+   camera to its position with a pulsing-ring spotlight. */
+.globe-search {
+  position: relative;
+  margin: 0 0 14px;
+  max-width: 520px;
+}
+
+.globe-search-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.globe-search-icon {
+  position: absolute;
+  left: 12px;
+  pointer-events: none;
+  font-size: 0.9rem;
+  filter: grayscale(0.4) brightness(1.1);
+  opacity: 0.7;
+}
+
+.globe-search-input {
+  width: 100%;
+  padding: 10px 36px 10px 36px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+.globe-search-input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.65;
+}
+.globe-search-input:focus,
+.globe-search-input:focus-visible {
+  border-color: var(--accent-blue);
+  background: rgba(26, 115, 232, 0.06);
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2),
+    0 0 24px rgba(26, 115, 232, 0.15);
+}
+/* Strip the native "clear" decoration on Webkit/Edge so we own it */
+.globe-search-input::-webkit-search-cancel-button,
+.globe-search-input::-webkit-search-decoration { -webkit-appearance: none; appearance: none; }
+
+.globe-search-clear {
+  position: absolute;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.globe-search-clear:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-primary);
+}
+
+/* ---------- Results dropdown ---------- */
+.globe-search-results {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  background: rgba(12, 17, 28, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5),
+    0 0 24px rgba(26, 115, 232, 0.08);
+  backdrop-filter: blur(8px);
+  z-index: 50;
+  max-height: 280px;
+  overflow-y: auto;
+}
+.globe-search-result {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  transition: background 0.12s ease;
+}
+.globe-search-result:hover,
+.globe-search-result.is-active {
+  background: rgba(26, 115, 232, 0.16);
+}
+.globe-search-result-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.globe-search-result-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.globe-search-result-meta {
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-family: var(--font-heading);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.globe-search-result-empty {
+  padding: 10px 12px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* ---------- Spotlight card ---------- */
+.globe-spotlight-card {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: rgba(12, 17, 28, 0.95);
+  border: 1px solid rgba(26, 115, 232, 0.35);
+  border-radius: 12px;
+  padding: 12px 16px 14px;
+  min-width: 240px;
+  max-width: 320px;
+  color: var(--text-primary);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5),
+    0 0 28px rgba(26, 115, 232, 0.18);
+  backdrop-filter: blur(8px);
+  z-index: 49;
+}
+.globe-spotlight-close {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.globe-spotlight-close:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+.globe-spotlight-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-blue);
+  margin-bottom: 4px;
+}
+.globe-spotlight-name {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+.globe-spotlight-meta {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
 }
 
 /* ===== TIME SLIDER (Chapter 3) ===== */

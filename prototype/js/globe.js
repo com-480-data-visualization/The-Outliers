@@ -301,6 +301,13 @@ async function initGlobe() {
     // Initial paint so the counter shows the real "satellites at 2023" value
     applyFilters();
 
+    // ===== Satellite search + spotlight =====
+    // Live name search. Hits fly the camera to the satellite's position
+    // and add a pulsing ring there. The dataset has no real ephemeris, so
+    // "position" means the inclination-bounded visual position we assigned
+    // at load. Consistent within a session.
+    initSatelliteSearch(globe, allPoints);
+
     // Slow rotation on hover (only when auto-rotate is enabled)
     if (!prefersReducedMotion) {
         container.addEventListener('mouseenter', () => { globe.controls().autoRotateSpeed = 0.1; });
@@ -325,6 +332,180 @@ async function initGlobe() {
     requestAnimationFrame(resizeGlobe);
 
     console.log('Globe initialized');
+}
+
+/* =========================================================================
+ * Satellite search + spotlight
+ * =========================================================================
+ * Lightweight client-side name search over the 6,713 satellites.
+ *
+ * Match strategy: case-insensitive substring on name, ranked by
+ *   1. prefix matches first ("Starlink-1007" beats "Aeolus" for query "star"),
+ *   2. shorter names next (so "ISS" beats "ISS Pirs" for query "iss"),
+ *   3. lexicographic.
+ *
+ * On selection, Globe.gl flies the camera to the satellite's lat/lng and a
+ * pulsing ring is added at that point. The spotlight card surfaces the
+ * satellite's basic identity (name, country, purpose, altitude, year).
+ */
+function initSatelliteSearch(globe, allPoints) {
+    const input = document.getElementById('globe-search');
+    const list = document.getElementById('globe-search-results');
+    const clearBtn = document.getElementById('globe-search-clear');
+    const card = document.getElementById('globe-spotlight-card');
+    const closeBtn = card ? card.querySelector('.globe-spotlight-close') : null;
+    const nameEl = document.getElementById('spotlight-name');
+    const metaEl = document.getElementById('spotlight-meta');
+    if (!input || !list) return;
+
+    // Wire the globe's rings layer once, then drive it by mutating
+    // ringsData when a satellite is selected. Smooth, GPU-cheap.
+    globe.ringColor(() => 'rgba(255, 255, 255, 0.85)')
+        .ringMaxRadius(4)
+        .ringPropagationSpeed(2.4)
+        .ringRepeatPeriod(900)
+        .ringAltitude(d => d.alt);
+
+    let activeIdx = -1;
+    let currentResults = [];
+
+    function rank(query) {
+        if (!query) return [];
+        const q = query.toLowerCase();
+        const hits = [];
+        // Cap the scan so a very vague query like "s" doesn't iterate all
+        // 6,713 + sort. We still scan everything but stop collecting once
+        // we have 200 candidates — plenty to sort and trim from.
+        for (let i = 0; i < allPoints.length && hits.length < 200; i++) {
+            const p = allPoints[i];
+            const name = (p.name || '').toLowerCase();
+            const idx = name.indexOf(q);
+            if (idx >= 0) hits.push({ p, idx, len: name.length });
+        }
+        hits.sort((a, b) => a.idx - b.idx || a.len - b.len || a.p.name.localeCompare(b.p.name));
+        return hits.slice(0, 8).map(h => h.p);
+    }
+
+    function highlight(name, query) {
+        const i = name.toLowerCase().indexOf(query.toLowerCase());
+        if (i < 0) return name;
+        return `${name.slice(0, i)}<mark style="background:rgba(26,115,232,0.35);color:#fff;border-radius:2px;padding:0 2px;">${name.slice(i, i + query.length)}</mark>${name.slice(i + query.length)}`;
+    }
+
+    function render(query) {
+        list.innerHTML = '';
+        if (!query) {
+            list.hidden = true;
+            currentResults = [];
+            activeIdx = -1;
+            return;
+        }
+        currentResults = rank(query);
+        if (!currentResults.length) {
+            const empty = document.createElement('li');
+            empty.className = 'globe-search-result-empty';
+            empty.textContent = `No satellite matches "${query}"`;
+            list.appendChild(empty);
+            list.hidden = false;
+            activeIdx = -1;
+            return;
+        }
+        currentResults.forEach((p, i) => {
+            const li = document.createElement('li');
+            li.className = 'globe-search-result' + (i === 0 ? ' is-active' : '');
+            li.setAttribute('role', 'option');
+            li.dataset.idx = i;
+            li.innerHTML =
+                `<span class="globe-search-result-dot" style="background:${p.color};"></span>` +
+                `<span class="globe-search-result-name">${highlight(p.name, query)}</span>` +
+                `<span class="globe-search-result-meta">${p.orbit_class} · ${p.altitude_km.toLocaleString()} km</span>`;
+            li.addEventListener('click', () => select(i));
+            list.appendChild(li);
+        });
+        activeIdx = 0;
+        list.hidden = false;
+    }
+
+    function setActive(i) {
+        const items = list.querySelectorAll('.globe-search-result');
+        items.forEach((el, idx) => el.classList.toggle('is-active', idx === i));
+        activeIdx = i;
+        const el = items[i];
+        if (el && el.scrollIntoView) {
+            el.scrollIntoView({ block: 'nearest' });
+        }
+    }
+
+    function spotlight(p) {
+        // Fly the camera. Altitude 0.55 ≈ a closer-than-default view that
+        // shows context without losing the surrounding cloud.
+        globe.pointOfView({ lat: p.lat, lng: p.lng, altitude: 0.9 }, 1400);
+        // Add a single pulsing ring at the satellite's position. The
+        // ringAltitude reads from each ring's `alt`, so we get the ring
+        // at the satellite's own orbital shell, not on Earth's surface.
+        globe.ringsData([{ lat: p.lat, lng: p.lng, alt: p.alt }]);
+        // Update spotlight card
+        if (card && nameEl && metaEl) {
+            nameEl.textContent = p.name;
+            metaEl.innerHTML =
+                `<span style="color:${p.color};">${p.orbit_class}</span> · ${p.altitude_km.toLocaleString()} km<br>` +
+                `${p.purpose} · ${p.country}` +
+                (p.launch_year ? ` · launched ${p.launch_year}` : '');
+            card.hidden = false;
+        }
+    }
+
+    function clearSpotlight() {
+        globe.ringsData([]);
+        if (card) card.hidden = true;
+    }
+
+    function select(i) {
+        const p = currentResults[i];
+        if (!p) return;
+        input.value = p.name;
+        list.hidden = true;
+        if (clearBtn) clearBtn.hidden = false;
+        spotlight(p);
+    }
+
+    input.addEventListener('input', () => {
+        if (clearBtn) clearBtn.hidden = !input.value;
+        render(input.value.trim());
+    });
+    input.addEventListener('keydown', (e) => {
+        if (list.hidden || !currentResults.length) return;
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setActive(Math.min(currentResults.length - 1, activeIdx + 1));
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setActive(Math.max(0, activeIdx - 1));
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (activeIdx >= 0) select(activeIdx);
+        } else if (e.key === 'Escape') {
+            list.hidden = true;
+        }
+    });
+    input.addEventListener('focus', () => {
+        if (input.value.trim()) render(input.value.trim());
+    });
+    document.addEventListener('click', (e) => {
+        if (!list.contains(e.target) && e.target !== input) list.hidden = true;
+    });
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            input.value = '';
+            clearBtn.hidden = true;
+            list.hidden = true;
+            clearSpotlight();
+            input.focus();
+        });
+    }
+    if (closeBtn) {
+        closeBtn.addEventListener('click', clearSpotlight);
+    }
 }
 
 window.initGlobe = initGlobe;
