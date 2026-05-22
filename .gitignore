@@ -1,6 +1,41 @@
+# Claude Code state
 .claude/
+
+# Course materials (kept local; do not ship to the public repo)
 Lectures/
 Milestone 2.pdf
+
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+*.egg-info/
+
+# LaTeX build artifacts (process book is built in overleaf/)
 overleaf/
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+
+# Node (if/when a bundler is added)
+node_modules/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs and ephemeral files
+*.log
+*.tmp
