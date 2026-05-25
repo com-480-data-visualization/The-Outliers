@@ -123,32 +123,48 @@ function drawTimelineChart(data) {
   areaPath.attr("clip-path", "url(#timeline-clip)");
   linePath.attr("clip-path", "url(#timeline-clip)");
 
+  // Last year present in the dataset. The final step's "ideal" year (2023)
+  // is past the data, so we resolve any target year to the nearest row
+  // at-or-before it. That way the marker lands on a real data point even
+  // when the step's notional year overshoots the dataset.
+  const lastRow = data[data.length - 1];
+
+  function findRowAtOrBefore(year) {
+    let best = data[0];
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].year <= year) best = data[i];
+      else break;
+    }
+    return best;
+  }
+
   function updateToStep(step) {
-    const targetYear = stepYears[step] || 2023;
-    const clipWidth = x(targetYear);
+    const targetYear = stepYears[step] || lastRow.year;
+    const point = findRowAtOrBefore(targetYear);
+    // Reveal the area/line up to the marker's actual location, not the
+    // notional step year — otherwise the line would extend a year past
+    // where the dot can sit.
+    const clipWidth = x(point.year);
 
     clipRect
       .transition()
       .duration(800)
       .attr("width", clipWidth + 5);
 
-    const point = data.find((d) => d.year === targetYear);
-    if (point) {
-      marker
-        .transition()
-        .duration(400)
-        .attr("cx", x(point.year))
-        .attr("cy", y(point.cumulative))
-        .style("opacity", 1);
+    marker
+      .transition()
+      .duration(400)
+      .attr("cx", x(point.year))
+      .attr("cy", y(point.cumulative))
+      .style("opacity", 1);
 
-      markerLabel
-        .transition()
-        .duration(400)
-        .attr("x", x(point.year))
-        .attr("y", y(point.cumulative))
-        .style("opacity", 1)
-        .text(`${point.cumulative.toLocaleString()} satellites`);
-    }
+    markerLabel
+      .transition()
+      .duration(400)
+      .attr("x", x(point.year))
+      .attr("y", y(point.cumulative))
+      .style("opacity", 1)
+      .text(`${point.cumulative.toLocaleString()} satellites`);
   }
 
   // Listen for scroll steps
