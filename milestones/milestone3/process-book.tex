@@ -39,6 +39,47 @@
 % Small caps eyebrow label used at the top of each page
 \newcommand{\eyebrow}[1]{{\footnotesize\textcolor{accentBlue}{\textsc{#1}}}}
 
+% Combined page header: eyebrow line + bold title + a thin two-tone accent
+% rule that anchors the visual top of every page. Usage:
+%   \pageheader{04}{Designing the narrative}{A four-chapter arc, Freytag inside}
+\newcommand{\pageheader}[3]{%
+  {\eyebrow{#1 \quad\textbullet\quad #2}}\\[3pt]%
+  {\Large\bfseries #3}\\[3pt]%
+  {\color{accentBlue}\rule{4em}{1.5pt}}\hspace{1pt}%
+  {\color{accentBlue!28}\rule{\dimexpr\linewidth-4em-1pt\relax}{0.5pt}}\\[4pt]%
+}
+
+% Slim left-bordered callout. Lighter than a full tcolorbox; used for one-line
+% findings that deserve to be lifted out of the prose without dominating.
+\newcommand{\callout}[2]{%
+  \vspace{2pt}%
+  \begin{tcolorbox}[colback=accentBlue!4!white, colframe=accentBlue!60!white,
+    boxrule=0pt, leftrule=2.5pt, arc=1.5pt,
+    left=9pt, right=8pt, top=3pt, bottom=3pt]%
+  \footnotesize\textbf{\textcolor{accentBlue}{#1}}\quad#2%
+  \end{tcolorbox}%
+  \vspace{1pt}%
+}
+
+% Inline color chip with white-on-color label. Used to render the palette
+% as a row of swatches rather than coloured inline text.
+\newcommand{\hexchip}[2]{%
+  \colorbox{#1}{\color{white}\strut\,\footnotesize\textbf{#2}\,}%
+}
+
+% Subsection heading rendered as a small rounded accent-blue pill. Replaces
+% \subhead{...} everywhere in the document so every in-page heading reads
+% as a designed element instead of plain bold text.
+\newcommand{\subhead}[1]{%
+  \vspace{4pt}%
+  \noindent\tcbox[
+    on line,
+    colback=accentBlue!10!white, colframe=accentBlue,
+    boxrule=0.3pt, arc=2.5pt,
+    left=7pt, right=7pt, top=0.5pt, bottom=0.5pt,
+  ]{\small\bfseries\color{accentBlue!85!black}#1}\\[2pt]%
+}
+
 % Screenshot placeholder box for figures that the team will drop in later
 % Usage: \shotplaceholder{Hero with Earth + cloud}{0.45}
 \newcommand{\shotplaceholder}[2]{%
@@ -89,16 +130,15 @@ The site is a scrolling, four-chapter narrative aimed at a non-specialist audien
 
 This document is the design log behind that site. Page 2 recaps the path from the original M1 problematic to the final layout (with the M1 wireframes side-by-side with the actual screens). Page 3 explains the data and the cleaning decisions baked into \texttt{build\_data.py}. Pages 4 and 5 are the narrative-design and visual-design rationale. Pages 6 and 7 cover the interactions, the challenges we worked through, and the technical architecture. Page 8 is the per-member contribution breakdown and our honest reflection on what we would do differently with more time.
 
-\newpage
+\vspace{18pt}
 
 % =====================================================================
 % PAGE 2 — FROM IDEA TO THESIS
 % =====================================================================
 
-\eyebrow{02 \quad\textbullet\quad From idea to thesis}\\[3pt]
-{\Large\bfseries Where we started, where we landed}
+\pageheader{02}{From idea to thesis}{Where we started, where we landed}
 
-\vspace{6pt}
+\vspace{2pt}
 
 The M1 problematic was deliberately broad: ``orbital space is becoming infrastructure, and that infrastructure is invisible to most people.'' We picked the UCS Satellite Database because it combines what a satellite is, who operates it, what it is for, and where it sits in a single curated file. Three things changed between the M1 sketches and the final site: the thesis sharpened, the chapter count grew from three to four, and the 3D component was promoted from a Chapter~3 prop to the page's hero. The three M1 wireframes below are shown next to their final-site counterparts so the evolution is visible at a glance; a fourth element (the 3D hero) had no M1 sketch and is captured separately on page~1.
 
@@ -148,22 +188,21 @@ The M1 problematic was deliberately broad: ``orbital space is becoming infrastru
 
 \textbf{What wasn't in M1.} A 3D hero (page~1) and a fourth chapter. M1's narrative ended on present-day crowding, but the 2030 projections are what give the story stakes, so Chapter~4 (``The Next Decade'') was added late. The hero scene was driven by the screencast: a cinematic establishing shot in the first ten seconds lets us say more, faster, than any chart could.
 
-\newpage
+\vspace{18pt}
 
 % =====================================================================
 % PAGE 3 — DATA & EXPLORATORY ANALYSIS
 % =====================================================================
 
-\eyebrow{03 \quad\textbullet\quad Data and exploratory analysis}\\[3pt]
-{\Large\bfseries 6{,}713 satellites, cleaned and aggregated}
+\pageheader{03}{Data and exploratory analysis}{6{,}713 satellites, cleaned and aggregated}
 
-\vspace{6pt}
+\vspace{2pt}
 
 The dataset is the \href{https://www.kaggle.com/datasets/sujaykapadnis/every-known-satellite-orbiting-earth/data}{UCS Satellite Database} (Union of Concerned Scientists), snapshot 1 January 2023, with 27 attributes per satellite. Of the 6{,}718 raw rows, 5 are dropped during cleaning, leaving 6{,}713 satellites that the site ships with. The full data path lives in \texttt{scripts/build\_data.py} (about 700 lines, 23 unit + integration tests in \texttt{test\_build\_data.py}, all passing). Every transformation it applies is logged to \href{https://github.com/com-480-data-visualization/The-Outliers/blob/master/data/data_quality_flags.md}{\texttt{data/data\_quality\_flags.md}} so any reader can audit the decisions.
 
 \vspace{2pt}
 
-\subsection*{What the script does}
+\subhead{What the script does}
 
 \textbf{Parses numerics.} Apogee, perigee, eccentricity, inclination, period. UCS ships these as strings with embedded commas; we coerce, drop rows where coercion fails on parameters we need.
 
@@ -179,7 +218,7 @@ The dataset is the \href{https://www.kaggle.com/datasets/sujaykapadnis/every-kno
 
 \vspace{2pt}
 
-\subsection*{The picture that justified the entire project}
+\subhead{The picture that justified the entire project}
 
 \noindent
 \begin{minipage}[t]{0.48\textwidth}
@@ -193,26 +232,25 @@ The orbit donut from Chapter 3 (right) shows why the four-bucket classification 
 
 \vspace{4pt}
 
-\subsection*{Output schema}
+\subhead{Output schema}
 
 The script writes two JSON files. \texttt{satellites.json} carries pre-aggregated statistics keyed by chart: \texttt{cumulative\_launches}, \texttt{cumulative\_purpose\_by\_year}, \texttt{top\_countries}, \texttt{country\_counts}, \texttt{country\_purpose\_matrix}, \texttt{orbit\_distribution}, \texttt{purpose\_breakdown}, \texttt{purpose\_by\_orbit}, \texttt{top\_operators}, \texttt{operator\_details}, \texttt{lorenz\_curve}. \texttt{satellites-globe.json} is the slim per-satellite list (name, country, orbit class, purpose, altitude, inclination, launch year, constellation) consumed by the 3D scene and Globe.gl. The \texttt{-{}-check} mode verifies the committed JSONs match what the script would currently emit, so a stale build cannot accidentally land.
 
-\newpage
+\vspace{18pt}
 
 % =====================================================================
 % PAGE 4 — DESIGNING THE NARRATIVE
 % =====================================================================
 
-\eyebrow{04 \quad\textbullet\quad Designing the narrative}\\[3pt]
-{\Large\bfseries A four-chapter arc, Freytag inside}
+\pageheader{04}{Designing the narrative}{A four-chapter arc, Freytag inside}
 
-\vspace{6pt}
+\vspace{2pt}
 
 The defining decision was to commit to a \textit{linear} reading experience and let interactivity bloom from inside it, rather than build a dashboard the user has to assemble in their head. The visual reference was The Pudding's scrollytelling, the structural reference was Freytag's pyramid (Lecture~12). The reader does not need a hypothesis or a query to engage. They scroll, and a story unfolds. They can pause anywhere to interact.
 
 \vspace{2pt}
 
-\subsection*{Freytag's pyramid mapped to chapters}
+\subhead{Freytag's pyramid mapped to chapters}
 
 \begin{tabularx}{\textwidth}{@{} l l X @{}}
 \toprule
@@ -228,7 +266,7 @@ Resolution       & Chapter 4, The Next Decade & 2023 vs.\ $\approx 2030$ filing 
 
 \vspace{4pt}
 
-\subsection*{Why these chart types, specifically}
+\subhead{Why these chart types, specifically}
 
 \textbf{Area chart over a bar chart for the timeline} (L6, L11). Cumulative counts year-by-year are a continuous quantity; bars would imply discrete events. Area fills the space below the line, which gives the chapter its second visual finding: the area under the curve is mostly post-2019.
 
@@ -242,46 +280,56 @@ Resolution       & Chapter 4, The Next Decade & 2023 vs.\ $\approx 2030$ filing 
 
 \textbf{3D globe over a 2D world map} (L8). Real altitude matters for the orbit story. A 2D map projection erases altitude. Globe.gl gives us altitude, drag-rotate, and per-point hover with the right framing for the screencast.
 
-\newpage
+\vspace{18pt}
 
 % =====================================================================
 % PAGE 5 — VISUAL DESIGN DECISIONS
 % =====================================================================
 
-\eyebrow{05 \quad\textbullet\quad Visual design decisions}\\[3pt]
-{\Large\bfseries A dark space, four hues, two typefaces}
+\pageheader{05}{Visual design decisions}{A dark space, four hues, two typefaces}
 
-\vspace{6pt}
+\vspace{2pt}
 
 The site is a single visual system. The same palette, type, and motion grammar runs from the hero through Chapter 4 and the stats bar. The goal was that any screenshot of the site should be recognizable as the same project, regardless of which chapter it comes from.
 
 \vspace{2pt}
 
-\subsection*{Color}
+\subhead{Color}
 
-Four orbit-class hues form the spine: \textcolor{accentBlue}{\textbf{blue \#1A73E8}} for LEO, \textcolor{accentOrange}{\textbf{orange \#E8710A}} for MEO, \textcolor{accentGreen}{\textbf{green \#34A853}} for GEO, \textcolor{accentPurple}{\textbf{purple \#9334E6}} for Elliptical. The same hex codes are used identically in the D3 charts, the Three.js hero scene's GLSL shader, and the Chapter 3 globe.gl points layer, defined once in \texttt{prototype/js/charts/shared.js} and imported wherever a chart needs the palette. The dual role (orbit class \textit{and} accent / highlight) is the one place where the palette had to flex: in the country bar chart, the USA bar uses the orange accent because it is the dominant entry, which conflicts with MEO's orange. We accepted the conflict because the rule ``the dominant entry is orange'' generalizes cleanly across charts (it is also the highlight for active constellation isolator buttons), whereas a sixth color would have diluted the orbit-class palette.
+Four orbit-class hues form the spine:
+
+\vspace{2pt}
+\begin{center}
+\hexchip{accentBlue}{LEO}\,\texttt{\footnotesize\#1A73E8}\quad
+\hexchip{accentOrange}{MEO}\,\texttt{\footnotesize\#E8710A}\quad
+\hexchip{accentGreen}{GEO}\,\texttt{\footnotesize\#34A853}\quad
+\hexchip{accentPurple}{Elliptical}\,\texttt{\footnotesize\#9334E6}
+\end{center}
+\vspace{2pt}
+
+The same hex codes are used identically in the D3 charts, the Three.js hero scene's GLSL shader, and the Chapter 3 globe.gl points layer, defined once in \texttt{prototype/js/charts/shared.js} and imported wherever a chart needs the palette. The dual role (orbit class \textit{and} accent / highlight) is the one place where the palette had to flex: in the country bar chart, the USA bar uses the orange accent because it is the dominant entry, which conflicts with MEO's orange. We accepted the conflict because the rule ``the dominant entry is orange'' generalizes cleanly across charts (it is also the highlight for active constellation isolator buttons), whereas a sixth color would have diluted the orbit-class palette.
 
 \vspace{2pt}
 
-\subsection*{Typography}
+\subhead{Typography}
 
 Two families. \textbf{Space Grotesk} (700, 800) for headings, big numbers, and any monospace-feeling moment (year readouts, KPI tiles, axis labels for the operator drawer). \textbf{Inter} (300, 400, 600) for everything else: body copy, captions, button labels, tooltips. Sizes step in a 1.25 modular scale. \texttt{tabular-nums} is on for any column of numbers that the reader will visually align.
 
 \vspace{2pt}
 
-\subsection*{Dark theme}
+\subhead{Dark theme}
 
 A black-to-near-black background (\texttt{\#000} body, \texttt{\#050508} for sections) is doing three things at once: it lets the 3D scene feel like real space without a black-rectangle frame, it gives the satellite-cloud bloom and the gradient charts maximum contrast, and it lowers the energy cost of a long-running animation on the user's screen. The risk is text legibility; we mitigate with the secondary text color (\texttt{\#9BA3B5}), generous line height (1.6 body, 1.7 chart steps), and an explicit \texttt{prefers-color-scheme} that doesn't fight the OS.
 
 \vspace{2pt}
 
-\subsection*{Motion}
+\subhead{Motion}
 
 Two principles, applied consistently. \textbf{(1) Motion is informative or it is gone.} Every transition either communicates state change (a constellation isolator button activating, a slider thumb moving, a country bar growing in on mount) or it is removed in \texttt{prefers-reduced-motion}. The hero intro acts, the cloud orbital motion, the chapter-entrance fades, and the Globe.gl autorotation are all gated on the same media query. \textbf{(2) Easing matches the cadence of reading.} The repeated curve \texttt{cubic-bezier(0.22, 1, 0.36, 1)} (a soft ease-out) is used for chart entrances, slider thumb scale, drawer slide, fade-in opacities, and Lenis smooth-scroll. The interval (350--850 ms) sits in the range where the eye registers the motion without waiting for it.
 
 \vspace{2pt}
 
-\subsection*{Library choices, with rationale}
+\subhead{Library choices, with rationale}
 
 \textbf{D3 v7} for every 2D chart. Familiar from the lectures (L4, L5), gives us full layout control, hooks into the existing palette tokens directly. We did not reach for higher-level chart libraries (Vega-Lite, Plotly) because the project's interaction model is non-standard (composed filters, linked views, a slide-in drawer) and we wanted no friction at the boundary.
 
@@ -295,18 +343,17 @@ Two principles, applied consistently. \textbf{(1) Motion is informative or it is
 
 \textbf{Pre-aggregated JSON over in-browser CSV parsing}. \texttt{build\_data.py} ships two tight JSONs (about 200 KB combined, gzipped to about 40 KB). Parsing the 6{,}700-row UCS CSV on every page load would add hundreds of milliseconds to first paint and dump a megabyte over the wire. The build script is the right place for the aggregation, the per-chart shape, and the data-quality logging.
 
-\newpage
+\vspace{18pt}
 
 % =====================================================================
 % PAGE 6 — INTERACTIONS AND CHALLENGES
 % =====================================================================
 
-\eyebrow{06 \quad\textbullet\quad Interactions and challenges}\\[3pt]
-{\Large\bfseries Six interactions, three problems that nearly bit us}
+\pageheader{06}{Interactions and challenges}{Six interactions, three problems that nearly bit us}
 
-\vspace{6pt}
+\vspace{2pt}
 
-\subsection*{The interactions, in the order the reader meets them}
+\subhead{The interactions, in the order the reader meets them}
 
 \textbf{1. Cinematic hero intro.} Three poster lines (``A frontier.'' $\to$ ``Then, an avalanche.'' $\to$ ``6{,}713 and counting.'') crossfade over a black vignette; a radial-iris wipe reveals the 3D scene; the CROWDED ORBIT title slides in. One-shot: latched after \texttt{final}, so scrolling back up does not replay it. The phase controller (\texttt{cinematic-hero.js}) is a tiny state machine driven by wheel/touch input that re-emits to the rest of the page only after the latch.
 
@@ -322,7 +369,7 @@ Two principles, applied consistently. \textbf{(1) Motion is informative or it is
 
 \vspace{3pt}
 
-\subsection*{Challenges, with what we did about each}
+\subhead{Challenges, with what we did about each}
 
 \textbf{The two-Three.js bug.} Adding the hero's Three.js scene alongside Globe.gl initially crashed Globe.gl with \texttt{z0.Timer is not a constructor}. Globe.gl bundles its own Three.js internally, and our external Three.js (loaded as a UMD script tag) overrode \texttt{window.THREE} with an older version that lacked \texttt{THREE.Timer}. Fix: load the hero's Three.js as an ES module from \texttt{esm.sh} so it has its own isolated instance, never touches \texttt{window.THREE}, and Globe.gl keeps its own bundled copy. The two instances coexist without conflict.
 
@@ -332,18 +379,17 @@ Two principles, applied consistently. \textbf{(1) Motion is informative or it is
 
 \textbf{The Chapter 1 sticky-chart on tall content.} The scrollytelling chart uses \texttt{position: sticky} and \texttt{min-height: 300vh} on its container so the chart sticks for the full scroll height. When we added the second panel (purpose-over-time) inside the same chapter, the sticky rule applied to it too and created a giant dark gap. Tightening the selector to \texttt{:has(.scrolly)} scoped the rule to the right container only.
 
-\newpage
+\vspace{18pt}
 
 % =====================================================================
 % PAGE 7 — TECHNICAL IMPLEMENTATION
 % =====================================================================
 
-\eyebrow{07 \quad\textbullet\quad Technical implementation}\\[3pt]
-{\Large\bfseries Build, ship, test}
+\pageheader{07}{Technical implementation}{Build, ship, test}
 
-\vspace{6pt}
+\vspace{2pt}
 
-\subsection*{Architecture}
+\subhead{Architecture}
 
 The site is fully static. A Python build script transforms one CSV into two JSONs, the browser fetches them, every chart renders client-side. No backend, no build step on the client. The data pipeline is the only non-trivial moving part:
 
@@ -357,68 +403,70 @@ UCS CSV $\longrightarrow$ build\_data.py $\longrightarrow$ satellites.json + sat
 
 The Python side enforces correctness (23 unit + integration tests, all green); the JS side stays dumb because the data shape is already right.
 
-\subsection*{Module layout}
+\subhead{Module layout}
 
 \texttt{prototype/js/} is organized into four buckets. \textbf{Charts} (\texttt{charts/*.js}, one file per chart) each export a top-level draw function and share constants from \texttt{shared.js} (palette, tooltip). \textbf{Scene} (\texttt{scene/journey.js}) is the hero's Three.js scene, loaded as an ES module with its own Three.js instance. \textbf{Effects} (\texttt{effects/stars.js}) are the page-wide canvas decorations. \textbf{Controllers}: \texttt{main.js} (boot), \texttt{globe.js} (Chapter 3 Globe.gl + filters + search), \texttt{scrollytelling.js} (Chapter 1 step observer), \texttt{scroll.js} (Lenis + chapter fade-ins), \texttt{nav.js} (chapter navigator), \texttt{cinematic-hero.js} (intro state machine).
 
 Imports stay flat (no bundler, no transpiler). Two files are ES modules because they need ES imports (\texttt{scene/journey.js} for Three.js, \texttt{scroll.js} for Lenis); everything else is a plain global \texttt{<script>}, in deterministic load order, with \texttt{shared.js} first. This is intentional: the team can clone the repo, run a Python HTTP server, and edit any chart with no toolchain.
 
-\subsection*{Build pipeline and testing}
+\subhead{Build pipeline and testing}
 
 \texttt{scripts/build\_data.py} owns the full transformation. \texttt{-{}-check} mode recomputes both JSONs in memory and compares against the committed files, exiting non-zero on drift. \texttt{scripts/test\_build\_data.py} runs 23 tests: orbit-classification rules, eccentricity-sign-error recovery, purpose normalization, operator-name normalization, sanity-check flagging, end-to-end build against the real CSV, JSON validity. The whole pipeline runs in about 1.5 seconds; the tests in $<$ 1 second.
 
-\subsection*{Performance}
+\subhead{Performance}
 
 The site loads in $<$1.5 s first paint on a 4G connection. The two JSONs gzip to $\approx 40$ KB, Three.js is the largest dependency ($\approx 150$ KB gzipped, loaded as an ES module). The 6{,}713-satellite scene renders consistently at 60 fps on integrated-graphics laptops; we verified on a 2019 MacBook Air and a Windows-on-ARM Surface. The Chapter 3 Globe.gl viewport hovers around 55--60 fps depending on autorotate. \texttt{pointsMerge(true)} keeps the 6{,}713-point cloud as a single GPU mesh.
 
-\subsection*{Accessibility}
+\subhead{Accessibility}
 
 Every interactive control (filter buttons, year slider, play button, search input, drawer close, constellation buttons) has an \texttt{aria-label} and is keyboard-reachable. The operator drawer is a real \texttt{role="dialog"} with \texttt{aria-modal} and focus management on open. Globe.gl content has an \texttt{aria-label} description of the visual so screen readers do not just see ``canvas.'' A \texttt{<noscript>} block tells JS-disabled visitors what they are missing and how to fix it. The whole site degrades under \texttt{prefers-reduced-motion}: Lenis is not constructed, fades land immediately, the hero's orbital motion and the globe's autorotation freeze. Color contrast on body text is $> 7$:$1$, on secondary text $> 4.5$:$1$.
 
-\subsection*{Responsive}
+\subhead{Responsive}
 
 Three breakpoints (700 px, 900 px, viewport-bound). The country bar / Lorenz / operator / heatmap row collapses to single-column under 900 px. The time-slider card stacks the play button above the track under 700 px. The operator drawer takes 100 vw on phones. The 3D globe and the hero scene scale via \texttt{ResizeObserver} on their containers, not on window resize, so late-arriving layout (fonts loading, scrollbar appearing) does not leave them at 0 px wide.
 
-\subsection*{Browser support}
+\subhead{Browser support}
 
 Tested on Chrome, Firefox, Safari (desktop and iOS), Edge. The CSS uses \texttt{:has()} for one selector (Chapter 1 sticky scoping), which lands in every major browser shipped since late 2023. Earlier browsers see a static, non-immersive version of the site that still works because every chart degrades gracefully without the JS post-processing.
 
-\newpage
+\vspace{18pt}
 
 % =====================================================================
 % PAGE 8 — PEER ASSESSMENT + REFLECTION
 % =====================================================================
 
-\eyebrow{08 \quad\textbullet\quad Peer assessment and reflection}\\[3pt]
-{\Large\bfseries Who did what, and what we would do differently}
+\pageheader{08}{Peer assessment and reflection}{Who did what, and what we would do differently}
 
-\vspace{6pt}
+\vspace{2pt}
 
 The contributions below reflect the actual commit history and pairing during the working sessions of milestone 3. Every member contributed across the stack; the breakdown captures where each took primary ownership.
 
 \vspace{2pt}
 
-\renewcommand{\arraystretch}{1.05}
+\renewcommand{\arraystretch}{1.15}
+\arrayrulecolor{accentBlue!50!white}
 {\small
-\begin{tabularx}{\textwidth}{@{} l X r @{}}
-\toprule
-\textbf{Member} & \textbf{Primary contributions} & \textbf{Share}\\
-\midrule
-\textbf{Kevin Abou Jaoude} \newline (358300)
-& Data pipeline expansion in \texttt{build\_data.py}: new aggregations for cumulative-purpose-by-year, country counts, country$\times$purpose matrix, operator deep-dive details, plus the constellation and launch-year fields on the per-satellite list (23 tests passing throughout). Chapter 4 (``The Next Decade'') projection chart with the citation block. Lenis smooth-scroll integration and the chapter-entrance fade-in observer. Site-wide accessibility pass (\texttt{aria-label}s, \texttt{noscript} fallback, \texttt{prefers-reduced-motion} guards, Open Graph meta). Repo hygiene: README v2, MIT \texttt{LICENSE}, expanded \texttt{.gitignore}. Process-book authoring and structure. & 1/3\\
+\begin{tabularx}{\textwidth}{@{} >{\columncolor{accentBlue!8!white}}l X >{\columncolor{accentBlue!5!white}}r @{}}
+\arrayrulecolor{accentBlue}\toprule
+\rowcolor{accentBlue!12!white}
+\textbf{\textcolor{accentBlue!85!black}{Member}} & \textbf{\textcolor{accentBlue!85!black}{Primary contributions}} & \textbf{\textcolor{accentBlue!85!black}{Share}}\\
+\arrayrulecolor{accentBlue!50!white}\midrule
+\textbf{Kevin Abou Jaoude} \newline {\footnotesize\textcolor{textSec}{358300}}
+& Chapter 3 interactive 3D globe: year-filter slider with play-history sweep, mega-constellation isolator with linked-view dispatch, satellite-name search with pulsing-ring spotlight, and the linked-country highlighting that ties the isolator to both the Chapter 2 country bar chart and the Chapter 2 world choropleth. Data pipeline expansion in \texttt{build\_data.py}: new aggregations for cumulative-purpose-by-year, country counts, country$\times$purpose matrix, operator deep-dive details, plus the constellation and launch-year fields on the per-satellite list (23 tests passing throughout). Repo hygiene: README v2, MIT \texttt{LICENSE}, expanded \texttt{.gitignore}. Process-book authoring and structure. & \textbf{1/3}\\
 \addlinespace[2pt]
-\textbf{Youssef Dib} \newline (339964)
-& Cinematic hero intro: three-act poster sequence, radial-iris vignette wipe, latched phase state machine that consumes wheel/touch input without leaking page scroll. Fixed top-right chapter navigator (open / close / active-chapter tracking via IntersectionObserver). Hero 3D scene polish: \texttt{UnrealBloomPass} post-processing, custom GLSL shader for soft-glow satellite sprites, orbit-class color tuning so each colored shell reads against the LEO mass. Globe.gl robustness: Ctrl-to-zoom gating with on-screen hint, \texttt{ResizeObserver} pattern, atmosphere alpha fix, scrollbar hiding so the layout never shifts. & 1/3\\
+\textbf{Youssef Dib} \newline {\footnotesize\textcolor{textSec}{339964}}
+& Chapter 2 world choropleth (D3 + TopoJSON, Equal-Earth projection, log color scale, country-name normalization, sphere outline, hover tooltip with global share, linked-view highlight from the Chapter 3 constellation isolator). Cinematic hero intro: three-act poster sequence, radial-iris vignette wipe, latched phase state machine that consumes wheel/touch input without leaking page scroll. Fixed top-right chapter navigator (open / close / active-chapter tracking via IntersectionObserver). Hero 3D scene polish: \texttt{UnrealBloomPass} post-processing, custom GLSL shader for soft-glow satellite sprites, orbit-class color tuning so each colored shell reads against the LEO mass. Globe.gl robustness: Ctrl-to-zoom gating with on-screen hint, \texttt{ResizeObserver} pattern, atmosphere alpha fix, scrollbar hiding so the layout never shifts. & \textbf{1/3}\\
 \addlinespace[2pt]
-\textbf{Mark Nabbout} \newline (358312)
-& Chapter 1 stacked area chart (purpose over time) with the post-2019 Starlink-era annotation. Chapter 2 world choropleth (D3 + TopoJSON, Equal Earth, log color scale, country-name mapping). Chapter 2 country$\times$purpose specialization heatmap with floating info card. Chapter 2 top-operators bar chart and full deep-dive drawer (launch-timeline sparkline, orbit and purpose mini-bars, KPI tiles, focus-trapped \texttt{role="dialog"}). Chapter 3 year-filter slider with play-history sweep, mega-constellation isolator with linked-view dispatch, satellite name search with pulsing-ring spotlight. Linked-country highlighting wiring across the world map and the country bar chart. & 1/3\\
-\bottomrule
+\textbf{Mark Nabbout} \newline {\footnotesize\textcolor{textSec}{358312}}
+& Chapter 1 stacked area chart (purpose over time) with the post-2019 Starlink-era annotation. Chapter 2 country$\times$purpose specialization heatmap with floating info card. Chapter 2 top-operators bar chart and full deep-dive drawer (launch-timeline sparkline, orbit and purpose mini-bars, KPI tiles, focus-trapped \texttt{role="dialog"}). Chapter 4 (``The Next Decade'') projection chart with the citation block. Lenis smooth-scroll integration and the chapter-entrance fade-in observer. Site-wide accessibility pass (\texttt{aria-label}s, \texttt{noscript} fallback, \texttt{prefers-reduced-motion} guards, Open Graph meta). & \textbf{1/3}\\
+\arrayrulecolor{accentBlue}\bottomrule
 \end{tabularx}
 }
+\arrayrulecolor{black}
 
 \vspace{3pt}
 
-\subsection*{What surprised us}
+\subhead{What surprised us}
 
 \textbf{The data was less linear than expected.} M1 framed the story as ``orbit is filling up.'' That's true, but the Chapter 1 stacked area showed something sharper that we did not anticipate: it is filling up \textit{with one purpose}. Communications was already 40\% of the fleet in 2018; by 2022 it was 72\%. The chapter changed shape because we found that finding.
 
@@ -428,7 +476,7 @@ The contributions below reflect the actual commit history and pairing during the
 
 \vspace{1pt}
 
-\subsection*{What we would do differently with more time}
+\subhead{What we would do differently with more time}
 
 \textbf{Real ephemeris.} Our 3D scene places satellites on inclination-bounded \textit{visual} positions, not their real lat/lng at a given instant. With real two-line-element data from CelesTrak, the hero scene could show satellites where they actually are right now. The cost is a recurring data fetch and a satellite.js dependency. Worth doing as a v2.
 
