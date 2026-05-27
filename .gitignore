@@ -14,15 +14,14 @@ __pycache__/
 .coverage
 *.egg-info/
 
-# LaTeX build artifacts (process book is built in overleaf/)
-overleaf/
+# LaTeX build artifacts (we keep the .tex sources tracked in overleaf/)
 *.aux
 *.fdb_latexmk
 *.fls
-*.log
-*.out
 *.synctex.gz
 *.toc
+overleaf/*.log
+overleaf/*.out
 
 # Node (if/when a bundler is added)
 node_modules/
