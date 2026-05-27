@@ -184,11 +184,11 @@ The dataset is the \href{https://www.kaggle.com/datasets/sujaykapadnis/every-kno
 \noindent
 \begin{minipage}[t]{0.48\textwidth}
 \vspace{2pt}
-A single histogram (right) explains why orbits cluster the way they do. The altitudes are not a smooth distribution: there are three sharp modes. LEO peaks around 500--600 km (Starlink at 550, Earth-observation sun-sync orbits at $\approx 700$). MEO peaks around 19{,}000--23{,}000 km (the Galileo, GLONASS and GPS navigation shells). GEO is a single spike at $\approx 36{,}000$ km (the geostationary belt). This trimodal structure is what makes the LEO/MEO/GEO/Elliptical buckets clean rather than arbitrary, and it's the structural foundation of every other chart in the site: the orbit donut, the heatmap, the time-slider history, the bloom-ringed shells in the hero.
+The orbit donut from Chapter 3 (right) shows why the four-bucket classification is meaningful, not arbitrary: the population concentrates sharply. LEO holds \textbf{5{,}940 satellites (88.4\%)}, almost an order of magnitude more than every other orbit combined. GEO accounts for \textbf{580 (8.6\%)}, MEO for \textbf{142 (2.1\%)}, and the highly-elliptical category for \textbf{51 (0.8\%)}. The buckets correspond to physically distinct altitude bands (LEO below 2{,}000 km, MEO between 2{,}000 and $\approx 36{,}000$ km, GEO at $\approx 36{,}000$ km, Elliptical with high eccentricity) where satellites cluster for reasons of orbital mechanics, launch economics, and mission requirements. This concentration is the structural foundation of every other chart on the site: the purpose $\times$ orbit heatmap, the time-slider history, the bloom-ringed shells in the hero.
 \end{minipage}\hfill%
 \begin{minipage}[t]{0.48\textwidth}
 \vspace{0pt}
-\shotplaceholder{Histogram: altitude (km, log scale) coloured by orbit class}{0.95}
+\includegraphics[width=0.95\textwidth]{orbit-donut.png}
 \end{minipage}
 
 \vspace{4pt}
