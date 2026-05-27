@@ -34,7 +34,7 @@
 \hypersetup{colorlinks=true, urlcolor=accentBlue, linkcolor=accentBlue}
 
 % Image search path: wireframes for M1 reuse, img/ for any other figures
-\graphicspath{{../img/wireframes/}{../img/}}
+\graphicspath{{../img/wireframes/}{../img/}{../../img/}}
 
 % Small caps eyebrow label used at the top of each page
 \newcommand{\eyebrow}[1]{{\footnotesize\textcolor{accentBlue}{\textsc{#1}}}}
@@ -63,7 +63,7 @@
 
 % Hero screenshot
 \begin{center}
-\shotplaceholder{Hero: CROWDED ORBIT title above 3D Earth + 6{,}713 orbiting satellites}{0.92}
+\includegraphics[height=8cm,keepaspectratio]{hero_cover.png}
 \end{center}
 
 \vspace{8pt}
@@ -100,41 +100,53 @@ This document is the design log behind that site. Page 2 recaps the path from th
 
 \vspace{6pt}
 
-The M1 problematic was deliberately broad: ``orbital space is becoming infrastructure, and that infrastructure is invisible to most people.'' We picked the UCS Satellite Database because it is one of the very few datasets that combines what a satellite is, who operates it, what it is for, and where it sits, in a single curated file. That combination is what the project relies on: every dimension of inequality we surface (country, operator, purpose, altitude, inclination) is one column away from another, and that's what lets the chapters compose.
-
-Three things changed between M1's wireframe sketches and the final site. The thesis sharpened, the chapter count grew, and the 3D component took over the hero rather than living only in the final chapter.
+The M1 problematic was deliberately broad: ``orbital space is becoming infrastructure, and that infrastructure is invisible to most people.'' We picked the UCS Satellite Database because it combines what a satellite is, who operates it, what it is for, and where it sits in a single curated file. Three things changed between the M1 sketches and the final site: the thesis sharpened, the chapter count grew from three to four, and the 3D component was promoted from a Chapter~3 prop to the page's hero. The three M1 wireframes below are shown next to their final-site counterparts so the evolution is visible at a glance; a fourth element (the 3D hero) had no M1 sketch and is captured separately on page~1.
 
 \vspace{4pt}
 
-\noindent
-\begin{minipage}[t]{0.46\textwidth}
-\textbf{Wireframe 1 (M1).} A linear timeline of cumulative launches with five scroll-locked steps. We kept this almost unchanged. The five steps still anchor Chapter 1 because the story is about \textit{when}: 1974, 1998, 2018, 2021, 2023. The single change is that we added a second panel beneath it, a stacked area chart of cumulative count by purpose, so the reader can see at a glance that the post-2019 explosion is overwhelmingly Communications (driven by Starlink and OneWeb).
-\vspace{3pt}
-\centering
-\includegraphics[width=0.95\textwidth]{01_timeline.png}
-\end{minipage}\hfill%
-\begin{minipage}[t]{0.46\textwidth}
-\textbf{Wireframe 2 (M1).} Country bar + Lorenz curve in two columns. This sketch survives almost as drawn, with the Lorenz curve still annotated with the Gini 0.862 callout. What we added on top: a world choropleth as the geographic establishing shot above the row, an operator-deep-dive drawer beneath, and a country$\times$purpose specialization heatmap. The four pieces together answer the question the chapter title asks: \textit{who} owns space, \textit{how unequally}, \textit{which operators specifically}, and \textit{what for}.
-\vspace{3pt}
-\centering
-\includegraphics[width=0.95\textwidth]{02_countries_lorenz.png}
-\end{minipage}
+\textbf{Wireframe 1 $\to$ Chapter 1.} Kept almost unchanged: five scroll-locked steps still anchor the timeline at 1974, 1998, 2018, 2021, 2023. The single addition is a stacked-area panel underneath so the reader sees that the post-2019 surge is overwhelmingly Communications (Starlink and OneWeb).
 
-\vspace{6pt}
-
-\noindent
-\begin{minipage}[t]{0.46\textwidth}
-\textbf{Wireframe 3 (M1).} The 3D globe with a purpose$\times$orbit heatmap. This is the chapter that grew the most. The static globe became a Globe.gl viewport with three composed filters (orbit, year, mega-constellation) and a satellite-name search with a pulsing-ring spotlight. The heatmap stayed exactly as designed, because it was already doing what a heatmap should: making a 2D conditional distribution legible.
-\vspace{3pt}
-\centering
-\includegraphics[width=0.95\textwidth]{03_globe_heatmap.png}
+\vspace{2pt}
+\begin{center}
+\begin{minipage}[c]{0.46\textwidth}\centering
+{\scriptsize\textcolor{textSec}{\textsc{M1 wireframe}}}\\[1pt]
+\includegraphics[height=3.6cm,keepaspectratio]{01_timeline.png}
 \end{minipage}\hfill%
-\begin{minipage}[t]{0.46\textwidth}
-\textbf{The piece that wasn't in M1.} A 3D hero. The original plan had the globe live only in Chapter 3, behind a paywall of scroll. The final site puts a separate Three.js scene at the top of the page: a textured Earth at the origin, all 6{,}713 satellites placed on their real inclined orbits (Kepler), animated with their physically-correct angular velocities, rendered through a custom GLSL sprite shader with bloom. The decision was driven by the screencast: a cinematic establishing shot in the first ten seconds lets us say more, faster, than any chart could. Chapter 4 (``The Next Decade'') was also added late: M1's narrative ended on present-day crowding, but the 2030 projections are what give the story stakes.
-\vspace{3pt}
-\centering
-\shotplaceholder{Hero scene zoomed in: orbital cloud surrounding Earth}{0.95}
+\begin{minipage}[c]{0.46\textwidth}\centering
+{\scriptsize\textcolor{textSec}{\textsc{Final site}}}\\[1pt]
+\includegraphics[height=3.6cm,keepaspectratio]{final_timeline.png}
 \end{minipage}
+\end{center}
+
+\textbf{Wireframe 2 $\to$ Chapter 2.} The Lorenz + Gini 0.862 callout survived as drawn (the wireframe used a placeholder ranking of operators; the final swaps in the real top-10 with SpaceX dominating). Around it we added a world choropleth, a country bar, an operator deep-dive drawer, and a country$\times$purpose specialization heatmap.
+
+\vspace{2pt}
+\begin{center}
+\begin{minipage}[c]{0.46\textwidth}\centering
+{\scriptsize\textcolor{textSec}{\textsc{M1 wireframe}}}\\[1pt]
+\includegraphics[height=3.6cm,keepaspectratio]{05_concentration.png}
+\end{minipage}\hfill%
+\begin{minipage}[c]{0.46\textwidth}\centering
+{\scriptsize\textcolor{textSec}{\textsc{Final site}}}\\[1pt]
+\includegraphics[height=3.6cm,keepaspectratio]{final_concentration.png}
+\end{minipage}
+\end{center}
+
+\textbf{Wireframe 3 $\to$ Chapter 3.} The heatmap stayed exactly as designed because it was already doing what a heatmap should: making a 2D conditional distribution legible. The static globe sketch was replaced by a Globe.gl viewport with three composed filters (orbit, year, mega-constellation) and a satellite-name search with a pulsing-ring spotlight; that interactive surface is documented on page~6.
+
+\vspace{2pt}
+\begin{center}
+\begin{minipage}[c]{0.46\textwidth}\centering
+{\scriptsize\textcolor{textSec}{\textsc{M1 wireframe}}}\\[1pt]
+\includegraphics[height=3.6cm,keepaspectratio]{04_purpose.png}
+\end{minipage}\hfill%
+\begin{minipage}[c]{0.46\textwidth}\centering
+{\scriptsize\textcolor{textSec}{\textsc{Final site}}}\\[1pt]
+\includegraphics[height=3.6cm,keepaspectratio]{final_purpose.png}
+\end{minipage}
+\end{center}
+
+\textbf{What wasn't in M1.} A 3D hero (page~1) and a fourth chapter. M1's narrative ended on present-day crowding, but the 2030 projections are what give the story stakes, so Chapter~4 (``The Next Decade'') was added late. The hero scene was driven by the screencast: a cinematic establishing shot in the first ten seconds lets us say more, faster, than any chart could.
 
 \newpage
 
@@ -386,7 +398,8 @@ The contributions below reflect the actual commit history and pairing during the
 
 \vspace{2pt}
 
-\renewcommand{\arraystretch}{1.18}
+\renewcommand{\arraystretch}{1.05}
+{\small
 \begin{tabularx}{\textwidth}{@{} l X r @{}}
 \toprule
 \textbf{Member} & \textbf{Primary contributions} & \textbf{Share}\\
@@ -401,8 +414,9 @@ The contributions below reflect the actual commit history and pairing during the
 & Chapter 1 stacked area chart (purpose over time) with the post-2019 Starlink-era annotation. Chapter 2 world choropleth (D3 + TopoJSON, Equal Earth, log color scale, country-name mapping). Chapter 2 country$\times$purpose specialization heatmap with floating info card. Chapter 2 top-operators bar chart and full deep-dive drawer (launch-timeline sparkline, orbit and purpose mini-bars, KPI tiles, focus-trapped \texttt{role="dialog"}). Chapter 3 year-filter slider with play-history sweep, mega-constellation isolator with linked-view dispatch, satellite name search with pulsing-ring spotlight. Linked-country highlighting wiring across the world map and the country bar chart. & 1/3\\
 \bottomrule
 \end{tabularx}
+}
 
-\vspace{6pt}
+\vspace{3pt}
 
 \subsection*{What surprised us}
 
@@ -412,7 +426,7 @@ The contributions below reflect the actual commit history and pairing during the
 
 \textbf{Honest data caveats land harder than we feared.} We worried that the Chapter 4 ``filings are not deployments'' caveat would deflate the punch of the 12$\times$ headline. It didn't. Putting the citations in a collapsed expandable block, with a single warning line about deployment slippage, came off as confident rather than hedging.
 
-\vspace{2pt}
+\vspace{1pt}
 
 \subsection*{What we would do differently with more time}
 
@@ -426,7 +440,7 @@ The contributions below reflect the actual commit history and pairing during the
 
 \textbf{Sound.} A subtle ambient layer with a mute toggle, off by default. Risky to do well, immediate to do badly. We chose to do nothing rather than do it half-way; with more time we'd try it.
 
-\vspace{4pt}
+\vspace{2pt}
 
 \begin{center}
 {\footnotesize\color{textSec}Crowded Orbit \quad\textbullet\quad COM-480 \quad\textbullet\quad EPFL Spring 2026}\\
