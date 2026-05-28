@@ -4,6 +4,7 @@
 COM-480 Data Visualization Project, EPFL Spring 2026.
 
 [🌐 **Open the live site**](https://com-480-data-visualization.github.io/The-Outliers/)
+[📹 **Watch the screencast**](https://drive.google.com/file/d/19Zk9AQz502OgaFeqtOijnA-Rgr-JP9NJ/view?usp=sharing)
 
 Earth's orbit looks empty from below, but it is one of the most crowded, unequally controlled pieces of modern infrastructure. *Crowded Orbit* tells that story in four chapters, built on top of the UCS Satellite Database (6,713 operational satellites as of January 2023) and a 3D scene that lets you actually fly through them.
 
